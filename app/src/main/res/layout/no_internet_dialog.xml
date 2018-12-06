@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    app:cardCornerRadius="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/astronaut_image"
+            android:src="@mipmap/astronaut" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:text="@string/disconnected"
+            android:textColor="@color/colorInputText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp"
+            android:text="@string/there_s_no_internet_connection_to_reach_for_soleek_in_the_space"
+            android:textAlignment="center"
+            android:textColor="@color/colorGray" />
+
+        <Button
+            android:id="@+id/btn_done"
+            style="@style/AuthBtn"
+            android:background="@drawable/button_green"
+            android:text="@string/done"
+            android:textColor="@color/colorWhite" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>

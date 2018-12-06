@@ -1,3 +1,37 @@
 <resources>
-    <string name="app_name">SoleekLab</string>
+    <string name="app_name">Soleek App</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_icon">login icon</string>
+    <string name="e_mail_address">E-mail Address</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="don_t_worry_we_got_you_covered">Don’t worry, We got you covered</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="send_email">Send Email</string>
+    <string name="verify_your_identity">Verify your identity</string>
+    <string name="we_ve_sent_you_a_code_to_your_e_mail_abc_soleek_com">We’ve sent you a code to your e-mail: abc@soleek.com</string>
+    <string name="verify">Verify</string>
+    <string name="resetting_password">Resetting password</string>
+    <string name="new_password">New Password</string>
+    <string name="re_type_new_password">Re-type New password</string>
+    <string name="reset">Reset</string>
+    <string name="soleeklab_background">soleeklab background</string>
+    <string name="email_messages">We’ve sent you a code to your e-mail: %1$s</string>
+    <string name="error_short_password">Password can’t be less that 8 letters</string>
+    <string name="error_match_password">Password does not match</string>
+    <string name="error_invalid_email">Invalid email address</string>
+    <string name="login_to_your_account_to_start_use_the_system">Login to your account to start use the system</string>
+    <string name="arrow_back">arrow back</string>
+    <string name="wrong_code">Wrong code</string>
+    <string name="splash_screen">splash screen</string>
+    <string name="soleek_logo">Soleek Logo</string>
+    <string name="resend">Resend</string>
+    <string name="astronaut_image">astronaut image</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="there_s_no_internet_connection_to_reach_for_soleek_in_the_space">There’s no internet connection to reach for Soleek in the space!</string>
+    <string name="done">Done</string>
+
 </resources>

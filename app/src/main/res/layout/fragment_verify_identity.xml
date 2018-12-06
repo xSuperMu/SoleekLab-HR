@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusableInTouchMode="true"
+    tools:context=".Fragments.VerifyIdentityFragment">
+
+    <LinearLayout style="@style/AuthHolder">
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            style="@style/AuthIcons"
+            android:contentDescription="@string/login_icon"
+            android:src="@drawable/ic_shield"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_forget_pass"
+            style="@style/AuthDetails"
+            android:text="@string/verify_your_identity"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_icon" />
+
+        <TextView
+            android:id="@+id/verify_email_message"
+            style="@style/AuthMoreDetails"
+            android:text="@string/we_ve_sent_you_a_code_to_your_e_mail_abc_soleek_com"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_forget_pass" />
+
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/round_view_red"
+            android:gravity="center_vertical"
+            android:text="@string/wrong_code"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/verify_email_message" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_pin_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/error_message">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="27dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cv_background_1"
+                    style="@style/AuthCardView"
+                    app:cardBackgroundColor="@color/colorBlue"
+                    app:cardCornerRadius="@dimen/card_view_corner_radius" />
+
+                <View style="@style/AuthCardViewSeparator" />
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cv_background_2"
+                    style="@style/AuthCardView"
+                    app:cardBackgroundColor="@color/colorBlue"
+                    app:cardCornerRadius="@dimen/card_view_corner_radius" />
+
+                <View style="@style/AuthCardViewSeparator" />
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cv_background_3"
+                    style="@style/AuthCardView"
+                    app:cardBackgroundColor="@color/colorBlue"
+                    app:cardCornerRadius="@dimen/card_view_corner_radius" />
+
+                <View style="@style/AuthCardViewSeparator" />
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cv_background_4"
+                    style="@style/AuthCardView"
+                    app:cardBackgroundColor="@color/colorBlue"
+                    app:cardCornerRadius="@dimen/card_view_corner_radius" />
+            </LinearLayout>
+
+            <com.chaos.view.PinView
+                android:id="@+id/pinView"
+                style="@style/PinWidget.PinView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="27dp"
+                android:cursorVisible="false"
+                android:inputType="number"
+                android:textColor="@color/colorWhite"
+                app:cursorColor="@color/colorBlue"
+                app:cursorWidth="24dp"
+                app:hideLineWhenFilled="false"
+                app:itemCount="4"
+                app:itemHeight="48dp"
+                app:itemSpacing="16dp"
+                app:itemWidth="32dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lineColor="@android:color/black" />
+        </android.support.constraint.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tv_resend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:drawableStart="@drawable/ic_refresh_black_24dp"
+            android:drawableLeft="@drawable/ic_refresh_black_24dp"
+            android:drawablePadding="4dp"
+            android:text="@string/resend"
+            android:textColor="@color/colorPurple"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_verify_identity"
+            style="@style/AuthBtn"
+            android:background="@drawable/button_gray"
+            android:text="@string/verify"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_resend" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ib_back"
+        style="@style/AuthBackButton"
+        android:contentDescription="@string/arrow_back" />
+</FrameLayout>

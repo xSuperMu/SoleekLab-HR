@@ -5,7 +5,83 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorBlue</item>
+
+        <!--<item name="colorControlNormal">@color/colorGray</item>-->
+        <!--<item name="colorControlActivated">#984</item>-->
+        <!--<item name="colorControlHighlight">#984</item>-->
+        // PinView
+        <item name="pinViewStyle">@style/PinWidget.PinView</item>
     </style>
 
+    <!-- Splash Screen theme -->
+    <style name="SplashTheme" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@mipmap/splash</item>
+    </style>
+
+    <style name="AuthIcons">
+        <item name="android:layout_width">@dimen/ic_width</item>
+        <item name="android:layout_height">@dimen/ic_height</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="AuthBtn">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_width">@dimen/btn_width</item>
+        <item name="android:layout_height">@dimen/btn_height</item>
+        <item name="android:capitalize">words</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">@dimen/btn_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/btn_margin_bottom</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AuthDetails">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/details_margin_top</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textColor">@color/colorTextDark</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AuthMoreDetails">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/more_details_margin_top</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textColor">@color/colorGray</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="AuthHolder">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/round_view</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">@dimen/holder_padding</item>
+    </style>
+
+    <style name="AuthCardView">
+        <item name="android:layout_width">@dimen/card_view_width</item>
+        <item name="android:layout_height">@dimen/card_view_height</item>
+        <item name="android:visibility">invisible</item>
+    </style>
+
+    <style name="AuthCardViewSeparator">
+        <item name="android:layout_width">@dimen/auth_separator_width</item>
+        <item name="android:layout_height">@dimen/auth_separator_height</item>
+    </style>
+
+
+    <style name="AuthBackButton">
+        <item name="android:layout_width">@dimen/auth_back_btn_width</item>
+        <item name="android:layout_height">@dimen/auth_back_btn_height</item>
+        <item name="android:layout_marginStart">@dimen/auth_back_btn_margin_start</item>
+        <item name="android:layout_marginLeft">@dimen/auth_back_btn_margin_start</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:layout_marginTop">@dimen/auth_back_btn_margin_top</item>
+        <item name="android:src">@drawable/ic_back_1</item>
+    </style>
 </resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Icons-->
+    <dimen name="ic_width">20dp</dimen>
+    <dimen name="ic_height">24dp</dimen>
+
+    <!--Auth Button-->
+    <dimen name="btn_width">130dp</dimen>
+    <dimen name="btn_height">40dp</dimen>
+    <dimen name="btn_margin_top">40dp</dimen>
+    <dimen name="btn_margin_bottom">10dp</dimen>
+
+    <!--Auth Details-->
+    <dimen name="details_margin_top">6dp</dimen>
+
+    <!--Auth More Details-->
+    <dimen name="more_details_margin_top">3dp</dimen>
+
+    <!--Auth Holder Layout-->
+    <dimen name="holder_padding">20dp</dimen>
+
+    <!--Auth CardView-->
+    <dimen name="card_view_width">32dp</dimen>
+    <dimen name="card_view_height">48dp</dimen>
+    <dimen name="card_view_corner_radius">5dp</dimen>
+
+    <!--Auth CardView Separator-->
+    <dimen name="auth_separator_width">16dp</dimen>
+    <dimen name="auth_separator_height">48dp</dimen>
+
+    <!--Auth Back button-->
+    <dimen name="auth_back_btn_width">14dp</dimen>
+    <dimen name="auth_back_btn_height">24dp</dimen>
+    <dimen name="auth_back_btn_margin_start">24dp</dimen>
+    <dimen name="auth_back_btn_margin_top">24dp</dimen>
+
+</resources>

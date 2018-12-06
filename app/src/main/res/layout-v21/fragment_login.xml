@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusableInTouchMode="true"
+    tools:context=".Fragments.LoginFragment">
+
+    <LinearLayout style="@style/AuthHolder">
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            style="@style/AuthIcons"
+            android:contentDescription="@string/login_icon"
+            android:src="@drawable/ic_login_icon" />
+
+        <TextView
+            android:id="@+id/tv_login"
+            style="@style/AuthDetails"
+            android:text="@string/login" />
+
+        <TextView
+            android:id="@+id/tv_more_info"
+            style="@style/AuthMoreDetails"
+            android:text="@string/login_to_your_account_to_start_use_the_system" />
+
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/round_view_red"
+            android:gravity="center_vertical"
+            android:text="Wrong e-mail or password"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_email_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:textColorHint="@color/colorGray"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/error_message">
+
+            <EditText
+                android:id="@+id/login_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorGray"
+                android:hint="@string/e_mail_address"
+                android:inputType="textEmailAddress"
+                android:singleLine="true"
+                android:textColor="@color/colorTextDark"
+                android:textSize="16sp" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_password_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:gravity="center_vertical"
+            android:textColorHint="@color/colorGray"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_email_layout"
+            app:passwordToggleEnabled="true">
+
+            <EditText
+                android:id="@+id/login_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorGray"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:textColor="@color/colorTextDark"
+                android:textSize="16sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_forget_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:letterSpacing="0.1"
+            android:text="@string/forgot_your_password"
+            android:textColor="@color/colorPurple"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_password_layout" />
+
+        <Button
+            android:id="@+id/login_btn"
+            style="@style/AuthBtn"
+            android:background="@drawable/button_gray"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_forget_password" />
+    </LinearLayout>
+</ScrollView>
