@@ -66,7 +66,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
     public static VerifyIdentityFragment newInstance() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "newInstance() has been instantiated");
-
         return new VerifyIdentityFragment();
     }
 

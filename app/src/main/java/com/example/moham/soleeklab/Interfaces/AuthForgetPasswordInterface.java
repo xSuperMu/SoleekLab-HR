@@ -5,4 +5,6 @@ public interface AuthForgetPasswordInterface {
     boolean checkEmailValidation(String email);
 
     void instantiateViews();
+
+    void showNoNetworkDialog();
 }

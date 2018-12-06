@@ -63,7 +63,6 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
 
     public static ResettingPasswordFragment newInstance() {
         Log.d(TAG_FRAG_RESET_PASS, "newInstance() has been instantiated");
-
         return new ResettingPasswordFragment();
     }
 
@@ -256,7 +255,5 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
         edtRetypeNewPassword.addTextChangedListener(mRetypedPassTextWatcher);
         edtNewPassword.addTextChangedListener(mEnableBtnTextWatcher);
         edtRetypeNewPassword.addTextChangedListener(mEnableBtnTextWatcher);
-
-
     }
 }

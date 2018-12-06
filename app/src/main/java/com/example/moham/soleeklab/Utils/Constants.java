@@ -14,7 +14,6 @@ public class Constants {
     public static int SPLASH_SCREEN_MILLI_SEC = 3000;
     public static int LOGIN_PASS_MIN_LENGTH = 8;
 
-
     public static int INT_NEW_PASS = 8001;
     public static int INT_RETYPED_PASS = 8002;
 

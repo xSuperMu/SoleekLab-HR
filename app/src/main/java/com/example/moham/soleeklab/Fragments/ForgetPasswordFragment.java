@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -40,9 +41,6 @@ import pl.droidsonroids.gif.GifImageView;
 
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_FORGET_PASS;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswordInterface {
 
     @BindView(R.id.ib_back)
@@ -56,8 +54,8 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     Unbinder unbinder;
 
     private ProgressDialog mLoadingDialog;
-
     private TextWatcher mEmailTextWatcher;
+
 
     public ForgetPasswordFragment() {
     }
@@ -89,7 +87,12 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     @OnClick(R.id.ib_back)
     public void onIbBackClicked() {
         Log.d(TAG_FRAG_FORGET_PASS, "back::ImageView has been clicked");
-        getActivity().getSupportFragmentManager().popBackStack();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        if (fragmentManager != null)
+            fragmentManager.popBackStack();
+        else
+            Log.w(TAG_FRAG_FORGET_PASS, "FragmentManager -> null");
+
     }
 
     @OnClick(R.id.btn_send_email)
@@ -98,6 +101,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
 
         if (!isNetworkAvailable()) {
             Toast.makeText(getActivity(), "No Network Connection", Toast.LENGTH_SHORT).show();
+            showNoNetworkDialog();
             return;
         }
 
@@ -105,9 +109,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         String email = edtForgetEmail.getText().toString();
         if (checkEmailValidation(email) && isNetworkAvailable()) {
             Toast.makeText(getActivity(), "Sending . . . ", Toast.LENGTH_SHORT).show();
-
-//            mLoadingDialog = ProgressDialog.show(getActivity(), "", "Please wait a moment ...", false, true);
-//            mLoadingDialog.setCanceledOnTouchOutside(false);
 
             final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -121,7 +122,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
 
             WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
             layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -150,7 +150,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     public void instantiateViews() {
         Log.d(TAG_FRAG_FORGET_PASS, "instantiateViews() has been instantiated");
 
-
         btnSendEmail.setText(getString(R.string.send_email));
         btnSendEmail.setBackgroundResource(R.drawable.button_gray);
         btnSendEmail.setEnabled(false);
@@ -158,7 +157,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         mEmailTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -182,7 +180,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
 
         };
@@ -190,9 +187,31 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     }
 
     private boolean isNetworkAvailable() {
+        Log.d(TAG_FRAG_FORGET_PASS, "isNetworkAvailable() has been instantiated");
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void showNoNetworkDialog() {
+        Log.d(TAG_FRAG_FORGET_PASS, "showNoNetworkDialog() has been instantiated");
+
+        final AlertDialog.Builder noNetworkDialog = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View view = inflater.inflate(R.layout.no_internet_dialog, null);
+        noNetworkDialog.setView(view);
+
+        final AlertDialog dialog = noNetworkDialog.create();
+        dialog.show();
+        dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
+        Button btnDone = view.findViewById(R.id.btn_done);
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 }
