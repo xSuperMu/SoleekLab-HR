@@ -91,6 +91,7 @@
 
                 <View style="@style/AuthCardViewSeparator" />
 
+                
                 <android.support.v7.widget.CardView
                     android:id="@+id/cv_background_4"
                     style="@style/AuthCardView"
