@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -25,7 +26,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.moham.soleeklab.Interfaces.AuthForgetPasswordInterface;
 import com.example.moham.soleeklab.R;
@@ -40,6 +40,7 @@ import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_FORGET_PASS;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VERIFY_IDENTITY;
 
 public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswordInterface {
 
@@ -55,7 +56,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
 
     private ProgressDialog mLoadingDialog;
     private TextWatcher mEmailTextWatcher;
-
 
     public ForgetPasswordFragment() {
     }
@@ -100,16 +100,14 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         Log.d(TAG_FRAG_FORGET_PASS, "onBtnSendEmailClicked() has been instantiated");
 
         if (!isNetworkAvailable()) {
-            Toast.makeText(getActivity(), "No Network Connection", Toast.LENGTH_SHORT).show();
+            Log.d(TAG_FRAG_FORGET_PASS, "No Network Connection");
             showNoNetworkDialog();
             return;
         }
 
-
         String email = edtForgetEmail.getText().toString();
         if (checkEmailValidation(email) && isNetworkAvailable()) {
-            Toast.makeText(getActivity(), "Sending . . . ", Toast.LENGTH_SHORT).show();
-
+            Log.d(TAG_FRAG_FORGET_PASS, "Valid Email address");
             final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
             LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.loading, null);
@@ -128,9 +126,24 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
             layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
 
             final AlertDialog dialog = showLoadingDialog.create();
+
             dialog.show();
             dialog.getWindow().setAttributes(layoutParams);
             dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+
+            if (email.equals("1@1.1")) {
+
+                dialog.dismiss();
+
+                VerifyIdentityFragment fragment = new VerifyIdentityFragment();
+                Bundle extraEmail = new Bundle();
+                extraEmail.putString("extra_email", email);
+                fragment.setArguments(extraEmail);
+                replaceFragmentWithAnimation(fragment, TAG_FRAG_VERIFY_IDENTITY);
+
+            }
+
+
         }
     }
 
@@ -186,7 +199,8 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         edtForgetEmail.addTextChangedListener(mEmailTextWatcher);
     }
 
-    private boolean isNetworkAvailable() {
+    @Override
+    public boolean isNetworkAvailable() {
         Log.d(TAG_FRAG_FORGET_PASS, "isNetworkAvailable() has been instantiated");
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -213,5 +227,17 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                 dialog.dismiss();
             }
         });
+    }
+
+    @Override
+    public void replaceFragmentWithAnimation(Fragment fragment, String tag) {
+        Log.d(TAG_FRAG_FORGET_PASS, "replaceFragmentWithAnimation() has been instantiated");
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                R.anim.enter_from_left, R.anim.exit_to_right);
+        transaction.replace(R.id.fragment_holder, fragment);
+        transaction.addToBackStack(tag);
+        transaction.commit();
     }
 }

@@ -25,7 +25,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.moham.soleeklab.Interfaces.AuthLoginInterface;
 import com.example.moham.soleeklab.R;
@@ -86,8 +85,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
-
-                    mLoadingDialog.dismiss();
+                    // When back button is pressed!
 
                     return true;
                 }
@@ -116,13 +114,13 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         unbinder.unbind();
     }
 
-
     @OnClick(R.id.tv_forget_password)
     public void onViewClicked() {
         Log.d(TAG_FRAG_LOGIN, "ForgetPassword::TextView has been clicked");
         replaceFragmentWithAnimation(new ForgetPasswordFragment(), TAG_FRAG_FORGET_PASS);
     }
 
+    @Override
     public void replaceFragmentWithAnimation(Fragment fragment, String tag) {
         Log.d(TAG_FRAG_LOGIN, "replaceFragmentWithAnimation() has been instantiated");
 
@@ -169,7 +167,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         String password = edtLoginPassword.getText().toString();
 
         if (!isNetworkAvailable()) {
-//            Toast.makeText(getActivity(), "No Network Connection", Toast.LENGTH_SHORT).show();
             Log.d(TAG_FRAG_LOGIN, "No network, Showing the dialog");
 
             showNoNetworkDialog();
@@ -178,7 +175,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         }
 
         if (checkEmailValidation(email) && checkPasswordValidation(password) && isNetworkAvailable()) {
-            Toast.makeText(getActivity(), "Login...", Toast.LENGTH_SHORT).show();
+            Log.d(TAG_FRAG_LOGIN, "Logging user in");
 //            mLoadingDialog = ProgressDialog.show(getActivity(), "", "Logging you in ...", false, true);
 //            mLoadingDialog.setCanceledOnTouchOutside(false);
 
@@ -211,6 +208,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
     @Override
     public void instantiateViews() {
+        Log.d(TAG_FRAG_LOGIN, "instantiateViews() has been instantiated");
 
 //        mLoadingDialog = ProgressDialog.show(getActivity(), "Login", "Logging you in ...", true, true);
         btnLoginBtn.setText(getString(R.string.login));
@@ -319,7 +317,8 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         edtLoginPassword.addTextChangedListener(mTextWatcher);
     }
 
-    private boolean isNetworkAvailable() {
+    @Override
+    public boolean isNetworkAvailable() {
         Log.d(TAG_FRAG_LOGIN, "isNetworkAvailable() has been instantiated");
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);

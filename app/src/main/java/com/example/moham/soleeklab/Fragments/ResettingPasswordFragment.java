@@ -2,11 +2,16 @@ package com.example.moham.soleeklab.Fragments;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -19,7 +24,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.moham.soleeklab.Interfaces.ResettingPassInterface;
 import com.example.moham.soleeklab.R;
@@ -67,8 +71,7 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG_FRAG_RESET_PASS, "onCreateView() has been instantiated");
         View view = inflater.inflate(R.layout.fragment_resetting_password, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -90,12 +93,16 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     public void handleBackClicked() {
         Log.d(TAG_FRAG_RESET_PASS, "back::ImageView has been clicked");
 
-        Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
-//        getActivity().getSupportFragmentManager().popBackStack();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        if (fragmentManager != null)
+            fragmentManager.popBackStack();
+        else
+            Log.w(TAG_FRAG_RESET_PASS, "FragmentManager -> null");
     }
 
     @Override
     public boolean checkPasswordValidation(String password, int whichPassword) {
+        Log.d(TAG_FRAG_RESET_PASS, "checkPasswordValidation() has been instantiated");
 
         if (whichPassword == INT_NEW_PASS) {
             int passLength = edtNewPassword.getText().toString().length();
@@ -124,6 +131,8 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
 
     @Override
     public boolean checkPasswordMatch(String password, String reTypedPassword) {
+        Log.d(TAG_FRAG_RESET_PASS, "checkPasswordMatch() has been instantiated");
+
         if (!TextUtils.isEmpty(password) && !TextUtils.isEmpty(reTypedPassword) && password.equals(reTypedPassword)) {
             tilRetypeNewPasswordLayout.setError(null);
             return true;
@@ -136,11 +145,18 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     @Override
     public void resetPassword() {
         Log.d(TAG_FRAG_RESET_PASS, "btnReset::Button has been clicked");
+
+        if (!isNetworkAvailable()) {
+            Log.d(TAG_FRAG_RESET_PASS, "No network, Showing the dialog");
+            showNoNetworkDialog();
+            return;
+        }
+
         String pass = edtNewPassword.getText().toString();
         String retypedPass = edtRetypeNewPassword.getText().toString();
 
         if (checkPasswordValidation(pass, INT_NEW_PASS) && checkPasswordValidation(retypedPass, INT_RETYPED_PASS) && checkPasswordMatch(pass, retypedPass)) {
-            Toast.makeText(getActivity(), "Resetting . . .", Toast.LENGTH_SHORT).show();
+            Log.d(TAG_FRAG_RESET_PASS, "Resetting user password");
 
             // Do reset
             final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
@@ -255,5 +271,45 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
         edtRetypeNewPassword.addTextChangedListener(mRetypedPassTextWatcher);
         edtNewPassword.addTextChangedListener(mEnableBtnTextWatcher);
         edtRetypeNewPassword.addTextChangedListener(mEnableBtnTextWatcher);
+    }
+
+    @Override
+    public void showNoNetworkDialog() {
+        Log.d(TAG_FRAG_RESET_PASS, "showNoNetworkDialog() has been instantiated");
+        final AlertDialog.Builder noNetworkDialog = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View view = inflater.inflate(R.layout.no_internet_dialog, null);
+        noNetworkDialog.setView(view);
+
+        final AlertDialog dialog = noNetworkDialog.create();
+        dialog.show();
+        dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
+        Button btnDone = view.findViewById(R.id.btn_done);
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    public boolean isNetworkAvailable() {
+        Log.d(TAG_FRAG_RESET_PASS, "isNetworkAvailable() has been instantiated");
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void replaceFragmentWithAnimation(Fragment fragment, String tag) {
+        Log.d(TAG_FRAG_RESET_PASS, "replaceFragmentWithAnimation() has been instantiated");
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                R.anim.enter_from_left, R.anim.exit_to_right);
+        transaction.replace(R.id.fragment_holder, fragment);
+        transaction.addToBackStack(tag);
+        transaction.commit();
     }
 }

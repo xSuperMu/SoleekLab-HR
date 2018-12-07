@@ -17,5 +17,4 @@ public class Constants {
     public static int INT_NEW_PASS = 8001;
     public static int INT_RETYPED_PASS = 8002;
 
-
 }
