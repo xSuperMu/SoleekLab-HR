@@ -127,7 +127,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 int length = s.length();
                 switch (length) {
                     case 1:
-                        cvBackground1.setVisibility(View.VISIBLE);
+                        cvBackground1.setVisibility(View.INVISIBLE);
                         cvBackground2.setVisibility(View.INVISIBLE);
                         cvBackground3.setVisibility(View.INVISIBLE);
                         cvBackground4.setVisibility(View.INVISIBLE);
@@ -156,8 +156,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                         cvBackground3.setVisibility(View.VISIBLE);
                         cvBackground4.setVisibility(View.VISIBLE);
 
-//                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-//                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                         break;
                 }
             }
