@@ -174,6 +174,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 } else {
                     btnVerifyIdentity.setEnabled(false);
                     btnVerifyIdentity.setBackgroundResource(R.drawable.button_gray);
+                    
                 }
             }
         });
