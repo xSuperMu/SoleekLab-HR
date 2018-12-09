@@ -33,5 +33,6 @@
     <string name="disconnected">Disconnected</string>
     <string name="there_s_no_internet_connection_to_reach_for_soleek_in_the_space">There’s no internet connection to reach for Soleek in the space!</string>
     <string name="done">Done</string>
+    <string name="reset_timer_image">reset timer image</string>
 
 </resources>

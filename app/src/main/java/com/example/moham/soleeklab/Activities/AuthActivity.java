@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 
 import com.example.moham.soleeklab.Fragments.LoginFragment;
 import com.example.moham.soleeklab.R;
@@ -21,6 +22,8 @@ public class AuthActivity extends AppCompatActivity {
 
     @BindView(R.id.iv_auth_background)
     ImageView ivAuthBackground;
+    @BindView(R.id.sc_auth_activity)
+    ScrollView scAuthActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,14 @@ public class AuthActivity extends AppCompatActivity {
         Log.d(TAG_AUTH_ACTIVITY, "onCreate(): has been instantiated");
 
         getSupportActionBar().hide();
+
+        scAuthActivity.post(new Runnable() {
+            @Override
+            public void run() {
+                scAuthActivity.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.fragment_holder, LoginFragment.newInstance())

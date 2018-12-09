@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sv_login_fragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:focusableInTouchMode="true"
@@ -13,7 +14,7 @@
             android:id="@+id/iv_icon"
             style="@style/AuthIcons"
             android:contentDescription="@string/login_icon"
-            android:src="@drawable/ic_login_icon" />
+            android:src="@mipmap/ic_login_icon" />
 
         <TextView
             android:id="@+id/tv_login"

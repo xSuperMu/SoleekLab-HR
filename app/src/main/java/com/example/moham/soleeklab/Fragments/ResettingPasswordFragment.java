@@ -1,6 +1,7 @@
 package com.example.moham.soleeklab.Fragments;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -21,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -87,6 +89,11 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
         Log.d(TAG_FRAG_RESET_PASS, "onDestroyView() has been instantiated");
 
         unbinder.unbind();
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @OnClick(R.id.ib_back)
@@ -187,6 +194,13 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     @Override
     public void instantiateViews() {
         Log.d(TAG_FRAG_RESET_PASS, "instantiateViews() has been instantiated");
+
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
         btnReset.setText(getString(R.string.reset));
         btnReset.setBackgroundResource(R.drawable.button_gray);
         btnReset.setEnabled(false);
@@ -199,6 +213,11 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 String pass = edtNewPassword.getText().toString();
 
                 if (!TextUtils.isEmpty(pass)) {
@@ -208,11 +227,6 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                     ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorGray));
                     ViewCompat.setBackgroundTintList(edtNewPassword, colorStateList);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         };
 
@@ -224,6 +238,11 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 String pass = edtRetypeNewPassword.getText().toString();
 
                 if (!TextUtils.isEmpty(pass)) {
@@ -233,11 +252,6 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                     ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorGray));
                     ViewCompat.setBackgroundTintList(edtRetypeNewPassword, colorStateList);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         };
 
@@ -249,6 +263,11 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 String pass = edtNewPassword.getText().toString();
                 String reTypedPass = edtRetypeNewPassword.getText().toString();
 
@@ -259,11 +278,6 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                     btnReset.setEnabled(false);
                     btnReset.setBackgroundResource(R.drawable.button_gray);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         };
 

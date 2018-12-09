@@ -1,6 +1,7 @@
 package com.example.moham.soleeklab.Fragments;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -76,12 +78,19 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         return view;
     }
 
+
     @Override
     public void onDestroyView() {
         Log.d(TAG_FRAG_FORGET_PASS, "onDestroyView() has been instantiated");
 
         super.onDestroyView();
         unbinder.unbind();
+
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @OnClick(R.id.ib_back)
@@ -163,6 +172,14 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     public void instantiateViews() {
         Log.d(TAG_FRAG_FORGET_PASS, "instantiateViews() has been instantiated");
 
+//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+//        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
         btnSendEmail.setText(getString(R.string.send_email));
         btnSendEmail.setBackgroundResource(R.drawable.button_gray);
         btnSendEmail.setEnabled(false);
@@ -174,6 +191,11 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 String email = edtForgetEmail.getText().toString();
 
                 if (!TextUtils.isEmpty(email)) {
@@ -189,10 +211,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                     btnSendEmail.setEnabled(false);
                     btnSendEmail.setBackgroundResource(R.drawable.button_gray);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
             }
 
         };

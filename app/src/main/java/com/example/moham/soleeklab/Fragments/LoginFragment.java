@@ -22,8 +22,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.moham.soleeklab.Interfaces.AuthLoginInterface;
@@ -59,6 +61,8 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     Unbinder unbinder;
     @BindView(R.id.login_btn)
     Button btnLoginBtn;
+    @BindView(R.id.sv_login_fragment)
+    ScrollView svLoginFragment;
 
     private TextWatcher mEmailTextWatcher;
     private TextWatcher mPasswordTextWatcher;
@@ -112,6 +116,12 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         Log.d(TAG_FRAG_LOGIN, "onDestroyView() has been instantiated");
 
         unbinder.unbind();
+
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @OnClick(R.id.tv_forget_password)
@@ -210,7 +220,12 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     public void instantiateViews() {
         Log.d(TAG_FRAG_LOGIN, "instantiateViews() has been instantiated");
 
-//        mLoadingDialog = ProgressDialog.show(getActivity(), "Login", "Logging you in ...", true, true);
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
         btnLoginBtn.setText(getString(R.string.login));
         btnLoginBtn.setBackgroundResource(R.drawable.button_gray);
         btnLoginBtn.setEnabled(false);
@@ -224,6 +239,11 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 String email = edtLoginEmail.getText().toString();
                 String password = edtLoginPassword.getText().toString();
 
@@ -234,11 +254,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                     btnLoginBtn.setEnabled(false);
                     btnLoginBtn.setBackgroundResource(R.drawable.button_gray);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         };
 
@@ -273,6 +288,11 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 String password = edtLoginPassword.getText().toString();
                 if (!TextUtils.isEmpty(password)) {
                     ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorBlue));
@@ -282,10 +302,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                     ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorGray));
                     ViewCompat.setBackgroundTintList(edtLoginPassword, colorStateList);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
             }
         };
 
@@ -345,5 +361,22 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 dialog.dismiss();
             }
         });
+    }
+
+    @OnClick({R.id.input_email_layout, R.id.input_password_layout})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.input_email_layout:
+
+
+                break;
+            case R.id.input_password_layout:
+                break;
+        }
+
+//        final int btnLoginX = (int) btnLoginBtn.getX();
+//        int btnLoginY = (int) btnLoginBtn.getScrollY();
+
+
     }
 }

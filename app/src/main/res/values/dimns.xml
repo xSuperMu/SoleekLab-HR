@@ -8,7 +8,7 @@
     <!--Auth Button-->
     <dimen name="btn_width">130dp</dimen>
     <dimen name="btn_height">40dp</dimen>
-    <dimen name="btn_margin_top">40dp</dimen>
+    <dimen name="btn_margin_top">30dp</dimen>
     <dimen name="btn_margin_bottom">10dp</dimen>
 
     <!--Auth Details-->
@@ -33,6 +33,7 @@
     <dimen name="auth_back_btn_width">14dp</dimen>
     <dimen name="auth_back_btn_height">24dp</dimen>
     <dimen name="auth_back_btn_margin_start">24dp</dimen>
+    <dimen name="auth_back_btn_padding">30dp</dimen>
     <dimen name="auth_back_btn_margin_top">24dp</dimen>
 
 </resources>

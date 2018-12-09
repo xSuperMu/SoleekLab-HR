@@ -50,6 +50,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/more_details_margin_top</item>
+        <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:textColor">@color/colorGray</item>
         <item name="android:textSize">13sp</item>
@@ -76,12 +77,10 @@
 
 
     <style name="AuthBackButton">
-        <item name="android:layout_width">@dimen/auth_back_btn_width</item>
-        <item name="android:layout_height">@dimen/auth_back_btn_height</item>
-        <item name="android:layout_marginStart">@dimen/auth_back_btn_margin_start</item>
-        <item name="android:layout_marginLeft">@dimen/auth_back_btn_margin_start</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/auth_back_btn_padding</item>
         <item name="android:textColor">@color/colorWhite</item>
-        <item name="android:layout_marginTop">@dimen/auth_back_btn_margin_top</item>
-        <item name="android:src">@drawable/ic_back_1</item>
+        <item name="android:src">@mipmap/ic_back_1</item>
     </style>
 </resources>

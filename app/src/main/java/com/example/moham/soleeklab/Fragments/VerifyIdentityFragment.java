@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +31,8 @@ import com.example.moham.soleeklab.Interfaces.VerifyIdentityInterface;
 import com.example.moham.soleeklab.R;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,6 +67,10 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     ImageView ibBack;
     @BindView(R.id.error_message)
     TextView errorMessage;
+    @BindView(R.id.tv_resend)
+    TextView tvResend;
+    @BindView(R.id.ib_reload)
+    ImageView ibReload;
 
     private String verificationCode = null;
 
@@ -94,11 +102,22 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "onDestroyView() has been instantiated");
 
         unbinder.unbind();
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override
     public void instantiateViews() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "instantiateViews() has been instantiated");
+
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
 
         btnVerifyIdentity.setEnabled(false);
         btnVerifyIdentity.setBackgroundResource(R.drawable.button_gray);
@@ -124,10 +143,16 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int length = s.length();
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int length = s.toString().length();
+
                 switch (length) {
                     case 1:
-                        cvBackground1.setVisibility(View.INVISIBLE);
+                        cvBackground1.setVisibility(View.VISIBLE);
                         cvBackground2.setVisibility(View.INVISIBLE);
                         cvBackground3.setVisibility(View.INVISIBLE);
                         cvBackground4.setVisibility(View.INVISIBLE);
@@ -158,11 +183,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
                         break;
                 }
-            }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                int length = s.toString().length();
                 if (length == TOTAL_NUMBER_OF_ITEMS) {
                     Log.d(TAG_FRAG_VERIFY_IDENTITY, "verified code: " + s.toString());
                     verificationCode = s.toString();
@@ -174,7 +195,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 } else {
                     btnVerifyIdentity.setEnabled(false);
                     btnVerifyIdentity.setBackgroundResource(R.drawable.button_gray);
-                    
+
                 }
             }
         });
@@ -195,6 +216,8 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
         if (!TextUtils.isEmpty(verificationCode)) {
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "Verifying Email address");
+
+            handleResend();
 
             final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -277,5 +300,37 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 dialog.dismiss();
             }
         });
+    }
+
+    @OnClick({R.id.tv_resend, R.id.ib_reload})
+    public void handleResend() {
+
+        CountDownTimer timer = new CountDownTimer(60 * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                pinView.setEnabled(false);
+                ibReload.setEnabled(false);
+                ibReload.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_gray_24dp));
+                tvResend.setEnabled(false);
+                tvResend.setTextColor(getResources().getColor(R.color.colorGray));
+                btnVerifyIdentity.setEnabled(false);
+                btnVerifyIdentity.setBackground(getResources().getDrawable(R.drawable.button_gray));
+                Log.d(TAG_FRAG_VERIFY_IDENTITY, "" + new SimpleDateFormat("mm:ss").format(new Date(millisUntilFinished)));
+                tvResend.setText("" + new SimpleDateFormat("mm:ss").format(new Date(millisUntilFinished)));
+            }
+
+            @Override
+            public void onFinish() {
+                pinView.setEnabled(true);
+                ibReload.setEnabled(true);
+                ibReload.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
+                tvResend.setEnabled(true);
+                tvResend.setTextColor(getResources().getColor(R.color.colorPurple));
+                tvResend.setText(getResources().getString(R.string.reset));
+                btnVerifyIdentity.setEnabled(true);
+                btnVerifyIdentity.setBackground(getResources().getDrawable(R.drawable.button_green));
+            }
+        }.start();
     }
 }
