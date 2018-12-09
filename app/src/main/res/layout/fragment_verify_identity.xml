@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:focusableInTouchMode="true"
     android:focusable="false"
-    android:focusedByDefault="false"
     tools:context=".Fragments.VerifyIdentityFragment">
 
     <LinearLayout style="@style/AuthHolder">
@@ -47,7 +46,6 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:focusableInTouchMode="true"
-            android:focusedByDefault="false"
             android:layout_gravity="center_horizontal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -58,7 +56,6 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:focusableInTouchMode="true"
-                android:focusedByDefault="false"
                 android:layout_marginTop="27dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
@@ -107,9 +104,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="27dp"
                 android:cursorVisible="false"
-                android:focusable="false"
+                android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:focusedByDefault="false"
                 android:inputType="number"
                 android:textColor="@color/colorWhite"
                 app:cursorColor="@color/colorBlue"
@@ -144,7 +140,6 @@
             style="@style/AuthBtn"
             android:focusable="false"
             android:focusableInTouchMode="true"
-            android:focusedByDefault="false"
             android:background="@drawable/button_gray"
             android:text="@string/verify"
             android:textColor="@color/colorWhite" />
