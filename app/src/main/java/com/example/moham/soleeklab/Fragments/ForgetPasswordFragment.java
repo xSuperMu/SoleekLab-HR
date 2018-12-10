@@ -147,10 +147,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                 extraEmail.putString("extra_email", email);
                 fragment.setArguments(extraEmail);
                 replaceFragmentWithAnimation(fragment, TAG_FRAG_VERIFY_IDENTITY);
-
             }
-
-
         }
     }
 

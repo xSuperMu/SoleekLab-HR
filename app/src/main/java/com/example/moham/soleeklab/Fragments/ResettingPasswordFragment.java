@@ -323,6 +323,7 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
         transaction.replace(R.id.fragment_holder, fragment);
         transaction.addToBackStack(tag);
         transaction.commit();
+
     }
 
     @Override

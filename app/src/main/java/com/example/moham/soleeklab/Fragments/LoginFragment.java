@@ -81,7 +81,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         unbinder = ButterKnife.bind(this, view);
 
         instantiateViews();
-
         return view;
     }
 

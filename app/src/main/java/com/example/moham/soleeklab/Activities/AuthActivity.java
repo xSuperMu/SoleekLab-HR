@@ -3,6 +3,7 @@ package com.example.moham.soleeklab.Activities;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.example.moham.soleeklab.Fragments.LoginFragment;
 import com.example.moham.soleeklab.Interfaces.AuthActivitiyInterface;
@@ -30,6 +32,8 @@ public class AuthActivity extends AppCompatActivity implements AuthActivitiyInte
     @BindView(R.id.sc_auth_activity)
     ScrollView scAuthActivity;
 
+    private boolean doubleClickToExitPressedOnce = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +52,8 @@ public class AuthActivity extends AppCompatActivity implements AuthActivitiyInte
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.fragment_holder, LoginFragment.newInstance())
-                .commit();
+        fragmentManager.beginTransaction()
+                .add(R.id.fragment_holder, LoginFragment.newInstance()).addToBackStack(TAG_FRAG_LOGIN).commit();
     }
 
     @Override
@@ -84,16 +88,25 @@ public class AuthActivity extends AppCompatActivity implements AuthActivitiyInte
     public void onBackPressed() {
         Log.d(TAG_AUTH_ACTIVITY, "onBackPressed() has been instantiated");
 
+        if (doubleClickToExitPressedOnce) finish();
+
         int count = getSupportFragmentManager().getBackStackEntryCount();
         Log.i(TAG_AUTH_ACTIVITY, "BackStackEntryCount() == " + count);
 
-        if (count == 0)
-            super.onBackPressed();
-        else {
+        if (count == 1) {
+            Toast.makeText(this, "Click once more to close the app", Toast.LENGTH_SHORT).show();
+            doubleClickToExitPressedOnce = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleClickToExitPressedOnce = false;
+                }
+            }, 2750);
+        } else {
             clearBackStack();
             replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
-            clearBackStack();
         }
+
     }
 
     @Override
