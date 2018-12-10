@@ -110,7 +110,7 @@
                 android:textColor="@color/colorWhite"
                 app:cursorColor="@color/colorBlue"
                 app:cursorWidth="24dp"
-                app:hideLineWhenFilled="false"
+                app:hideLineWhenFilled="true"
                 app:itemCount="4"
                 app:itemHeight="48dp"
                 app:itemSpacing="16dp"
@@ -119,9 +119,9 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:lineColor="@android:color/black" />
+                app:lineColor="@android:color/black"
+                app:lineWidth="1dp" />
         </android.support.constraint.ConstraintLayout>
-
 
         <LinearLayout
             android:id="@+id/ll_timer_resend"
@@ -137,8 +137,8 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:background="@color/colorWhite"
-                android:src="@drawable/ic_refresh_black_24dp"
-                android:contentDescription="@string/reset_timer_image" />
+                android:contentDescription="@string/reset_timer_image"
+                android:src="@drawable/ic_refresh_black_24dp" />
 
             <TextView
                 android:id="@+id/tv_resend"
@@ -163,7 +163,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/ib_back"
+        android:id="@+id/ib_verify_back"
         style="@style/AuthBackButton"
         android:contentDescription="@string/arrow_back" />
 </FrameLayout>

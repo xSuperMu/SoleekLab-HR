@@ -18,7 +18,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,21 +80,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    // When back button is pressed!
-
-                    return true;
-                }
-                return false;
-            }
-        });
-
         instantiateViews();
-
 
         return view;
     }
@@ -132,8 +117,8 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         Log.d(TAG_FRAG_LOGIN, "replaceFragmentWithAnimation() has been instantiated");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
-                R.anim.enter_from_left, R.anim.exit_to_right);
+//        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+//                R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragment_holder, fragment);
         transaction.addToBackStack(tag);
         transaction.commit();

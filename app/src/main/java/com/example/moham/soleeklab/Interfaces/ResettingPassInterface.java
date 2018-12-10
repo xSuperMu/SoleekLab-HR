@@ -17,4 +17,7 @@ public interface ResettingPassInterface {
     boolean isNetworkAvailable();
 
     void replaceFragmentWithAnimation(Fragment fragment, String tag);
+
+    void clearBackStack();
+
 }

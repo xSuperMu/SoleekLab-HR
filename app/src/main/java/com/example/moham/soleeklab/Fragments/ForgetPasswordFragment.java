@@ -1,7 +1,6 @@
 package com.example.moham.soleeklab.Fragments;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +31,7 @@ import android.widget.ImageView;
 
 import com.example.moham.soleeklab.Interfaces.AuthForgetPasswordInterface;
 import com.example.moham.soleeklab.R;
+import com.example.moham.soleeklab.Utils.Constants;
 
 import java.io.IOException;
 
@@ -42,6 +43,7 @@ import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_FORGET_PASS;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VERIFY_IDENTITY;
 
 public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswordInterface {
@@ -88,7 +90,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
 
         View view = getActivity().getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -96,12 +98,8 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     @OnClick(R.id.ib_back)
     public void onIbBackClicked() {
         Log.d(TAG_FRAG_FORGET_PASS, "back::ImageView has been clicked");
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        if (fragmentManager != null)
-            fragmentManager.popBackStack();
-        else
-            Log.w(TAG_FRAG_FORGET_PASS, "FragmentManager -> null");
-
+        clearBackStack();
+        replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
     }
 
     @OnClick(R.id.btn_send_email)
@@ -176,7 +174,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
 //        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         View view = getActivity().getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
@@ -252,10 +250,33 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         Log.d(TAG_FRAG_FORGET_PASS, "replaceFragmentWithAnimation() has been instantiated");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
-                R.anim.enter_from_left, R.anim.exit_to_right);
+//        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+//                R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragment_holder, fragment);
         transaction.addToBackStack(tag);
         transaction.commit();
+    }
+
+    @Override
+    public void clearBackStack() {
+        Log.d(TAG_FRAG_FORGET_PASS, "clearBackStack() has been instantiated");
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        if (manager != null) {
+            Constants.sDisableFragmentAnimations = true;
+            manager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Constants.sDisableFragmentAnimations = false;
+        } else
+            Log.w(TAG_FRAG_FORGET_PASS, "FragmentManager -> null");
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if (Constants.sDisableFragmentAnimations) {
+            Animation a = new Animation() {
+            };
+            a.setDuration(0);
+            return a;
+        }
+        return super.onCreateAnimation(transit, enter, nextAnim);
     }
 }

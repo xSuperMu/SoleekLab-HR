@@ -11,6 +11,7 @@ public class Constants {
     public static final String TAG_FRAG_VERIFY_IDENTITY = "tag-frag-verify";
     public static final String TAG_FRAG_RESET_PASS = "tag-frag-reset-password";
 
+    public static boolean sDisableFragmentAnimations = false;
 
     public static int TOTAL_NUMBER_OF_ITEMS = 4;
     public static int SPLASH_SCREEN_MILLI_SEC = 3000;

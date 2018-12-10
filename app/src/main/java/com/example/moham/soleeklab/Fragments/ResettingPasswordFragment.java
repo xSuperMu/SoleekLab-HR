@@ -1,7 +1,6 @@
 package com.example.moham.soleeklab.Fragments;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -22,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +29,7 @@ import android.widget.ImageView;
 
 import com.example.moham.soleeklab.Interfaces.ResettingPassInterface;
 import com.example.moham.soleeklab.R;
+import com.example.moham.soleeklab.Utils.Constants;
 
 import java.io.IOException;
 
@@ -42,6 +43,7 @@ import pl.droidsonroids.gif.GifImageView;
 import static com.example.moham.soleeklab.Utils.Constants.INT_NEW_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.INT_RETYPED_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.LOGIN_PASS_MIN_LENGTH;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_RESET_PASS;
 
 public class ResettingPasswordFragment extends Fragment implements ResettingPassInterface {
@@ -91,7 +93,7 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
         unbinder.unbind();
         View view = getActivity().getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -99,12 +101,8 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     @OnClick(R.id.ib_back)
     public void handleBackClicked() {
         Log.d(TAG_FRAG_RESET_PASS, "back::ImageView has been clicked");
-
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        if (fragmentManager != null)
-            fragmentManager.popBackStack();
-        else
-            Log.w(TAG_FRAG_RESET_PASS, "FragmentManager -> null");
+        clearBackStack();
+        replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
     }
 
     @Override
@@ -197,7 +195,7 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
 
         View view = getActivity().getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
@@ -320,10 +318,33 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     public void replaceFragmentWithAnimation(Fragment fragment, String tag) {
         Log.d(TAG_FRAG_RESET_PASS, "replaceFragmentWithAnimation() has been instantiated");
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
-                R.anim.enter_from_left, R.anim.exit_to_right);
+//        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+//                R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragment_holder, fragment);
         transaction.addToBackStack(tag);
         transaction.commit();
+    }
+
+    @Override
+    public void clearBackStack() {
+        Log.d(TAG_FRAG_RESET_PASS, "clearBackStack() has been instantiated");
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        if (manager != null) {
+            Constants.sDisableFragmentAnimations = true;
+            manager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Constants.sDisableFragmentAnimations = false;
+        } else
+            Log.w(TAG_FRAG_RESET_PASS, "FragmentManager -> null");
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if (Constants.sDisableFragmentAnimations) {
+            Animation a = new Animation() {
+            };
+            a.setDuration(0);
+            return a;
+        }
+        return super.onCreateAnimation(transit, enter, nextAnim);
     }
 }

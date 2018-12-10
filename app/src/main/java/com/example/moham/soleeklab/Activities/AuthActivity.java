@@ -3,7 +3,9 @@ package com.example.moham.soleeklab.Activities;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.FrameLayout;
@@ -11,14 +13,17 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 
 import com.example.moham.soleeklab.Fragments.LoginFragment;
+import com.example.moham.soleeklab.Interfaces.AuthActivitiyInterface;
 import com.example.moham.soleeklab.R;
+import com.example.moham.soleeklab.Utils.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.moham.soleeklab.Utils.Constants.TAG_AUTH_ACTIVITY;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 
-public class AuthActivity extends AppCompatActivity {
+public class AuthActivity extends AppCompatActivity implements AuthActivitiyInterface {
 
     @BindView(R.id.iv_auth_background)
     ImageView ivAuthBackground;
@@ -74,4 +79,43 @@ public class AuthActivity extends AppCompatActivity {
         Log.d(TAG_AUTH_ACTIVITY, "onWindowFocusChanged() has been returned");
 
     }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG_AUTH_ACTIVITY, "onBackPressed() has been instantiated");
+
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        Log.i(TAG_AUTH_ACTIVITY, "BackStackEntryCount() == " + count);
+
+        if (count == 0)
+            super.onBackPressed();
+        else {
+            clearBackStack();
+            replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
+            clearBackStack();
+        }
+    }
+
+    @Override
+    public void clearBackStack() {
+        Log.d(TAG_AUTH_ACTIVITY, "clearBackStack() has been instantiated");
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager != null) {
+            Constants.sDisableFragmentAnimations = true;
+            manager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Constants.sDisableFragmentAnimations = false;
+        } else
+            Log.w(TAG_AUTH_ACTIVITY, "FragmentManager -> null");
+    }
+
+    @Override
+    public void replaceFragmentWithAnimation(Fragment fragment, String tag) {
+        Log.d(TAG_AUTH_ACTIVITY, "replaceFragmentWithAnimation() has been instantiated");
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_holder, fragment);
+        transaction.addToBackStack(tag);
+        transaction.commit();
+    }
+
+
 }

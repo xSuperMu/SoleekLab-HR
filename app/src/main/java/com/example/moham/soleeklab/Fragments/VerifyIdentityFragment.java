@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import com.chaos.view.PinView;
 import com.example.moham.soleeklab.Interfaces.VerifyIdentityInterface;
 import com.example.moham.soleeklab.R;
+import com.example.moham.soleeklab.Utils.Constants;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -41,6 +43,7 @@ import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_RESET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VERIFY_IDENTITY;
 import static com.example.moham.soleeklab.Utils.Constants.TOTAL_NUMBER_OF_ITEMS;
@@ -62,7 +65,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     CardView cvBackground4;
     @BindView(R.id.btn_verify_identity)
     Button btnVerifyIdentity;
-    @BindView(R.id.ib_back)
+    @BindView(R.id.ib_verify_back)
     ImageView ibBack;
     @BindView(R.id.error_message)
     TextView errorMessage;
@@ -108,8 +111,10 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
-        if (timer != null)
+        if (timer != null) {
             timer.cancel();
+            timer = null;
+        }
     }
 
     @Override
@@ -121,6 +126,9 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+
+        handleResend();
+
 
         btnVerifyIdentity.setEnabled(false);
         btnVerifyIdentity.setBackgroundResource(R.drawable.button_gray);
@@ -159,6 +167,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                         cvBackground2.setVisibility(View.INVISIBLE);
                         cvBackground3.setVisibility(View.INVISIBLE);
                         cvBackground4.setVisibility(View.INVISIBLE);
+
                         btnVerifyIdentity.setEnabled(false);
                         btnVerifyIdentity.setBackgroundResource(R.drawable.button_gray);
                         break;
@@ -183,8 +192,14 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                         cvBackground2.setVisibility(View.VISIBLE);
                         cvBackground3.setVisibility(View.VISIBLE);
                         cvBackground4.setVisibility(View.VISIBLE);
-
                         break;
+                    default:
+                        cvBackground1.setVisibility(View.INVISIBLE);
+                        cvBackground2.setVisibility(View.INVISIBLE);
+                        cvBackground3.setVisibility(View.INVISIBLE);
+                        cvBackground4.setVisibility(View.INVISIBLE);
+                        btnVerifyIdentity.setBackgroundResource(R.drawable.button_gray);
+
                 }
 
                 if (length == TOTAL_NUMBER_OF_ITEMS) {
@@ -220,8 +235,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
         if (!TextUtils.isEmpty(verificationCode)) {
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "Verifying Email address");
 
-            handleResend();
-
             final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
             LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.loading, null);
@@ -253,14 +266,11 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
     }
 
-    @OnClick(R.id.ib_back)
+    @OnClick(R.id.ib_verify_back)
     public void onIbBackClicked() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "back::ImageView has been clicked");
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        if (fragmentManager != null)
-            fragmentManager.popBackStack();
-        else
-            Log.w(TAG_FRAG_VERIFY_IDENTITY, "FragmentManager -> null");
+        clearBackStack();
+        replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
     }
 
     @Override
@@ -268,8 +278,8 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "replaceFragmentWithAnimation() has been instantiated");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
-                R.anim.enter_from_left, R.anim.exit_to_right);
+//        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+//                R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragment_holder, fragment);
         transaction.addToBackStack(tag);
         transaction.commit();
@@ -307,33 +317,50 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
     @OnClick({R.id.tv_resend, R.id.ib_reload})
     public void handleResend() {
-
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "handleResend() has been instantiated");
         timer = new CountDownTimer(60 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
-                pinView.setEnabled(false);
                 ibReload.setEnabled(false);
                 ibReload.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_gray_24dp));
                 tvResend.setEnabled(false);
                 tvResend.setTextColor(getResources().getColor(R.color.colorGray));
-                btnVerifyIdentity.setEnabled(false);
-                btnVerifyIdentity.setBackground(getResources().getDrawable(R.drawable.button_gray));
-                Log.d(TAG_FRAG_VERIFY_IDENTITY, "" + new SimpleDateFormat("mm:ss").format(new Date(millisUntilFinished)));
                 tvResend.setText("" + new SimpleDateFormat("mm:ss").format(new Date(millisUntilFinished)));
             }
 
             @Override
             public void onFinish() {
-                pinView.setEnabled(true);
                 ibReload.setEnabled(true);
                 ibReload.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
                 tvResend.setEnabled(true);
                 tvResend.setTextColor(getResources().getColor(R.color.colorPurple));
                 tvResend.setText(getResources().getString(R.string.reset));
-                btnVerifyIdentity.setEnabled(true);
-                btnVerifyIdentity.setBackground(getResources().getDrawable(R.drawable.button_green));
+
             }
         }.start();
+    }
+
+    @Override
+    public void clearBackStack() {
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "clearBackStack() has been instantiated");
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        if (manager != null) {
+            Constants.sDisableFragmentAnimations = true;
+            manager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Constants.sDisableFragmentAnimations = false;
+        } else
+            Log.w(TAG_FRAG_VERIFY_IDENTITY, "FragmentManager -> null");
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if (Constants.sDisableFragmentAnimations) {
+            Animation a = new Animation() {
+            };
+            a.setDuration(0);
+            return a;
+        }
+        return super.onCreateAnimation(transit, enter, nextAnim);
     }
 }

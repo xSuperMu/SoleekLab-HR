@@ -13,4 +13,7 @@ public interface AuthForgetPasswordInterface {
     boolean isNetworkAvailable();
 
     void replaceFragmentWithAnimation(Fragment fragment, String tag);
+
+    void clearBackStack();
+
 }
