@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -73,6 +72,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     ImageView ibReload;
 
     private String verificationCode = null;
+    CountDownTimer timer = null;
 
     public VerifyIdentityFragment() {
     }
@@ -107,6 +107,9 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+
+        if (timer != null)
+            timer.cancel();
     }
 
     @Override
@@ -305,7 +308,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     @OnClick({R.id.tv_resend, R.id.ib_reload})
     public void handleResend() {
 
-        CountDownTimer timer = new CountDownTimer(60 * 1000, 1000) {
+        timer = new CountDownTimer(60 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 

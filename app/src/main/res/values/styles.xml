@@ -6,10 +6,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorBlue</item>
+        <item name="colorControlActivated">@color/colorBlue</item>
+        <item name="colorControlHighlight">@color/colorBlue</item>
 
-        <!--<item name="colorControlNormal">@color/colorGray</item>-->
-        <!--<item name="colorControlActivated">#984</item>-->
-        <!--<item name="colorControlHighlight">#984</item>-->
         // PinView
         <item name="pinViewStyle">@style/PinWidget.PinView</item>
     </style>
@@ -82,5 +81,21 @@
         <item name="android:padding">@dimen/auth_back_btn_padding</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:src">@mipmap/ic_back_1</item>
+    </style>
+
+    <style name="itl_error_appearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorSalmonPink</item>
+    </style>
+
+    <style name="itl_normal_appearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorBlue</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
     </style>
 </resources>

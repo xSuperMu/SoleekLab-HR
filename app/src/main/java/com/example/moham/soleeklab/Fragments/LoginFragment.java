@@ -3,7 +3,7 @@ package com.example.moham.soleeklab.Fragments;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.res.ColorStateList;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -11,7 +11,8 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -21,24 +22,20 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.AuthLoginInterface;
 import com.example.moham.soleeklab.R;
-
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
 
 import static com.example.moham.soleeklab.Utils.Constants.LOGIN_PASS_MIN_LENGTH;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_FORGET_PASS;
@@ -191,28 +188,23 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
             // mLoadingDialog.show();
 
-            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            View view = inflater.inflate(R.layout.loading, null);
-            showLoadingDialog.setView(view);
+//            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
+//            LayoutInflater inflater = LayoutInflater.from(getContext());
+//            View view = inflater.inflate(R.layout.loading, null);
+//            showLoadingDialog.setView(view);
 
-            try {
-                GifImageView gifImageView = view.findViewById(R.id.gif_loading);
-                GifDrawable gifFromAssets = new GifDrawable(getActivity().getAssets(), "logoloading.gif");
-                gifImageView.setImageDrawable(gifFromAssets);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
-
-            final AlertDialog dialog = showLoadingDialog.create();
-            dialog.show();
-            dialog.getWindow().setAttributes(layoutParams);
-            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+//
+//
+//
+//            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+//            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+//
+//            final AlertDialog dialog = showLoadingDialog.create();
+//            dialog.show();
+//            dialog.getWindow().setAttributes(layoutParams);
+//            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+            startActivity(new Intent(getContext(), LoadingActivity.class));
         }
     }
 
@@ -229,7 +221,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         btnLoginBtn.setText(getString(R.string.login));
         btnLoginBtn.setBackgroundResource(R.drawable.button_gray);
         btnLoginBtn.setEnabled(false);
-
 
         mTextWatcher = new TextWatcher() {
             @Override
@@ -264,20 +255,19 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String email = edtLoginEmail.getText().toString();
 
-                if (!TextUtils.isEmpty(email)) {
-                    ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorBlue));
-                    ViewCompat.setBackgroundTintList(edtLoginEmail, colorStateList);
-                } else {
-                    ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorGray));
-                    ViewCompat.setBackgroundTintList(edtLoginEmail, colorStateList);
-                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                String email = edtLoginEmail.getText().toString();
 
+                if (!TextUtils.isEmpty(email)) {
+                    DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
+
+                } else {
+                    DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorGray));
+                }
             }
         };
 
@@ -295,12 +285,10 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             public void afterTextChanged(Editable s) {
                 String password = edtLoginPassword.getText().toString();
                 if (!TextUtils.isEmpty(password)) {
-                    ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorBlue));
-                    ViewCompat.setBackgroundTintList(edtLoginPassword, colorStateList);
-
+                    DrawableCompat.setTint(edtLoginPassword.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
                 } else {
-                    ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorGray));
-                    ViewCompat.setBackgroundTintList(edtLoginPassword, colorStateList);
+                    DrawableCompat.setTint(edtLoginPassword.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorGray));
+
                 }
             }
         };
@@ -309,10 +297,16 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (v != null && tilInputEmailLayout != null)
+                    if (v != null && tilInputEmailLayout != null) {
+//                        DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorGray));
                         if (((EditText) v).getText().toString().length() == 0)
                             tilInputEmailLayout.setError(null);
+                    }
                 }
+//                else {
+//                    if (v != null && tilInputEmailLayout != null)
+//                        DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
+//                }
             }
         });
 
@@ -320,10 +314,16 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (v != null && tilInputPasswordLayout != null)
+                    if (v != null && tilInputPasswordLayout != null) {
+//                        DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorGray));
                         if (((EditText) v).getText().toString().length() == 0)
                             tilInputPasswordLayout.setError(null);
+                    }
                 }
+//                else {
+//                    if (v != null && tilInputPasswordLayout != null)
+//                        DrawableCompat.setTint(edtLoginPassword.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
+//                }
             }
         });
 
@@ -367,16 +367,10 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.input_email_layout:
-
-
                 break;
             case R.id.input_password_layout:
                 break;
         }
-
-//        final int btnLoginX = (int) btnLoginBtn.getX();
-//        int btnLoginY = (int) btnLoginBtn.getScrollY();
-
-
     }
+
 }

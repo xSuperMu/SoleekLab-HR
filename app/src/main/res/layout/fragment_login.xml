@@ -2,9 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sv_login_fragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/sv_login_fragment"
     android:focusableInTouchMode="true"
     tools:context=".Fragments.LoginFragment">
 
@@ -32,7 +32,6 @@
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="6dp"
-            android:background="@drawable/round_view_red"
             android:gravity="center_vertical"
             android:text="Wrong e-mail or password"
             android:textAlignment="center"
@@ -46,7 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center_vertical"
-            android:textColorHint="@color/colorGray"
+            app:errorTextAppearance="@style/itl_error_appearance"
+            app:hintTextAppearance="@style/itl_normal_appearance"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/error_message">
@@ -68,7 +68,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="26dp"
             android:gravity="center_vertical"
-            android:textColorHint="@color/colorGray"
+            app:errorTextAppearance="@style/itl_error_appearance"
+            app:hintTextAppearance="@style/itl_normal_appearance"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_email_layout"

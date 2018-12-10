@@ -31,6 +31,9 @@
         <activity
             android:name=".Activities.ProblemActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.LoadingActivity"
+            android:theme="@style/Theme.Transparent" />
     </application>
 
 </manifest>
