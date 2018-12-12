@@ -4,8 +4,10 @@ package com.example.moham.soleeklab.Fragments;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -22,16 +24,22 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.AuthForgetPasswordInterface;
+import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.Constants;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -39,12 +47,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_SEMI_BOLD;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_FORGET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VERIFY_IDENTITY;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
 
 public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswordInterface {
 
@@ -57,9 +69,16 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     @BindView(R.id.btn_send_email)
     Button btnSendEmail;
     Unbinder unbinder;
+    @BindView(R.id.tv_verify_identity)
+    TextView tvForgetPass;
+    @BindView(R.id.forget_password_message)
+    TextView tvForgetPasswordMessage;
+    @BindView(R.id.error_message)
+    TextView tvErrorMessage;
 
     private ProgressDialog mLoadingDialog;
     private TextWatcher mEmailTextWatcher;
+    private Employee currentEmployee;
 
     public ForgetPasswordFragment() {
     }
@@ -112,42 +131,77 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
             return;
         }
 
-        String email = edtForgetEmail.getText().toString();
+        final String email = edtForgetEmail.getText().toString();
         if (checkEmailValidation(email) && isNetworkAvailable()) {
             Log.d(TAG_FRAG_FORGET_PASS, "Valid Email address");
-            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            View view = inflater.inflate(R.layout.loading, null);
-            showLoadingDialog.setView(view);
 
-            try {
-                GifImageView gifImageView = view.findViewById(R.id.gif_loading);
-                GifDrawable gifFromAssets = new GifDrawable(getActivity().getAssets(), "logoloading.gif");
-                gifImageView.setImageDrawable(gifFromAssets);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            tvErrorMessage.setVisibility(View.GONE);
+            startActivity(new Intent(getContext(), LoadingActivity.class));
 
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+//            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
+//            LayoutInflater inflater = LayoutInflater.from(getContext());
+//            View view = inflater.inflate(R.layout.loading, null);
+//            showLoadingDialog.setView(view);
+//
+//            try {
+//                GifImageView gifImageView = view.findViewById(R.id.gif_loading);
+//                GifDrawable gifFromAssets = new GifDrawable(getActivity().getAssets(), "logoloading.gif");
+//                gifImageView.setImageDrawable(gifFromAssets);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+//            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+//
+//            final AlertDialog dialog = showLoadingDialog.create();
+//
+//            dialog.show();
+//            dialog.getWindow().setAttributes(layoutParams);
+//            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
 
-            final AlertDialog dialog = showLoadingDialog.create();
+//            if (email.equals("1@1.1")) {
+//
+//                dialog.dismiss();
+//
+//                VerifyIdentityFragment fragment = new VerifyIdentityFragment();
+//                Bundle extraEmail = new Bundle();
+//                extraEmail.putString("extra_email", email);
+//                fragment.setArguments(extraEmail);
+//                replaceFragmentWithAnimation(fragment, TAG_FRAG_VERIFY_IDENTITY);
+            ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+            Call<Employee> call = service.sendEmailToResetPassword(email);
 
-            dialog.show();
-            dialog.getWindow().setAttributes(layoutParams);
-            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+            call.enqueue(new Callback<Employee>() {
+                @Override
+                public void onResponse(Call<Employee> call, Response<Employee> response) {
+                    if (response.isSuccessful()) {
+                        Log.e(TAG_FRAG_FORGET_PASS, "Response code -> " + response.code() + " " + response.message() + " ");
+                        currentEmployee = response.body();
+                        if (currentEmployee.getError() == null) {
+                            Bundle extraEmail = new Bundle();
+                            extraEmail.putString("extra_email", email);
+                            VerifyIdentityFragment fragment = new VerifyIdentityFragment();
+                            fragment.setArguments(extraEmail);
+                            replaceFragmentWithAnimation(fragment, TAG_FRAG_VERIFY_IDENTITY);
+                            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                        } else {
+                            getResponseErrorMessage(getActivity(), response);
+                        }
+                    } else {
+                        getResponseErrorMessage(getActivity(), response);
+                    }
+                }
 
-            if (email.equals("1@1.1")) {
+                @Override
+                public void onFailure(Call<Employee> call, Throwable t) {
+                    Log.e(TAG_FRAG_FORGET_PASS, "onFailure(): " + t.toString());
+                    Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                }
+            });
 
-                dialog.dismiss();
-
-                VerifyIdentityFragment fragment = new VerifyIdentityFragment();
-                Bundle extraEmail = new Bundle();
-                extraEmail.putString("extra_email", email);
-                fragment.setArguments(extraEmail);
-                replaceFragmentWithAnimation(fragment, TAG_FRAG_VERIFY_IDENTITY);
-            }
         }
     }
 
@@ -167,6 +221,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     public void instantiateViews() {
         Log.d(TAG_FRAG_FORGET_PASS, "instantiateViews() has been instantiated");
 
+        setFontsToViews();
 //        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
 //        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         View view = getActivity().getCurrentFocus();
@@ -251,7 +306,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
 //                R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragment_holder, fragment);
         transaction.addToBackStack(tag);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     @Override
@@ -276,4 +331,52 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         }
         return super.onCreateAnimation(transit, enter, nextAnim);
     }
+
+    @Override
+    public Typeface loadFont(Context context, String fontPath) {
+        Log.d(TAG_FRAG_FORGET_PASS, "loadFont() has been instantiated");
+
+        return Typeface.createFromAsset(context.getAssets(), fontPath);
+    }
+
+    @Override
+    public void setFontsToViews() {
+        Log.d(TAG_FRAG_FORGET_PASS, "setFontsToViews() has been instantiated");
+        tvForgetPass.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tvForgetPasswordMessage.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tilInputForgetEmailLayout.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        edtForgetEmail.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        btnSendEmail.setTypeface(loadFont(getContext(), FONT_DOSIS_SEMI_BOLD));
+    }
+
+    @Override
+    public void getResponseErrorMessage(Context context, Response response) {
+        Log.d(TAG_FRAG_FORGET_PASS, "getResponseErrorMessage() has been instantiated");
+        if (response.code() == 401 || response.code() == 400) {
+            Log.d(TAG_FRAG_FORGET_PASS, "Response code ------> " + response.code() + " " + response.message());
+            try {
+                Gson gson = new Gson();
+                Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
+                if (errorModel.getMessage() != null) {
+                    Log.i(TAG_FRAG_FORGET_PASS, "getResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    tvErrorMessage.setVisibility(View.VISIBLE);
+                    tvErrorMessage.setText(errorModel.getMessage());
+                } else {
+                    Log.i(TAG_FRAG_FORGET_PASS, "getResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (response.code() == 500) {
+            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+        } else {
+            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

@@ -3,8 +3,10 @@ package com.example.moham.soleeklab.Fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -20,16 +22,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.ResettingPassInterface;
+import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.Constants;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -37,14 +45,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_SEMI_BOLD;
 import static com.example.moham.soleeklab.Utils.Constants.INT_NEW_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.INT_RETYPED_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.LOGIN_PASS_MIN_LENGTH;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_RESET_PASS;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VERIFY_IDENTITY;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
 
 public class ResettingPasswordFragment extends Fragment implements ResettingPassInterface {
 
@@ -61,10 +74,19 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     @BindView(R.id.reset)
     Button btnReset;
     Unbinder unbinder;
+    @BindView(R.id.tv_resetting_pass)
+    TextView tvResettingPass;
+    @BindView(R.id.tv_more_info)
+    TextView tvMoreInfo;
+    @BindView(R.id.error_message)
+    TextView tvErrorMessage;
 
     private TextWatcher mPassTextWatcher;
     private TextWatcher mRetypedPassTextWatcher;
     private TextWatcher mEnableBtnTextWatcher;
+    private String extraVerificationCode;
+    private String extraEmail;
+    private Employee currentEmployee;
 
     public ResettingPasswordFragment() {
     }
@@ -163,35 +185,71 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
         if (checkPasswordValidation(pass, INT_NEW_PASS) && checkPasswordValidation(retypedPass, INT_RETYPED_PASS) && checkPasswordMatch(pass, retypedPass)) {
             Log.d(TAG_FRAG_RESET_PASS, "Resetting user password");
 
-            // Do reset
-            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            View view = inflater.inflate(R.layout.loading, null);
-            showLoadingDialog.setView(view);
+            tvErrorMessage.setVisibility(View.GONE);
+            startActivity(new Intent(getContext(), LoadingActivity.class));
 
-            try {
-                GifImageView gifImageView = view.findViewById(R.id.gif_loading);
-                GifDrawable gifFromAssets = new GifDrawable(getActivity().getAssets(), "logoloading.gif");
-                gifImageView.setImageDrawable(gifFromAssets);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+            Call<Employee> call = service.resetUserPassword(extraEmail, pass, extraVerificationCode);
+
+            call.enqueue(new Callback<Employee>() {
+                @Override
+                public void onResponse(Call<Employee> call, Response<Employee> response) {
+                    if (response.isSuccessful()) {
+                        Log.e(TAG_FRAG_RESET_PASS, "Response code -> " + response.code() + " " + response.message() + " ");
+                        currentEmployee = response.body();
+                        if (currentEmployee.getError() == null) {
+                            clearBackStack();
+                            replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
+                            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                            Toast.makeText(getActivity(), "Password Changed Successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            getResponseErrorMessage(getActivity(), response);
+                        }
+                    } else {
+                        getResponseErrorMessage(getActivity(), response);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Employee> call, Throwable t) {
+                    Log.e(TAG_FRAG_VERIFY_IDENTITY, "onFailure(): " + t.toString());
+                    Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                }
+            });
 
 
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+//            // Do reset
+//            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
+//            LayoutInflater inflater = LayoutInflater.from(getContext());
+//            View view = inflater.inflate(R.layout.loading, null);
+//            showLoadingDialog.setView(view);
+//
+//            try {
+//                GifImageView gifImageView = view.findViewById(R.id.gif_loading);
+//                GifDrawable gifFromAssets = new GifDrawable(getActivity().getAssets(), "logoloading.gif");
+//                gifImageView.setImageDrawable(gifFromAssets);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
-            final AlertDialog dialog = showLoadingDialog.create();
-            dialog.show();
-            dialog.getWindow().setAttributes(layoutParams);
-            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+
+//            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+//            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+//
+//            final AlertDialog dialog = showLoadingDialog.create();
+//            dialog.show();
+//            dialog.getWindow().setAttributes(layoutParams);
+//            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
         }
     }
 
     @Override
     public void instantiateViews() {
         Log.d(TAG_FRAG_RESET_PASS, "instantiateViews() has been instantiated");
+
+        setFontsToViews();
 
         View view = getActivity().getCurrentFocus();
         if (view != null) {
@@ -202,6 +260,17 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
         btnReset.setText(getString(R.string.reset));
         btnReset.setBackgroundResource(R.drawable.button_gray);
         btnReset.setEnabled(false);
+
+        Bundle extraCode = this.getArguments();
+        if (extraCode != null) {
+            extraVerificationCode = extraCode.getString("extra_verification_code");
+            extraEmail = extraCode.getString("extra_verification_email");
+            Log.d(TAG_FRAG_RESET_PASS, "Bundle extra verification code -> " + extraVerificationCode);
+            Log.d(TAG_FRAG_RESET_PASS, "Bundle extra email -> " + extraEmail);
+        } else {
+            Log.d(TAG_FRAG_RESET_PASS, "Bundle extra verification code -> NULL");
+        }
+
 
         mPassTextWatcher = new TextWatcher() {
             @Override
@@ -347,5 +416,54 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
             return a;
         }
         return super.onCreateAnimation(transit, enter, nextAnim);
+    }
+
+    @Override
+    public Typeface loadFont(Context context, String fontPath) {
+        Log.d(TAG_FRAG_RESET_PASS, "loadFont() has been instantiated");
+
+        return Typeface.createFromAsset(context.getAssets(), fontPath);
+    }
+
+    @Override
+    public void setFontsToViews() {
+        Log.d(TAG_FRAG_RESET_PASS, "setFontsToViews() has been instantiated");
+        tvResettingPass.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tvMoreInfo.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tilNewPasswordLayout.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tilRetypeNewPasswordLayout.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        edtNewPassword.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        edtRetypeNewPassword.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        btnReset.setTypeface(loadFont(getContext(), FONT_DOSIS_SEMI_BOLD));
+    }
+
+    @Override
+    public void getResponseErrorMessage(Context context, Response response) {
+        Log.d(TAG_FRAG_RESET_PASS, "getResponseErrorMessage() has been instantiated");
+        if (response.code() == 401 || response.code() == 400) {
+            Log.d(TAG_FRAG_RESET_PASS, "Response code ------> " + response.code() + " " + response.message());
+            try {
+                Gson gson = new Gson();
+                Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
+                if (errorModel.getMessage() != null) {
+                    Log.i(TAG_FRAG_RESET_PASS, "getResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    tvErrorMessage.setVisibility(View.VISIBLE);
+                    tvErrorMessage.setText(errorModel.getMessage());
+                } else {
+                    Log.i(TAG_FRAG_RESET_PASS, "getResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (response.code() == 500) {
+            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+        } else {
+            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+        }
     }
 }

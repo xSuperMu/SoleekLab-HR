@@ -1,10 +1,10 @@
 package com.example.moham.soleeklab.Fragments;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -26,19 +27,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.AuthLoginInterface;
+import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
+import com.google.gson.Gson;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_SEMI_BOLD;
 import static com.example.moham.soleeklab.Utils.Constants.LOGIN_PASS_MIN_LENGTH;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_FORGET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
 
 public class LoginFragment extends Fragment implements AuthLoginInterface {
 
@@ -59,11 +74,17 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     Button btnLoginBtn;
     @BindView(R.id.sv_login_fragment)
     ScrollView svLoginFragment;
+    @BindView(R.id.tv_login)
+    TextView tvLogin;
+    @BindView(R.id.tv_more_info)
+    TextView tvMoreInfo;
 
     private TextWatcher mEmailTextWatcher;
     private TextWatcher mPasswordTextWatcher;
     private TextWatcher mTextWatcher;
     private ProgressDialog mLoadingDialog;
+
+    private Employee currentEmployee;
 
     public LoginFragment() {
     }
@@ -167,28 +188,93 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
         if (checkEmailValidation(email) && checkPasswordValidation(password) && isNetworkAvailable()) {
             Log.d(TAG_FRAG_LOGIN, "Logging user in");
-//            mLoadingDialog = ProgressDialog.show(getActivity(), "", "Logging you in ...", false, true);
-//            mLoadingDialog.setCanceledOnTouchOutside(false);
 
-            // mLoadingDialog.show();
-
-//            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
-//            LayoutInflater inflater = LayoutInflater.from(getContext());
-//            View view = inflater.inflate(R.layout.loading, null);
-//            showLoadingDialog.setView(view);
-
-//
-//
-//
-//            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-//            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
-//
-//            final AlertDialog dialog = showLoadingDialog.create();
-//            dialog.show();
-//            dialog.getWindow().setAttributes(layoutParams);
-//            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+            tvErrorMessage.setVisibility(View.GONE);
             startActivity(new Intent(getContext(), LoadingActivity.class));
+
+            ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+            Call<Employee> call = service.loginEmployee(email, password);
+
+            call.enqueue(new Callback<Employee>() {
+                @Override
+                public void onResponse(Call<Employee> call, Response<Employee> response) {
+
+//                    if (response.code() == 200) {
+//                        if (response.body() != null) {
+//                            currentEmployee = response.body();
+//                            Log.d(TAG_FRAG_LOGIN, "onResponse(): " + response.body());
+////                            EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
+//                            startActivity(new Intent(getContext(), HomeActivity.class));
+//                            getActivity().finish();
+//                        }
+//                    } else if (response.code() != 200){
+//                        Log.d(TAG_FRAG_LOGIN, "Response code ------> " + response.code() + " " + response.message() + " " + call.request().toString());
+//                        if (response.body() != null) {
+//                            Log.d(TAG_FRAG_LOGIN, "onResponse(): " + response.body());
+//                            String tvErrorMessage = response.body().getMessage();
+//                            Log.d(TAG_FRAG_LOGIN, "Error Message: " + tvErrorMessage);
+//                            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                            tvErrorMessage.setVisibility(View.VISIBLE);
+//                            tvErrorMessage.setText(tvErrorMessage);
+//                        }
+//                    }
+                    if (response.isSuccessful()) {
+                        Log.e(TAG_FRAG_LOGIN, "Response code -> " + response.code() + " " + response.message() + " ");
+                        currentEmployee = response.body();
+//                        EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
+                        startActivity(new Intent(getContext(), HomeActivity.class));
+                        getActivity().finish();
+                    } else {
+                        getResponseErrorMessage(getActivity(), response);
+                    }
+
+                    // works just fine
+//                    if (response.body() != null) {
+//                        currentEmployee = response.body();
+//                        {
+//                            if (response.body().getError() != null) {
+//                                Log.d(TAG_FRAG_LOGIN, "onResponse(): " + response.body());
+//                                String tvErrorMessage = response.body().getMessage();
+//                                Log.d(TAG_FRAG_LOGIN, "Error Message: " + tvErrorMessage);
+//                                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                                tvErrorMessage.setVisibility(View.VISIBLE);
+//                                tvErrorMessage.setText(tvErrorMessage);
+//                            } else {
+//                                Log.d(TAG_FRAG_LOGIN, "onResponse(): " + response.body());
+//                                startActivity(new Intent(getContext(), HomeActivity.class));
+//                                getActivity().finish();
+//                            }
+
+
+//                    if (response.body() != null) {
+//                        currentEmployee = response.body();
+//                        Log.d(TAG_FRAG_LOGIN, "onResponse(): " + response.body());
+////                            EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
+//
+//                        String error = currentEmployee.getError();
+//                        Log.d(TAG_FRAG_LOGIN, "Error: " + error);
+//                        if (!TextUtils.isEmpty(error)) {
+//                            startActivity(new Intent(getContext(), HomeActivity.class));
+//
+////                            getActivity().finish();
+//                        } else if (error == null || error.equals("invalid username or password")) {
+//                            String tvErrorMessage = response.body().getMessage();
+//                            Log.d(TAG_FRAG_LOGIN, "Error Message: " + tvErrorMessage);
+//                            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                            tvErrorMessage.setVisibility(View.VISIBLE);
+//                            tvErrorMessage.setText(tvErrorMessage);
+//                        }
+//                    }
+                }
+
+                @Override
+                public void onFailure(Call<Employee> call, Throwable t) {
+                    // Network Error - Failure
+                    Log.e(TAG_FRAG_LOGIN, "onFailure(): " + t.toString());
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -196,12 +282,15 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     public void instantiateViews() {
         Log.d(TAG_FRAG_LOGIN, "instantiateViews() has been instantiated");
 
+        setFontsToViews();
+
         View view = getActivity().getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
+        tvErrorMessage.setVisibility(View.GONE);
         btnLoginBtn.setText(getString(R.string.login));
         btnLoginBtn.setBackgroundResource(R.drawable.button_gray);
         btnLoginBtn.setEnabled(false);
@@ -357,4 +446,56 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         }
     }
 
+    @Override
+    public void getResponseErrorMessage(Context context, Response response) {
+        Log.d(TAG_FRAG_LOGIN, "getResponseErrorMessage() has been instantiated");
+        if (response.code() == 401 || response.code() == 400) {
+            Log.d(TAG_FRAG_LOGIN, "Response code ------> " + response.code() + " " + response.message());
+            try {
+                Gson gson = new Gson();
+                Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
+                if (errorModel.getMessage() != null) {
+                    Log.i(TAG_FRAG_LOGIN, "getResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    tvErrorMessage.setVisibility(View.VISIBLE);
+                    tvErrorMessage.setText(errorModel.getMessage());
+                } else {
+                    Log.i(TAG_FRAG_LOGIN, "getResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (response.code() == 500) {
+            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+
+            Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+        } else {
+            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public Typeface loadFont(Context context, String fontPath) {
+        Log.d(TAG_FRAG_LOGIN, "loadFont() has been instantiated");
+
+        return Typeface.createFromAsset(context.getAssets(), fontPath);
+    }
+
+    @Override
+    public void setFontsToViews() {
+        Log.d(TAG_FRAG_LOGIN, "setFontsToViews() has been instantiated");
+        tvLogin.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tvMoreInfo.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        edtLoginEmail.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tilInputEmailLayout.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tilInputPasswordLayout.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        edtLoginPassword.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tvForgetPassword.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        btnLoginBtn.setTypeface(loadFont(getContext(), FONT_DOSIS_SEMI_BOLD));
+    }
 }
+
+

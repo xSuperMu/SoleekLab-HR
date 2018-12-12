@@ -17,7 +17,7 @@
             android:src="@mipmap/ic_shield" />
 
         <TextView
-            android:id="@+id/tv_forget_pass"
+            android:id="@+id/tv_verify_identity"
             style="@style/AuthDetails"
             android:text="@string/verify_your_identity" />
 

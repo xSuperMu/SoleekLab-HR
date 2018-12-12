@@ -3,7 +3,9 @@ package com.example.moham.soleeklab.Fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -25,11 +27,17 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chaos.view.PinView;
+import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.VerifyIdentityInterface;
+import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.Constants;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -39,13 +47,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_SEMI_BOLD;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_FORGET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_RESET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VERIFY_IDENTITY;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
 import static com.example.moham.soleeklab.Utils.Constants.TOTAL_NUMBER_OF_ITEMS;
 
 public class VerifyIdentityFragment extends Fragment implements VerifyIdentityInterface {
@@ -68,14 +81,18 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     @BindView(R.id.ib_verify_back)
     ImageView ibBack;
     @BindView(R.id.error_message)
-    TextView errorMessage;
+    TextView tvErrorMessage;
     @BindView(R.id.tv_resend)
     TextView tvResend;
     @BindView(R.id.ib_reload)
     ImageView ibReload;
+    @BindView(R.id.tv_verify_identity)
+    TextView tvVerifyIdentity;
 
+    private String mailExtra = null;
     private String verificationCode = null;
     CountDownTimer timer = null;
+    private Employee currentEmployee;
 
     public VerifyIdentityFragment() {
     }
@@ -111,15 +128,20 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
+
         if (timer != null) {
+            Log.d(TAG_FRAG_VERIFY_IDENTITY, "onDestroy: Cancelling Timer");
             timer.cancel();
             timer = null;
         }
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "onDestroyView() has finished");
     }
 
     @Override
     public void instantiateViews() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "instantiateViews() has been instantiated");
+
+        setFontsToViews();
 
         View view = getActivity().getCurrentFocus();
         if (view != null) {
@@ -127,7 +149,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
-        handleResend();
+        startTimer();
 
 
         btnVerifyIdentity.setEnabled(false);
@@ -136,7 +158,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
         Bundle extraEmail = this.getArguments();
         if (extraEmail != null) {
-            String mailExtra = extraEmail.getString("extra_email", "abc@soleek.com");
+            mailExtra = extraEmail.getString("extra_email", "abc@soleek.com");
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "Bundle extra email -> " + mailExtra);
             String str = getResources().getString(R.string.email_messages, mailExtra);
             tvVerifyEmailMessage.setText(str);
@@ -224,7 +246,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     public void verifyUser() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "verifyUser() has been instantiated");
 
-
         if (!isNetworkAvailable()) {
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "No Network Connection");
 
@@ -235,32 +256,67 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
         if (!TextUtils.isEmpty(verificationCode)) {
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "Verifying Email address");
 
-            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            View view = inflater.inflate(R.layout.loading, null);
-            showLoadingDialog.setView(view);
+//            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
+//            LayoutInflater inflater = LayoutInflater.from(getContext());
+//            View view = inflater.inflate(R.layout.loading, null);
+//            showLoadingDialog.setView(view);
+//
+//            try {
+//                GifImageView gifImageView = view.findViewById(R.id.gif_loading);
+//                GifDrawable gifFromAssets = new GifDrawable(getActivity().getAssets(), "logoloading.gif");
+//                gifImageView.setImageDrawable(gifFromAssets);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+//            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+//
+//            final AlertDialog dialog = showLoadingDialog.create();
+//
+//            dialog.show();
+//            dialog.getWindow().setAttributes(layoutParams);
+//            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+            tvErrorMessage.setVisibility(View.GONE);
+            startActivity(new Intent(getContext(), LoadingActivity.class));
 
-            try {
-                GifImageView gifImageView = view.findViewById(R.id.gif_loading);
-                GifDrawable gifFromAssets = new GifDrawable(getActivity().getAssets(), "logoloading.gif");
-                gifImageView.setImageDrawable(gifFromAssets);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if (verificationCode != null && mailExtra != null) {
 
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+                ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+                Call<Employee> call = service.verifyRestCode(mailExtra, Integer.parseInt(verificationCode));
 
-            final AlertDialog dialog = showLoadingDialog.create();
+                call.enqueue(new Callback<Employee>() {
+                    @Override
+                    public void onResponse(Call<Employee> call, Response<Employee> response) {
+                        if (response.isSuccessful()) {
+                            Log.e(TAG_FRAG_FORGET_PASS, "Response code -> " + response.code() + " " + response.message() + " ");
+                            currentEmployee = response.body();
+                            if (currentEmployee.getError() == null) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("extra_verification_code", verificationCode);
+                                bundle.putString("extra_verification_email", mailExtra);
+                                ResettingPasswordFragment fragment = new ResettingPasswordFragment();
+                                fragment.setArguments(bundle);
+                                replaceFragmentWithAnimation(fragment, TAG_FRAG_RESET_PASS);
+                                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                            } else {
+                                getResponseErrorMessage(getActivity(), response);
+                            }
+                        } else {
+                            getResponseErrorMessage(getActivity(), response);
+                        }
+                    }
 
-            dialog.show();
-            dialog.getWindow().setAttributes(layoutParams);
-            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+                    @Override
+                    public void onFailure(Call<Employee> call, Throwable t) {
+                        Log.e(TAG_FRAG_VERIFY_IDENTITY, "onFailure(): " + t.toString());
+                        Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+                        getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    }
+                });
 
-            if (verificationCode != null && verificationCode.equals("0000")) {
-                dialog.dismiss();
-                replaceFragmentWithAnimation(ResettingPasswordFragment.newInstance(), TAG_FRAG_RESET_PASS);
+
             }
         }
 
@@ -318,27 +374,55 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     @OnClick({R.id.tv_resend, R.id.ib_reload})
     public void handleResend() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "handleResend() has been instantiated");
+
+        startTimer();
+
         timer = new CountDownTimer(60 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-
-                ibReload.setEnabled(false);
-                ibReload.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_gray_24dp));
-                tvResend.setEnabled(false);
-                tvResend.setTextColor(getResources().getColor(R.color.colorGray));
                 tvResend.setText("" + new SimpleDateFormat("mm:ss").format(new Date(millisUntilFinished)));
             }
 
             @Override
             public void onFinish() {
-                ibReload.setEnabled(true);
-                ibReload.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
-                tvResend.setEnabled(true);
-                tvResend.setTextColor(getResources().getColor(R.color.colorPurple));
-                tvResend.setText(getResources().getString(R.string.reset));
-
+                enableViews();
             }
         }.start();
+
+        if (isNetworkAvailable()) {
+            Log.d(TAG_FRAG_VERIFY_IDENTITY, "Resending verification code");
+
+            tvErrorMessage.setVisibility(View.GONE);
+            ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+            Call<Employee> call = service.sendEmailToResetPassword(mailExtra);
+
+            call.enqueue(new Callback<Employee>() {
+                @Override
+                public void onResponse(Call<Employee> call, Response<Employee> response) {
+                    if (response.isSuccessful()) {
+                        Log.e(TAG_FRAG_FORGET_PASS, "Response code -> " + response.code() + " " + response.message() + " ");
+                        currentEmployee = response.body();
+                        if (currentEmployee.getError() == null) {
+                            Toast.makeText(getContext(), "Check Your Mail", Toast.LENGTH_SHORT).show();
+                        } else {
+                            getResponseErrorMessage(getActivity(), response);
+                        }
+                    } else {
+                        getResponseErrorMessage(getActivity(), response);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Employee> call, Throwable t) {
+                    Log.e(TAG_FRAG_VERIFY_IDENTITY, "onFailure(): " + t.toString());
+                    Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            timer.cancel();
+            enableViews();
+        }
+
     }
 
     @Override
@@ -362,5 +446,95 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             return a;
         }
         return super.onCreateAnimation(transit, enter, nextAnim);
+    }
+
+    @Override
+    public Typeface loadFont(Context context, String fontPath) {
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "loadFont() has been instantiated");
+
+        return Typeface.createFromAsset(context.getAssets(), fontPath);
+    }
+
+    @Override
+    public void setFontsToViews() {
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "setFontsToViews() has been instantiated");
+        tvVerifyIdentity.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tvVerifyEmailMessage.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        pinView.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        tvResend.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        btnVerifyIdentity.setTypeface(loadFont(getContext(), FONT_DOSIS_SEMI_BOLD));
+    }
+
+    @Override
+    public void getResponseErrorMessage(Context context, Response response) {
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "getResponseErrorMessage() has been instantiated");
+        if (response.code() == 401 || response.code() == 400) {
+            Log.d(TAG_FRAG_VERIFY_IDENTITY, "Response code ------> " + response.code() + " " + response.message());
+            try {
+                Gson gson = new Gson();
+                Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
+                if (errorModel.getMessage() != null) {
+                    Log.i(TAG_FRAG_VERIFY_IDENTITY, "getResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    tvErrorMessage.setVisibility(View.VISIBLE);
+                    tvErrorMessage.setText(errorModel.getMessage());
+                } else {
+                    Log.i(TAG_FRAG_VERIFY_IDENTITY, "getResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (response.code() == 500) {
+            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+        } else {
+            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void enableViews() {
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "enableViews() has been instantiated");
+
+        ibReload.setEnabled(true);
+        ibReload.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
+        tvResend.setEnabled(true);
+        tvResend.setTextColor(getResources().getColor(R.color.colorPurple));
+        tvResend.setText(getResources().getString(R.string.reset));
+    }
+
+    @Override
+    public void disableViews() {
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "disableViews() has been instantiated");
+        ibReload.setEnabled(false);
+        ibReload.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_gray_24dp));
+        tvResend.setEnabled(false);
+        tvResend.setTextColor(getResources().getColor(R.color.colorGray));
+
+    }
+
+
+    public void startTimer() {
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "startTimer() has been instantiated");
+
+        disableViews();
+
+        if (timer != null)
+            timer.cancel();
+        timer = new CountDownTimer(60 * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (timer != null)
+                    tvResend.setText("" + new SimpleDateFormat("mm:ss").format(new Date(millisUntilFinished)));
+            }
+
+            @Override
+            public void onFinish() {
+                enableViews();
+            }
+        }.start();
     }
 }
