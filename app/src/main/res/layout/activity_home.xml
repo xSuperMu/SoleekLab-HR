@@ -1,13 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".Activities.HomeActivity">
 
+    <RelativeLayout
+        android:id="@+id/relativeMiddleBody"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/relativeBottomNav"
+        android:layout_alignParentTop="true">
 
-    <TextView
-        android:layout_width="wrap_content"
+        <FrameLayout
+            android:id="@+id/frame_fragment_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeBottomNav"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="" />
-</android.support.constraint.ConstraintLayout>
+        android:layout_alignParentBottom="true">
+
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottom_navigation_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:animateLayoutChanges="false"
+            android:background="@color/colorWhite"
+            android:fitsSystemWindows="true"
+            android:splitMotionEvents="false"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/navigation_menu">
+
+        </android.support.design.widget.BottomNavigationView>
+    </RelativeLayout>
+</RelativeLayout>

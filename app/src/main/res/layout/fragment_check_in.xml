@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="54dp">
+
+            <ImageView
+                android:layout_width="241dp"
+                android:layout_height="210dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/user_profile_picture"
+                android:src="@mipmap/effect" />
+
+            <com.github.abdularis.civ.CircleImageView
+                android:id="@+id/iv_user_profile_pic"
+                android:layout_width="156dp"
+                android:layout_height="156dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="6dp"
+                android:src="@drawable/muhammad" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/colorTextDark"
+            android:textSize="24sp"
+            tools:text="User Name" />
+
+        <TextView
+            android:id="@+id/tv_user_job_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/colorInputText"
+            android:textSize="16sp"
+            tools:text="Job Title" />
+
+        <View
+            android:layout_width="156dp"
+            android:layout_height="1dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:background="#9b9b9b" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_user_status_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="34dp">
+
+            <View
+                android:layout_width="108dp"
+                android:layout_height="108dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/purple_solid_circle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="33dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/login_icon"
+                android:src="@mipmap/login_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tv_check_in_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="60dp"
+            android:text="@string/check_in"
+            android:textColor="@color/colorPurple" />
+    </LinearLayout>
+</ScrollView>

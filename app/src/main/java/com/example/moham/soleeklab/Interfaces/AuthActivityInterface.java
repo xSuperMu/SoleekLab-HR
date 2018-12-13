@@ -2,7 +2,7 @@ package com.example.moham.soleeklab.Interfaces;
 
 import android.support.v4.app.Fragment;
 
-public interface AuthActivitiyInterface {
+public interface AuthActivityInterface {
 
     void clearBackStack();
 

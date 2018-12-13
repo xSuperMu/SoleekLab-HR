@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/navigation_home"
+        android:enabled="true"
+        android:icon="@mipmap/home"
+        android:title="@string/title_home"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/navigation_vacation"
+        android:enabled="true"
+        android:icon="@mipmap/vacation"
+        android:title="@string/title_vacation"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/navigation_task"
+        android:enabled="true"
+        android:icon="@mipmap/task"
+        android:title="@string/title_tasks"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/navigation_notification"
+        android:enabled="true"
+        android:icon="@mipmap/notification"
+        android:title="@string/title_notification"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/navigation_more"
+        android:enabled="true"
+        android:icon="@mipmap/more"
+        android:title="@string/title_more"
+        app:showAsAction="ifRoom" />
+
+</menu>

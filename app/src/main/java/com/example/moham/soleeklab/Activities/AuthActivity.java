@@ -15,7 +15,7 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.example.moham.soleeklab.Fragments.LoginFragment;
-import com.example.moham.soleeklab.Interfaces.AuthActivitiyInterface;
+import com.example.moham.soleeklab.Interfaces.AuthActivityInterface;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.Constants;
 
@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_AUTH_ACTIVITY;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 
-public class AuthActivity extends AppCompatActivity implements AuthActivitiyInterface {
+public class AuthActivity extends AppCompatActivity implements AuthActivityInterface {
 
     @BindView(R.id.iv_auth_background)
     ImageView ivAuthBackground;

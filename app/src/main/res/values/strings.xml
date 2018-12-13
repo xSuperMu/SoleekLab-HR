@@ -35,5 +35,21 @@
     <string name="done">Done</string>
     <string name="reset_timer_image">reset timer image</string>
     <string name="preference_file_key">com.soleeklab.muhammad.soleekapp.SHARED_PREFERENCES</string>
+    <string name="user_profile_picture">user profile picture</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_vacation">Vacation</string>
+    <string name="title_tasks">Tasks</string>
+    <string name="title_notification">Notification</string>
+    <string name="title_more">More</string>
+    <string name="check_in">Check-in</string>
+    <string name="user_status_picture">User status picture</string>
+    <string name="check_out">Check-out</string>
+
+    <string name="check_out_messages">Checked-in %1$s (%2$s)</string>
+    <string name="task_progress">%1$s/%2$s</string>
+    <string name="tasks_this_week">Tasks this week</string>
+    <string name="view_all_tasks">View all tasks from task tab</string>
+
 
 </resources>

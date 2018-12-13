@@ -6,8 +6,8 @@ import com.example.moham.soleeklab.Model.Employee;
 
 
 /**
- * I created this class for a specific purpose which is
- * making a global variable keep its value around the lifecycle of the application
+ * I created this class for CircleImageView specific purpose which is
+ * making CircleImageView global variable keep its value around the lifecycle of the application
  * regardless which activity is running.
  * <p>
  * I need this class to keep the current Employee session, by that I mean to keep the Employee logged in to the app
