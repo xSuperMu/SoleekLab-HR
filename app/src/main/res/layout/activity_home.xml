@@ -26,6 +26,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentTop="true"
+            android:alpha="0.15"
+            android:background="@color/colorInputText" />
+
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/bottom_navigation_view"
             android:layout_width="match_parent"
@@ -36,8 +43,6 @@
             android:fitsSystemWindows="true"
             android:splitMotionEvents="false"
             app:labelVisibilityMode="labeled"
-            app:menu="@menu/navigation_menu">
-
-        </android.support.design.widget.BottomNavigationView>
+            app:menu="@menu/navigation_menu" />
     </RelativeLayout>
 </RelativeLayout>

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     android:orientation="vertical"
-    tools:context=".Fragments.TasksFragment">
+    tools:context=".Fragments.AttendanceFragment">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -18,17 +18,16 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tv_action_bar_notification"
+                android:id="@+id/tv_action_bar_attendance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14sp"
-                android:text="Tasks"
+                android:text="Attendance"
                 android:textSize="34sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
-
     </android.support.design.widget.AppBarLayout>
 
     <View
@@ -38,16 +37,16 @@
         android:background="#57606f" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/cl_no_vacation"
+        android:id="@+id/cl_no_attendance"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/iv_no_tasks_icon"
+            android:id="@+id/iv_no_attendance_icon"
             android:layout_width="106dp"
             android:layout_height="106dp"
-            android:contentDescription="@string/no_notification_icon"
-            android:src="@mipmap/astronaut_001"
+            android:contentDescription="@string/no_attendance_icon"
+            android:src="@mipmap/earth"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -55,22 +54,19 @@
             app:layout_constraintVertical_bias="0.4" />
 
         <TextView
-            android:id="@+id/tv_no_tasks_text"
+            android:id="@+id/tv_no_attendance_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="21dp"
             android:gravity="center"
-            android:paddingStart="16dp"
-            android:paddingLeft="16dp"
-            android:text="@string/oppa_you_ve_no_tasks_for_today_at_all"
+            android:text="@string/no_attendance_yet"
             android:textAlignment="center"
             android:textColor="@color/colorInputText"
             android:textSize="13sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_no_tasks_icon" />
-
-
+            app:layout_constraintTop_toBottomOf="@id/iv_no_attendance_icon" />
     </android.support.constraint.ConstraintLayout>
+
 
 </LinearLayout>

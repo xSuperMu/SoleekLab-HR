@@ -222,7 +222,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                         Log.e(TAG_FRAG_LOGIN, "Response code -> " + response.code() + " " + response.message() + " ");
                         currentEmployee = response.body();
 //                        EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
-                        startActivity(new Intent(getContext(), HomeActivity.class));
+                        startActivity(new Intent(getActivity(), HomeActivity.class));
                         getActivity().finish();
                     } else {
                         getResponseErrorMessage(getActivity(), response);
@@ -427,7 +427,12 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         final AlertDialog dialog = noNetworkDialog.create();
         dialog.show();
         dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
+        TextView infoMessage = view.findViewById(R.id.tv_info_message);
+        TextView extraInfoMessage = view.findViewById(R.id.tv_extra_info_message);
         Button btnDone = view.findViewById(R.id.btn_done);
+        infoMessage.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        extraInfoMessage.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
+        btnDone.setTypeface(loadFont(getContext(), FONT_DOSIS_SEMI_BOLD));
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

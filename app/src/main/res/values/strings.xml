@@ -50,6 +50,21 @@
     <string name="task_progress">%1$s/%2$s</string>
     <string name="tasks_this_week">Tasks this week</string>
     <string name="view_all_tasks">View all tasks from task tab</string>
+    <string name="hippotherapist">Hippotherapist</string>
+    <string name="are_you_sure_you_want_to_mark_this_task_as_done">Are you sure you want to mark this task as done?</string>
+    <string name="attendance">Attendance</string>
+    <string name="feedback">Feedback</string>
+    <string name="logout">Logout</string>
+    <string name="history_icon">history icon</string>
+    <string name="feedback_icon">feedback icon</string>
+    <string name="logout_icon">logout icon</string>
+    <string name="no_notification_icon">No notification icon</string>
+    <string name="no_notifications">No notifications</string>
+    <string name="you_didn_t_request_any_vacations_yet_wanna_travel">You didn’t request any vacations yet! Wanna Travel?</string>
+    <string name="new_vacation">New Vacation</string>
+    <string name="oppa_you_ve_no_tasks_for_today_at_all">Oppa! You’ve no tasks for today at all</string>
+    <string name="no_attendance_icon">No attendance icon</string>
+    <string name="no_attendance_yet">No Attendance yet</string>
 
 
 </resources>

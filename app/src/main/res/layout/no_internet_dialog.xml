@@ -20,21 +20,26 @@
             android:src="@mipmap/astronaut" />
 
         <TextView
+            android:id="@+id/tv_info_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:text="@string/disconnected"
-            android:textColor="@color/colorInputText" />
+            android:textColor="@color/colorInputText"
+            android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/tv_extra_info_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="3dp"
+            android:gravity="center"
             android:text="@string/there_s_no_internet_connection_to_reach_for_soleek_in_the_space"
             android:textAlignment="center"
-            android:textColor="@color/colorGray" />
+            android:textColor="@color/colorGray"
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/btn_done"

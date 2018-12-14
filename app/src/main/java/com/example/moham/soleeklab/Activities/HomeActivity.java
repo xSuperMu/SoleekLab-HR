@@ -3,15 +3,18 @@ package com.example.moham.soleeklab.Activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.moham.soleeklab.Fragments.CheckInFragment;
 import com.example.moham.soleeklab.Fragments.HomeFragment;
@@ -29,6 +32,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 import static com.example.moham.soleeklab.Utils.Constants.INT_BTN_NAV_FRAGMENTS_COUNT;
 import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_CHECK_IN_POS;
 import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_MORE_POS;
@@ -48,6 +52,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
     @BindView(R.id.bottom_navigation_view)
     BottomNavigationView bnvNavigation;
     private List<Fragment> mFragmentsList = new ArrayList<>(INT_BTN_NAV_FRAGMENTS_COUNT);
+    private boolean doubleClickToExitPressedOnce = false;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -83,6 +88,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
         getSupportActionBar().hide();
 
+        // Clear fragment manager backstack
+        getSupportFragmentManager().popBackStack(null, POP_BACK_STACK_INCLUSIVE);
+        Log.d(TAG_HOME_ACTIVITY, "BackStack count -------> " + getSupportFragmentManager().getBackStackEntryCount());
+
         // To hide the loading screen
         sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
 
@@ -101,11 +110,34 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
     }
 
     @Override
-    public void switchFragment(int pos, String tag) {
+    public void switchFragment(int pos, final String tag) {
         Log.d(TAG_HOME_ACTIVITY, "switchFragment() has been instantiated");
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        doubleClickToExitPressedOnce = false;
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.frame_fragment_holder, mFragmentsList.get(pos), tag);
         transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (doubleClickToExitPressedOnce) finish();
+
+        if (bnvNavigation.getSelectedItemId() == R.id.navigation_home) {
+            Toast.makeText(this, "Click once more to close the app", Toast.LENGTH_SHORT).show();
+            doubleClickToExitPressedOnce = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleClickToExitPressedOnce = false;
+                }
+            }, 2750);
+        } else {
+            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+            bnvNavigation.getMenu().getItem(INT_FRAGMENT_CHECK_IN_POS).setChecked(true);
+        }
+
     }
 
     @Override
