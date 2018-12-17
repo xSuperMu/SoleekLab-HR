@@ -1,6 +1,5 @@
 package com.example.moham.soleeklab.Fragments;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -83,7 +82,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     private TextWatcher mEmailTextWatcher;
     private TextWatcher mPasswordTextWatcher;
     private TextWatcher mTextWatcher;
-    private ProgressDialog mLoadingDialog;
 
     private Employee currentEmployee;
 
@@ -104,13 +102,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
         instantiateViews();
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG_FRAG_LOGIN, "onResume() has been instantiated");
-
     }
 
     @Override
@@ -383,16 +374,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 dialog.dismiss();
             }
         });
-    }
-
-    @OnClick({R.id.input_email_layout, R.id.input_password_layout})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.input_email_layout:
-                break;
-            case R.id.input_password_layout:
-                break;
-        }
     }
 
     @Override

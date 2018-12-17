@@ -10,6 +10,7 @@ public class Constants {
     public static final String TAG_FRAG_HOME = "tag-frag-home";
     public static final String TAG_FRAG_CHECK_IN = "tag-frag-check-in";
     public static final String TAG_FRAG_VACATION = "tag-frag-vacation";
+    public static final String TAG_FRAG_NEW_VACATION = "tag-frag-new-vacation";
     public static final String TAG_FRAG_TASKS = "tag-frag-tasks";
     public static final String TAG_FRAG_NOTIFICATION = "tag-frag-notification";
     public static final String TAG_FRAG_MORE = "tag-frag-more";

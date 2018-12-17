@@ -59,6 +59,7 @@ public class MoreFragment extends Fragment implements MoreFragmentInterface {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.d(TAG_FRAG_MORE, "onAttach() has been instantiated");
 
         if (context instanceof Activity) {
             homeActivity = (HomeActivity) context;
@@ -84,7 +85,7 @@ public class MoreFragment extends Fragment implements MoreFragmentInterface {
 
     @OnClick(R.id.ll_attendance)
     @Override
-    public void handleAttendaceClick() {
+    public void handleAttendanceClick() {
         Log.d(TAG_FRAG_MORE, "Attendance::Button has been clicked");
         switchFragment(AttendanceFragment.newInstance(), TAG_FRAG_ATTENDANCE);
     }

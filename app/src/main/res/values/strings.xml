@@ -70,4 +70,5 @@
     <string name="logging_out">Logging out</string>
     <string name="are_you_sure_you_want_to_log_out">Are you sure you want to log out?</string>
     <string name="stay">Stay</string>
+    <string name="starting_date">Starting Date</string>
 </resources>

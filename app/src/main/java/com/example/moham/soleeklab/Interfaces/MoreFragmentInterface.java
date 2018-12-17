@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 
 public interface MoreFragmentInterface {
 
-    void handleAttendaceClick();
+    void handleAttendanceClick();
 
     void handleFeedbackClick();
 
