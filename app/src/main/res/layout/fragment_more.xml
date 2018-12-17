@@ -18,7 +18,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tv_action_bar_notification"
+                android:id="@+id/tv_action_bar_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14sp"
@@ -40,9 +40,14 @@
         android:id="@+id/ll_attendance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
-        android:orientation="horizontal">
+        android:background="@drawable/more_frag_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="25dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="25dp">
 
         <ImageView
             android:layout_width="22dp"
@@ -63,7 +68,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="25dp"
         android:alpha="0.15"
         android:background="#57606f" />
 
@@ -71,9 +75,14 @@
         android:id="@+id/ll_feedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
-        android:orientation="horizontal">
+        android:background="@drawable/more_frag_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="25dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="25dp">
 
         <ImageView
             android:layout_width="22dp"
@@ -94,7 +103,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="25dp"
         android:alpha="0.15"
         android:background="#57606f" />
 
@@ -103,9 +111,14 @@
         android:id="@+id/ll_logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
-        android:orientation="horizontal">
+        android:background="@drawable/more_frag_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="25dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="25dp">
 
         <ImageView
             android:layout_width="22dp"
@@ -126,7 +139,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="25dp"
         android:alpha="0.15"
         android:background="#57606f" />
 </LinearLayout>

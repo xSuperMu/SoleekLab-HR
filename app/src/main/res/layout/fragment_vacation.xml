@@ -18,7 +18,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tv_action_bar_notification"
+                android:id="@+id/tv_action_bar_vacation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14sp"
@@ -43,10 +43,10 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/iv_no_notification_icon"
+            android:id="@+id/iv_vacation_icon"
             android:layout_width="106dp"
             android:layout_height="106dp"
-            android:contentDescription="@string/no_notification_icon"
+            android:contentDescription="@string/vacation_icon"
             android:src="@mipmap/astronaut_002"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -55,20 +55,20 @@
             app:layout_constraintVertical_bias="0.4" />
 
         <TextView
-            android:id="@+id/tv_no_notification_text"
+            android:id="@+id/tv_vacation_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="21dp"
             android:gravity="center"
             android:paddingStart="16dp"
-            android:paddingLeft="16dp"
+            android:paddingEnd="16dp"
             android:text="@string/you_didn_t_request_any_vacations_yet_wanna_travel"
             android:textAlignment="center"
             android:textColor="@color/colorInputText"
             android:textSize="13sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_no_notification_icon" />
+            app:layout_constraintTop_toBottomOf="@id/iv_vacation_icon" />
 
         <Button
             android:id="@+id/btn_new_vacation"
@@ -84,7 +84,7 @@
             android:textSize="16sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_no_notification_text" />
+            app:layout_constraintTop_toBottomOf="@id/tv_vacation_text" />
 
     </android.support.constraint.ConstraintLayout>
 

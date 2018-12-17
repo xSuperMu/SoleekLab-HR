@@ -16,6 +16,8 @@ public class Constants {
     public static final String TAG_FRAG_FORGET_PASS = "tag-frag-forget-pass";
     public static final String TAG_FRAG_VERIFY_IDENTITY = "tag-frag-verify";
     public static final String TAG_FRAG_RESET_PASS = "tag-frag-reset-password";
+    public static final String TAG_FRAG_ATTENDANCE = "tag-frag-attendance";
+    public static final String TAG_FRAG_FEEDBACK = "tag-frag-feedback";
     public static final String TAG_LOADING_RECEIVER = "tag-loading-receiver";
     public static final String TAG_LOADING_RECEIVER_ACTION_CLOSE = "com.example.moham.soleeklab.ACTION_CLOSE";
     public static final String TAG_EMPLOYEE_SHARED_PREF = "tag-shared-pref";

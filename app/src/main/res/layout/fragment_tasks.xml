@@ -18,7 +18,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tv_action_bar_notification"
+                android:id="@+id/tv_action_bar_tasks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14sp"
@@ -38,7 +38,7 @@
         android:background="#57606f" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/cl_no_vacation"
+        android:id="@+id/cl_no_tasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -46,7 +46,7 @@
             android:id="@+id/iv_no_tasks_icon"
             android:layout_width="106dp"
             android:layout_height="106dp"
-            android:contentDescription="@string/no_notification_icon"
+            android:contentDescription="@string/no_tasks_icon"
             android:src="@mipmap/astronaut_001"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -61,7 +61,7 @@
             android:layout_marginTop="21dp"
             android:gravity="center"
             android:paddingStart="16dp"
-            android:paddingLeft="16dp"
+            android:paddingEnd="16dp"
             android:text="@string/oppa_you_ve_no_tasks_for_today_at_all"
             android:textAlignment="center"
             android:textColor="@color/colorInputText"

@@ -44,9 +44,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Muhammd A. Hafez"
+            android:textAlignment="center"
             android:textColor="@color/colorTextDark"
-            android:textSize="24sp"
-            tools:text="User Name" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/tv_user_job_title"
@@ -54,15 +56,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="Android Developer"
+            android:textAlignment="center"
             android:textColor="@color/colorInputText"
-            android:textSize="16sp"
-            tools:text="Job Title" />
+            android:textSize="16sp" />
 
         <View
             android:layout_width="156dp"
             android:layout_height="1dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="12dp"
+            android:alpha="0.15"
             android:background="#9b9b9b" />
 
         <LinearLayout
@@ -141,6 +146,8 @@
             <TextView
                 android:id="@+id/tv_check_out_message"
                 android:layout_width="wrap_content"
+                android:gravity="center"
+                android:textAlignment="center"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/colorGray"

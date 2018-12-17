@@ -6,7 +6,6 @@
     android:background="@color/colorWhite"
     app:cardCornerRadius="20dp">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,6 +20,7 @@
             android:src="@mipmap/delete_event" />
 
         <TextView
+            android:id="@+id/tv_task_done_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -30,6 +30,7 @@
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/tv_task_done_more_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -53,7 +54,7 @@
                 android:background="@drawable/round_view_solid"
                 android:capitalize="words"
                 android:inputType="textCapWords"
-                android:text="@string/done"
+                android:text="@string/cancel"
                 android:textAllCaps="false"
                 android:textColor="@color/colorGreen"
                 android:textSize="16sp"

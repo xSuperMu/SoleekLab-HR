@@ -199,25 +199,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 @Override
                 public void onResponse(Call<Employee> call, Response<Employee> response) {
 
-//                    if (response.code() == 200) {
-//                        if (response.body() != null) {
-//                            currentEmployee = response.body();
-//                            Log.d(TAG_FRAG_LOGIN, "onResponse(): " + response.body());
-////                            EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
-//                            startActivity(new Intent(getContext(), HomeActivity.class));
-//                            getActivity().finish();
-//                        }
-//                    } else if (response.code() != 200){
-//                        Log.d(TAG_FRAG_LOGIN, "Response code ------> " + response.code() + " " + response.message() + " " + call.request().toString());
-//                        if (response.body() != null) {
-//                            Log.d(TAG_FRAG_LOGIN, "onResponse(): " + response.body());
-//                            String tvErrorMessage = response.body().getMessage();
-//                            Log.d(TAG_FRAG_LOGIN, "Error Message: " + tvErrorMessage);
-//                            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
-//                            tvErrorMessage.setVisibility(View.VISIBLE);
-//                            tvErrorMessage.setText(tvErrorMessage);
-//                        }
-//                    }
                     if (response.isSuccessful()) {
                         Log.e(TAG_FRAG_LOGIN, "Response code -> " + response.code() + " " + response.message() + " ");
                         currentEmployee = response.body();
@@ -227,44 +208,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                     } else {
                         getResponseErrorMessage(getActivity(), response);
                     }
-
-                    // works just fine
-//                    if (response.body() != null) {
-//                        currentEmployee = response.body();
-//                        {
-//                            if (response.body().getError() != null) {
-//                                Log.d(TAG_FRAG_LOGIN, "onResponse(): " + response.body());
-//                                String tvErrorMessage = response.body().getMessage();
-//                                Log.d(TAG_FRAG_LOGIN, "Error Message: " + tvErrorMessage);
-//                                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
-//                                tvErrorMessage.setVisibility(View.VISIBLE);
-//                                tvErrorMessage.setText(tvErrorMessage);
-//                            } else {
-//                                Log.d(TAG_FRAG_LOGIN, "onResponse(): " + response.body());
-//                                startActivity(new Intent(getContext(), HomeActivity.class));
-//                                getActivity().finish();
-//                            }
-
-
-//                    if (response.body() != null) {
-//                        currentEmployee = response.body();
-//                        Log.d(TAG_FRAG_LOGIN, "onResponse(): " + response.body());
-////                            EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
-//
-//                        String error = currentEmployee.getError();
-//                        Log.d(TAG_FRAG_LOGIN, "Error: " + error);
-//                        if (!TextUtils.isEmpty(error)) {
-//                            startActivity(new Intent(getContext(), HomeActivity.class));
-//
-////                            getActivity().finish();
-//                        } else if (error == null || error.equals("invalid username or password")) {
-//                            String tvErrorMessage = response.body().getMessage();
-//                            Log.d(TAG_FRAG_LOGIN, "Error Message: " + tvErrorMessage);
-//                            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
-//                            tvErrorMessage.setVisibility(View.VISIBLE);
-//                            tvErrorMessage.setText(tvErrorMessage);
-//                        }
-//                    }
                 }
 
                 @Override

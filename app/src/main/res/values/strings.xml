@@ -65,6 +65,8 @@
     <string name="oppa_you_ve_no_tasks_for_today_at_all">Oppa! You’ve no tasks for today at all</string>
     <string name="no_attendance_icon">No attendance icon</string>
     <string name="no_attendance_yet">No Attendance yet</string>
-
+    <string name="no_tasks_icon">no tasks icon</string>
+    <string name="vacation_icon">vacation icon</string>
+    <string name="cancel">Cancel</string>
 
 </resources>
