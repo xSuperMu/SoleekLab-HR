@@ -17,6 +17,10 @@ public class AttendanceFragment extends Fragment {
     public AttendanceFragment() {
     }
 
+    public static AttendanceFragment newInstance() {
+        return new AttendanceFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

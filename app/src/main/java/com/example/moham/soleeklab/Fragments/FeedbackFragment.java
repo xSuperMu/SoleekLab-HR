@@ -16,6 +16,10 @@ public class FeedbackFragment extends Fragment {
     public FeedbackFragment() {
     }
 
+    public static FeedbackFragment newInstance() {
+        return new FeedbackFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

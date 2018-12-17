@@ -50,7 +50,7 @@ import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_A
 public class HomeActivity extends AppCompatActivity implements HomeActivityInterface {
 
     @BindView(R.id.bottom_navigation_view)
-    BottomNavigationView bnvNavigation;
+    public BottomNavigationView bnvNavigation;
     private List<Fragment> mFragmentsList = new ArrayList<>(INT_BTN_NAV_FRAGMENTS_COUNT);
     private boolean doubleClickToExitPressedOnce = false;
 
@@ -133,6 +133,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                     doubleClickToExitPressedOnce = false;
                 }
             }, 2750);
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
+            getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Log.d(TAG_HOME_ACTIVITY, "Cleared Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
         } else {
             switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
             bnvNavigation.getMenu().getItem(INT_FRAGMENT_CHECK_IN_POS).setChecked(true);

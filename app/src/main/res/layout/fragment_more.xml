@@ -106,7 +106,6 @@
         android:alpha="0.15"
         android:background="#57606f" />
 
-
     <LinearLayout
         android:id="@+id/ll_logout"
         android:layout_width="match_parent"

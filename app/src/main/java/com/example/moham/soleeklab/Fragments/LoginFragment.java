@@ -36,6 +36,7 @@ import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
+import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -202,7 +203,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                     if (response.isSuccessful()) {
                         Log.e(TAG_FRAG_LOGIN, "Response code -> " + response.code() + " " + response.message() + " ");
                         currentEmployee = response.body();
-//                        EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
+                        EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
                         startActivity(new Intent(getActivity(), HomeActivity.class));
                         getActivity().finish();
                     } else {
@@ -445,5 +446,3 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         btnLoginBtn.setTypeface(loadFont(getContext(), FONT_DOSIS_SEMI_BOLD));
     }
 }
-
-
