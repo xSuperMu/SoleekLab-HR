@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/tv_week_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextDark"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Sunday, " />
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toRightOf="@id/tv_week_day"
+        app:layout_constraintTop_toTopOf="@id/tv_week_day"
+        tools:text="26/08/2018" />
+
+    <TextView
+        android:id="@+id/tv_total_work_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorGray"
+        android:textSize="14sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/tv_week_day"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_week_day"
+        tools:text="8h 32m" />
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="67dp"
+        android:layout_height="21dp"
+        android:background="@drawable/button_green"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_week_day"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_week_day"
+        tools:text="Vacation" />
+
+    <LinearLayout
+        android:id="@+id/ll_work_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="@id/tv_week_day"
+        app:layout_constraintTop_toBottomOf="@id/tv_week_day">
+
+        <TextView
+            android:id="@+id/tv_check_in_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            tools:text="09:38 AM" />
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:src="@mipmap/link" />
+
+        <TextView
+            android:id="@+id/tv_check_out_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            tools:text="06:59 PM" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

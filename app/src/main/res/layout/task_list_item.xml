@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:paddingTop="26dp"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/tv_task_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextDark"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Fake Facebooker" />
+
+    <TextView
+        android:id="@+id/tv_task_deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/colorWhite"
+        android:textColor="@color/colorInputText"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="@id/tv_task_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_task_name"
+        tools:text="Deadline: 08/23/2018" />
+
+</android.support.constraint.ConstraintLayout>

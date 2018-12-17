@@ -44,7 +44,7 @@
     <string name="check_in">Check-in</string>
     <string name="user_status_picture">User status picture</string>
     <string name="check_out">Check-out</string>
-
+    <string name="task_deadline">Deadline: %1s</string>
     <string name="check_out_messages">Checked-in %1$s (%2$s)</string>
     <string name="task_progress">%1$s/%2$s</string>
     <string name="tasks_this_week">Tasks this week</string>
