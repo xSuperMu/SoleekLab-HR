@@ -39,7 +39,8 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_no_attendance"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_no_attendance_icon"
@@ -68,5 +69,17 @@
             app:layout_constraintTop_toBottomOf="@id/iv_no_attendance_icon" />
     </android.support.constraint.ConstraintLayout>
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srlAttendanceSwipe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:visibility="visible">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_attendance"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

@@ -22,6 +22,7 @@ public class Constants {
     public static final String TAG_LOADING_RECEIVER = "tag-loading-receiver";
     public static final String TAG_LOADING_RECEIVER_ACTION_CLOSE = "com.example.moham.soleeklab.ACTION_CLOSE";
     public static final String TAG_EMPLOYEE_SHARED_PREF = "tag-shared-pref";
+    public static final String TAG_ATTENDANCE_ADAPTER = "AttendanceAdapter";
 
     public static final String FONT_DOSIS_BOLD = "fonts/Dosis-Bold.ttf";
     public static final String FONT_DOSIS_MEDIUM = "fonts/Dosis-Medium.ttf";
