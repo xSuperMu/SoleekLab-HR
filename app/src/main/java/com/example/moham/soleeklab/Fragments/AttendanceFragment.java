@@ -1,5 +1,7 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -25,6 +27,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_BOLD;
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_MEDIUM;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_ATTENDANCE;
 
 public class AttendanceFragment extends Fragment implements AttendanceFregInterface, SwipeRefreshLayout.OnRefreshListener {
@@ -68,11 +72,13 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     public void instantiateViews() {
         Log.d(TAG_FRAG_ATTENDANCE, "instantiateViews() has been instantiated");
 
+        setFontsToViews();
+
         // RecyclerView object dependencies
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvAttendance.setLayoutManager(mLinearLayoutManager);
         rvAttendance.setHasFixedSize(true);
-
+        srlAttendanceSwipe.setOnRefreshListener(this);
         mAttendanceAdapter = new AttendanceAdapter(getActivity());
         rvAttendance.setAdapter(mAttendanceAdapter);
 
@@ -82,8 +88,10 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark);
 
-
+        srlAttendanceSwipe.setRefreshing(true);
         loadAttendanceData();
+
+        Log.d(TAG_FRAG_ATTENDANCE, "instantiateViews() return");
     }
 
     @Override
@@ -98,6 +106,7 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     public void onRefresh() {
         Log.d(TAG_FRAG_ATTENDANCE, "onRefresh() has been instantiated");
         // refresh the data
+        srlAttendanceSwipe.setRefreshing(true);
         mAttendanceAdapter.swapAttendanceDataList(null);
         loadAttendanceData();
     }
@@ -105,7 +114,6 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     @Override
     public void loadAttendanceData() {
         Log.d(TAG_FRAG_ATTENDANCE, "loadAttendanceData() has been instantiated");
-        srlAttendanceSwipe.setRefreshing(true);
 
         List<Attendance> list = new ArrayList<>();
         list.add(new Attendance("Today, ", "31/08/2018", "09:38 AM", "06:59 PM", "8h 32m", null));
@@ -117,5 +125,21 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
 
         mAttendanceAdapter.swapAttendanceDataList(list);
         srlAttendanceSwipe.setRefreshing(false);
+
+    }
+
+    @Override
+    public Typeface loadFont(Context context, String fontPath) {
+        Log.d(TAG_FRAG_ATTENDANCE, "loadFont() has been instantiated");
+
+        return Typeface.createFromAsset(context.getAssets(), fontPath);
+    }
+
+    @Override
+    public void setFontsToViews() {
+        Log.d(TAG_FRAG_ATTENDANCE, "setFontsToViews() has been instantiated");
+        tvActionBarAttendance.setTypeface(loadFont(getActivity(), FONT_DOSIS_BOLD));
+        tvNoAttendanceText.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+        tvNoAttendanceText.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
     }
 }

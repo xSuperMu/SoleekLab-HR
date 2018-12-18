@@ -1,6 +1,7 @@
 package com.example.moham.soleeklab.Adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -19,7 +20,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_MEDIUM;
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_ATTENDANCE_ADAPTER;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_ATTENDANCE;
 
 public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.AttendanceViewHolder> {
 
@@ -50,6 +54,14 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
         String checkoutTime = userAttendance.getCheckoutTime();
         String totaltime = userAttendance.getTotaltime();
         String status = userAttendance.getStatus();
+
+        // Loading fonts
+        attendanceViewHolder.tvStatus.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
+        attendanceViewHolder.tvTotalWorkItem.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
+        attendanceViewHolder.tvCheckInTime.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
+        attendanceViewHolder.tvCheckOutTime.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
+        attendanceViewHolder.tvWeekDay.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
+        attendanceViewHolder.tvDate.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
 
         if (!TextUtils.isEmpty(status)) {
             attendanceViewHolder.tvStatus.setVisibility(View.VISIBLE);
@@ -87,6 +99,12 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
         Log.d(TAG_ATTENDANCE_ADAPTER, "swapDataList() has been instantiated");
         mAttendanceList = attendanceList;
         notifyDataSetChanged();
+    }
+
+    public Typeface loadFont(Context context, String fontPath) {
+        Log.d(TAG_FRAG_ATTENDANCE, "loadFont() has been instantiated");
+
+        return Typeface.createFromAsset(context.getAssets(), fontPath);
     }
 
     public class AttendanceViewHolder extends RecyclerView.ViewHolder {
