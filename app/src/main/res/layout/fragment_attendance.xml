@@ -73,7 +73,9 @@
         android:id="@+id/srlAttendanceSwipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
         android:visibility="visible">
 
         <android.support.v7.widget.RecyclerView

@@ -18,6 +18,7 @@ import com.example.moham.soleeklab.Interfaces.AttendanceFregInterface;
 import com.example.moham.soleeklab.Model.Attendance;
 import com.example.moham.soleeklab.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -81,14 +82,8 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark);
 
-        srlAttendanceSwipe.post(new Runnable() {
 
-            @Override
-            public void run() {
-                srlAttendanceSwipe.setRefreshing(true);
-                // Fetching data from server
-            }
-        });
+        loadAttendanceData();
     }
 
     @Override
@@ -103,10 +98,24 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     public void onRefresh() {
         Log.d(TAG_FRAG_ATTENDANCE, "onRefresh() has been instantiated");
         // refresh the data
+        mAttendanceAdapter.swapAttendanceDataList(null);
+        loadAttendanceData();
     }
 
     @Override
     public void loadAttendanceData() {
         Log.d(TAG_FRAG_ATTENDANCE, "loadAttendanceData() has been instantiated");
+        srlAttendanceSwipe.setRefreshing(true);
+
+        List<Attendance> list = new ArrayList<>();
+        list.add(new Attendance("Today, ", "31/08/2018", "09:38 AM", "06:59 PM", "8h 32m", null));
+        list.add(new Attendance("Yesterday, ", "30/08/2018", "09:38 AM", "NA", "NA", null));
+        list.add(new Attendance("Tuesday, ", "29/08/2018", null, null, null, "Absence"));
+        list.add(new Attendance("Monday, ", "28/08/2018", null, null, null, "Vacation"));
+        list.add(new Attendance("Sunday, ", "27/08/2018", "09:38 AM", "06:59 PM", "8h 32m", null));
+        list.add(new Attendance("Saturday, ", "26/08/2018", "09:38 AM", "06:59 PM", "8h 32m", null));
+
+        mAttendanceAdapter.swapAttendanceDataList(list);
+        srlAttendanceSwipe.setRefreshing(false);
     }
 }
