@@ -28,7 +28,6 @@ import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_ATTENDANCE;
 
 public class AttendanceFragment extends Fragment implements AttendanceFregInterface, SwipeRefreshLayout.OnRefreshListener {
 
-
     @BindView(R.id.tv_action_bar_attendance)
     TextView tvActionBarAttendance;
     @BindView(R.id.iv_no_attendance_icon)
