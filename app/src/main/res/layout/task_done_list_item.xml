@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:paddingTop="26dp"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/tv_task_todo_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextDark"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Fake Facebooker" />
+
+    <TextView
+        android:id="@+id/tv_task_todo_deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/colorWhite"
+        android:textColor="@color/colorInputText"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="@id/tv_task_todo_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_task_todo_name"
+        tools:text="Deadline: 08/23/2018" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@id/tv_task_todo_deadline"
+        app:layout_constraintTop_toBottomOf="@id/tv_task_todo_deadline">
+
+        <TextView
+            android:id="@+id/tv_task_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done: "
+            android:textColor="@color/colorInputText"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_done_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorSalmonPink"
+            android:textSize="14sp"
+            tools:text="08/24/2018" />
+
+        <ImageView
+            android:id="@+id/iv_clock_icon"
+            android:layout_width="16dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="6dp"
+            android:src="@mipmap/history" />
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

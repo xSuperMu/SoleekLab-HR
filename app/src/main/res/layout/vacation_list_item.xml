@@ -8,7 +8,6 @@
     android:paddingTop="20dp"
     android:paddingBottom="20dp">
 
-
     <TextView
         android:id="@+id/tv_vacation_name"
         android:layout_width="wrap_content"
@@ -128,6 +127,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginTop="8dp"
         android:src="@mipmap/chat"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="@id/tv_vacation_reason"
         app:layout_constraintTop_toBottomOf="@id/tv_vacation_reason" />
 
@@ -138,6 +138,7 @@
         android:layout_marginStart="4dp"
         android:gravity="start"
         android:textSize="14sp"
+        android:visibility="visible"
         app:layout_constraintLeft_toRightOf="@id/iv_chat_icon"
         app:layout_constraintTop_toTopOf="@id/iv_chat_icon"
         tools:text="Refusing reason to be written here that descrips the reason why my vacation been refused" />

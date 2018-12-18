@@ -37,4 +37,36 @@
         android:alpha="0.15"
         android:background="#57606f" />
 
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cc_feedback_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/iv_feedback_icon"
+            android:layout_width="69dp"
+            android:layout_height="72dp"
+            android:src="@mipmap/opinion"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.4" />
+
+        <TextView
+            android:id="@+id/tv_feedback_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="27dp"
+            android:gravity="center"
+            android:text="@string/don_t_hesitate_to_send_your_feedback"
+            android:textAlignment="center"
+            android:textColor="#5957606f"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_feedback_icon" />
+    </android.support.constraint.ConstraintLayout>
+
 </LinearLayout>
