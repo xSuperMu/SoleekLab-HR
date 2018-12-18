@@ -79,9 +79,11 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 
         attendanceViewHolder.tvWeekDay.setText(day);
         attendanceViewHolder.tvDate.setText(dayDate);
-        if (!TextUtils.isEmpty(checkinTime)) {
+        if (!TextUtils.isEmpty(checkinTime) || !TextUtils.isEmpty(checkoutTime)) {
             attendanceViewHolder.tvCheckInTime.setText(checkinTime);
             attendanceViewHolder.tvCheckOutTime.setText(checkoutTime);
+            attendanceViewHolder.llWorkTime.setVisibility(View.VISIBLE);
+
         } else {
             attendanceViewHolder.llWorkTime.setVisibility(View.GONE);
         }
