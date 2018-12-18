@@ -43,22 +43,83 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:gravity="center_vertical"
-        app:errorTextAppearance="@style/itl_error_appearance"
-        app:hintTextAppearance="@style/itl_normal_appearance"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/error_message">
+        android:gravity="center_vertical">
 
         <EditText
             android:id="@+id/et_starting_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:editable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:hint="@string/starting_date"
+            android:textColor="@color/colorTextDark"
+            android:textSize="16sp" />
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tv_for_text"
+        style="?android:attr/spinnerItemStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:singleLine="true"
+        android:text="For"
+        android:textColor="?android:textColorHint"
+        android:textSize="16sp" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinner_vacation"
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:spinnerMode="dialog" />
+
+    <TextView
+        android:id="@+id/tv_vacation_type"
+        style="?android:attr/spinnerItemStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:singleLine="true"
+        android:text="Vacation Type"
+        android:textColor="?android:textColorHint"
+        android:textSize="16sp" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinner_vacation_type"
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:spinnerMode="dialog" />
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_vacation_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/et_vacation_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
+            android:hint="Reason"
+            android:singleLine="true"
             android:textColor="@color/colorTextDark"
             android:textSize="16sp" />
     </android.support.design.widget.TextInputLayout>

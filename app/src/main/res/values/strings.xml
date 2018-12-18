@@ -76,4 +76,5 @@
     <string name="task_done">Done: </string>
     <string name="you_marked_done_at">You Marked Done: %1$s</string>
     <string name="changed_by">— —Changed By %1$s: %2$s</string>
+    <string name="text_for">for</string>
 </resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="vacation_type_array">
+        <item>Reason 1</item>
+        <item>Travelling</item>
+        <item>Reason 3</item>
+    </string-array>
+</resources>

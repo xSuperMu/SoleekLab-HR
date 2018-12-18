@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_NEW_VACATION;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VACATION;
 
 public class VacationFragment extends Fragment implements VacationFragmentInterface {
@@ -66,7 +67,7 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     public void handleNewVacation() {
         Log.d(TAG_FRAG_VACATION, "handleNewVacation() has been instantiated");
         Log.d(TAG_FRAG_VACATION, "NewVacation::Button has been Clicked");
-//        switchFragment(NewVacationFragment.newInstance(), TAG_FRAG_NEW_VACATION);
+        switchFragment(NewVacationFragment.newInstance(), TAG_FRAG_NEW_VACATION);
     }
 
     @Override
