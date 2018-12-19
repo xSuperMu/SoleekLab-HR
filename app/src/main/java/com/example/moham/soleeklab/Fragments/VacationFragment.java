@@ -1,5 +1,7 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Interfaces.VacationFragmentInterface;
 import com.example.moham.soleeklab.R;
 
@@ -37,6 +40,7 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     @BindView(R.id.cl_no_vacation)
     ConstraintLayout clNoVacation;
     Unbinder unbinder;
+    HomeActivity mHomeActivity;
 
     public VacationFragment() {
     }
@@ -50,6 +54,8 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG_FRAG_VACATION, "onCreateView() has been instantiated");
+//        Log.d(TAG_FRAG_VACATION, "Backstack count ----> " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
+//        mHomeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_VACATION_POS - 1).setChecked(true);
         View view = inflater.inflate(R.layout.fragment_vacation, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
@@ -80,5 +86,12 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
         transaction.commit();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG_FRAG_VACATION, "onAttach() has been instantiated");
 
+        if (context instanceof Activity)
+            mHomeActivity = (HomeActivity) context;
+    }
 }

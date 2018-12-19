@@ -69,6 +69,8 @@ public class MoreFragment extends Fragment implements MoreFragmentInterface {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG_FRAG_MORE, "onCreateView() has been instantiated");
+//        Log.d(TAG_FRAG_MORE, "Backstack count ----> " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
+
         View view = inflater.inflate(R.layout.fragment_more, container, false);
         unbinder = ButterKnife.bind(this, view);
         homeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_MORE_POS - 1).setChecked(true);
@@ -95,7 +97,6 @@ public class MoreFragment extends Fragment implements MoreFragmentInterface {
     public void handleFeedbackClick() {
         Log.d(TAG_FRAG_MORE, "Feedback::Button has been clicked");
         switchFragment(FeedbackFragment.newInstance(), TAG_FRAG_FEEDBACK);
-
     }
 
     @OnClick(R.id.ll_logout)
@@ -144,7 +145,6 @@ public class MoreFragment extends Fragment implements MoreFragmentInterface {
                 Intent authIntent = new Intent(getActivity(), AuthActivity.class);
                 getActivity().startActivity(authIntent);
                 getActivity().finish();
-                getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
         });
         btnStay.setOnClickListener(new View.OnClickListener() {

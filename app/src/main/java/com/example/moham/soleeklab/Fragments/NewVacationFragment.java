@@ -1,6 +1,8 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.R;
 
 import java.text.SimpleDateFormat;
@@ -26,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_VACATION_POS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_NEW_VACATION;
 
 public class NewVacationFragment extends Fragment {
@@ -54,6 +58,8 @@ public class NewVacationFragment extends Fragment {
     @BindView(R.id.til_vacation_reason)
     TextInputLayout tilVacationReason;
 
+    HomeActivity mHomeActivity;
+
     public NewVacationFragment() {
     }
 
@@ -64,11 +70,23 @@ public class NewVacationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG_FRAG_NEW_VACATION, "onCreateView() has been instantiated");
+//        Log.d(TAG_FRAG_NEW_VACATION, "Backstack count ----> " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
+
+        mHomeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_VACATION_POS - 1).setChecked(true);
         View view = inflater.inflate(R.layout.fragment_new_vacation, container, false);
 
         unbinder = ButterKnife.bind(this, view);
         instantiateViews();
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG_FRAG_NEW_VACATION, "onAttach() has been instantiated");
+
+        if (context instanceof Activity)
+            mHomeActivity = (HomeActivity) context;
     }
 
     @Override

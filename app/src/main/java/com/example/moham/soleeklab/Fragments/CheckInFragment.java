@@ -1,5 +1,6 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Interfaces.CheckInFragmentInterface;
 import com.example.moham.soleeklab.R;
 
@@ -21,6 +23,7 @@ import butterknife.Unbinder;
 
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_MEDIUM;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_LIBREFRANKLIN_MEDIUM;
+import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_CHECK_IN_POS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_CHECK_IN;
 
 public class CheckInFragment extends Fragment implements CheckInFragmentInterface {
@@ -35,6 +38,8 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
     TextView tvCheckInText;
     Unbinder unbinder;
 
+    HomeActivity mHomeActivity;
+
     public CheckInFragment() {
     }
 
@@ -47,6 +52,7 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
                              Bundle savedInstanceState) {
         Log.d(TAG_FRAG_CHECK_IN, "onCreateView() has been instantiated");
         View view = inflater.inflate(R.layout.fragment_check_in, container, false);
+        mHomeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_CHECK_IN_POS).setChecked(true);
 
         unbinder = ButterKnife.bind(this, view);
         return view;
@@ -87,5 +93,14 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
     public void handleCheckIn() {
         Log.d(TAG_FRAG_CHECK_IN, "handleCheckIn() has been instantiated");
 
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG_FRAG_CHECK_IN, "onAttach() has been instantiated");
+        if (context instanceof Activity)
+            mHomeActivity = (HomeActivity) context;
     }
 }

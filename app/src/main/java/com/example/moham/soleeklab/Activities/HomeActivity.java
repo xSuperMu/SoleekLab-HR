@@ -16,9 +16,12 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.moham.soleeklab.Fragments.AttendanceFragment;
 import com.example.moham.soleeklab.Fragments.CheckInFragment;
+import com.example.moham.soleeklab.Fragments.FeedbackFragment;
 import com.example.moham.soleeklab.Fragments.HomeFragment;
 import com.example.moham.soleeklab.Fragments.MoreFragment;
+import com.example.moham.soleeklab.Fragments.NewVacationFragment;
 import com.example.moham.soleeklab.Fragments.NotificationFragment;
 import com.example.moham.soleeklab.Fragments.TasksFragment;
 import com.example.moham.soleeklab.Fragments.VacationFragment;
@@ -61,18 +64,23 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                     switch (menuItem.getItemId()) {
                         case R.id.navigation_home:
                             switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+                            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
                             return true;
                         case R.id.navigation_vacation:
                             switchFragment(INT_FRAGMENT_VACATION_POS, TAG_FRAG_VACATION);
+                            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
                             return true;
                         case R.id.navigation_task:
                             switchFragment(INT_FRAGMENT_TASKS_POS, TAG_FRAG_TASKS);
+                            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
                             return true;
                         case R.id.navigation_notification:
                             switchFragment(INT_FRAGMENT_NOTIFICATIONS_POS, TAG_FRAG_NOTIFICATION);
+                            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
                             return true;
                         case R.id.navigation_more:
                             switchFragment(INT_FRAGMENT_MORE_POS, TAG_FRAG_MORE);
+                            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
                             return true;
                     }
                     return false;
@@ -124,7 +132,9 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
         if (doubleClickToExitPressedOnce) finish();
 
-        if (bnvNavigation.getSelectedItemId() == R.id.navigation_home) {
+
+        Fragment fragment = getVisibleFragment();
+        if (fragment instanceof HomeFragment) {
             Toast.makeText(this, "Click once more to close the app", Toast.LENGTH_SHORT).show();
             doubleClickToExitPressedOnce = true;
             new Handler().postDelayed(new Runnable() {
@@ -133,14 +143,43 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                     doubleClickToExitPressedOnce = false;
                 }
             }, 2750);
-        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
-            getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            Log.d(TAG_HOME_ACTIVITY, "Cleared Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
+        } else if (fragment instanceof VacationFragment) {
+            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+        } else if (fragment instanceof NewVacationFragment) {
+            switchFragment(INT_FRAGMENT_VACATION_POS, TAG_FRAG_VACATION);
+        } else if (fragment instanceof TasksFragment) {
+            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+        } else if (fragment instanceof NotificationFragment) {
+            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+        } else if (fragment instanceof MoreFragment) {
+            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+        } else if (fragment instanceof AttendanceFragment) {
+            switchFragment(INT_FRAGMENT_MORE_POS, TAG_FRAG_MORE);
+        } else if (fragment instanceof FeedbackFragment) {
+            switchFragment(INT_FRAGMENT_MORE_POS, TAG_FRAG_MORE);
         } else {
             switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
-            bnvNavigation.getMenu().getItem(INT_FRAGMENT_CHECK_IN_POS).setChecked(true);
         }
+
+//        if (bnvNavigation.getSelectedItemId() == R.id.navigation_home) {
+//            Toast.makeText(this, "Click once more to close the app", Toast.LENGTH_SHORT).show();
+//            doubleClickToExitPressedOnce = true;
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    doubleClickToExitPressedOnce = false;
+//                }
+//            }, 2750);
+//        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+////            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
+////            getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+////            Log.d(TAG_HOME_ACTIVITY, "Cleared Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
+//
+//
+//        } else {
+//            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+//            bnvNavigation.getMenu().getItem(INT_FRAGMENT_CHECK_IN_POS).setChecked(true);
+//        }
 
     }
 
@@ -180,5 +219,16 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         } catch (IllegalAccessException e) {
             Log.e(TAG_HOME_ACTIVITY, "Unable to change value of shift mode");
         }
+    }
+
+    @Override
+    public Fragment getVisibleFragment() {
+        Log.d(TAG_HOME_ACTIVITY, "getVisibleFragment() has been instantiated");
+        FragmentManager fragmentManager = HomeActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments)
+            if (fragment != null && fragment.isVisible())
+                return fragment;
+        return null;
     }
 }

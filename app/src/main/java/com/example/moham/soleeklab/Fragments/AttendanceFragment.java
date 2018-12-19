@@ -61,6 +61,12 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG_FRAG_ATTENDANCE, "onCreateView() has been instantiated");
+//        Log.d(TAG_FRAG_ATTENDANCE, "Backstack count ----> " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
+//        if (getActivity().getSupportFragmentManager().getBackStackEntryCount() > 1) {
+//            getActivity().getSupportFragmentManager().popBackStack(TAG_FRAG_MORE, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//            Log.d(TAG_FRAG_ATTENDANCE, "if condition, Backstack count ----> " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
+
+//        }
         View view = inflater.inflate(R.layout.fragment_attendance, container, false);
         unbinder = ButterKnife.bind(this, view);
 
@@ -98,6 +104,9 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG_FRAG_ATTENDANCE, "onDestroyView() has been instantiated");
+
+        // TODO DELETE
+//        getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         unbinder.unbind();
     }
