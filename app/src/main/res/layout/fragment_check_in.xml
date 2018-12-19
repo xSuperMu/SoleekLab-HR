@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="54dp"
+            android:layout_marginTop="24dp"
             android:clickable="false">
 
             <ImageView
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="34dp"
-            android:layout_marginBottom="60dp">
+            android:layout_marginBottom="20dp">
 
             <View
                 android:id="@+id/v_circle"

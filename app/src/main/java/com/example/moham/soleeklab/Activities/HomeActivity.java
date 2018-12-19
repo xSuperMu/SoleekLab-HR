@@ -134,7 +134,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
 
         Fragment fragment = getVisibleFragment();
-        if (fragment instanceof HomeFragment) {
+        if (fragment instanceof HomeFragment || fragment instanceof CheckInFragment) {
             Toast.makeText(this, "Click once more to close the app", Toast.LENGTH_SHORT).show();
             doubleClickToExitPressedOnce = true;
             new Handler().postDelayed(new Runnable() {
