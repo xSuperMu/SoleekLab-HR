@@ -129,7 +129,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
     @Override
     public void onBackPressed() {
-
+        Log.d(TAG_HOME_ACTIVITY, "onBackPressed() has been instantiated");
         if (doubleClickToExitPressedOnce) finish();
 
 
@@ -160,26 +160,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         } else {
             switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
         }
-
-//        if (bnvNavigation.getSelectedItemId() == R.id.navigation_home) {
-//            Toast.makeText(this, "Click once more to close the app", Toast.LENGTH_SHORT).show();
-//            doubleClickToExitPressedOnce = true;
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    doubleClickToExitPressedOnce = false;
-//                }
-//            }, 2750);
-//        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-////            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
-////            getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-////            Log.d(TAG_HOME_ACTIVITY, "Cleared Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
-//
-//
-//        } else {
-//            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
-//            bnvNavigation.getMenu().getItem(INT_FRAGMENT_CHECK_IN_POS).setChecked(true);
-//        }
 
     }
 

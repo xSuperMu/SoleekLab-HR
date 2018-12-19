@@ -76,8 +76,6 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     Unbinder unbinder;
     @BindView(R.id.tv_resetting_pass)
     TextView tvResettingPass;
-    @BindView(R.id.tv_more_info)
-    TextView tvMoreInfo;
     @BindView(R.id.error_message)
     TextView tvErrorMessage;
 
@@ -429,7 +427,6 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     public void setFontsToViews() {
         Log.d(TAG_FRAG_RESET_PASS, "setFontsToViews() has been instantiated");
         tvResettingPass.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
-        tvMoreInfo.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
         tilNewPasswordLayout.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
         tilRetypeNewPasswordLayout.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
         edtNewPassword.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));

@@ -269,12 +269,14 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             @Override
             public void afterTextChanged(Editable s) {
                 String email = edtLoginEmail.getText().toString();
-
+//
                 if (!TextUtils.isEmpty(email)) {
                     DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
-
+//                    edtLoginEmail.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorBlue), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorGray));
+//                    edtLoginEmail.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorGray), PorterDuff.Mode.SRC_ATOP);
+
                 }
             }
         };
@@ -294,9 +296,10 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 String password = edtLoginPassword.getText().toString();
                 if (!TextUtils.isEmpty(password)) {
                     DrawableCompat.setTint(edtLoginPassword.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
+//                    edtLoginPassword.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorBlue), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     DrawableCompat.setTint(edtLoginPassword.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorGray));
-
+//                    edtLoginPassword.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorGray), PorterDuff.Mode.SRC_ATOP);
                 }
             }
         };

@@ -503,7 +503,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
         ibReload.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
         tvResend.setEnabled(true);
         tvResend.setTextColor(getResources().getColor(R.color.colorPurple));
-        tvResend.setText(getResources().getString(R.string.reset));
+        tvResend.setText(getResources().getString(R.string.resend));
     }
 
     @Override

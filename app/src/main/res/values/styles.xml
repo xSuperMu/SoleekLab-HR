@@ -6,8 +6,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorBlue</item>
-        <item name="colorControlActivated">@color/colorBlue</item>
-        <item name="colorControlHighlight">@color/colorBlue</item>
+
+
+        <!--<item name="colorControlActivated">@color/colorBlue</item>-->
+        <!--<item name="colorControlHighlight">@color/colorBlue</item>-->
 
         // PinView
         <item name="pinViewStyle">@style/PinWidget.PinView</item>
@@ -106,5 +108,13 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+
+    // for pre Lollipop, api 21 and below
+
+    <style name="MyEditTextStyle2" parent="Widget.AppCompat.EditText">
+        <item name="colorControlNormal">@color/colorGray</item>
+        <item name="colorControlActivated">@color/colorBlue</item>
     </style>
 </resources>
