@@ -2,16 +2,20 @@ package com.example.moham.soleeklab.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -273,10 +277,22 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 if (!TextUtils.isEmpty(email)) {
                     DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
 //                    edtLoginEmail.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorBlue), PorterDuff.Mode.SRC_ATOP);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorBlue));
+                        edtLoginEmail.setBackgroundTintList(colorStateList);
+                        ViewCompat.setBackgroundTintList(edtLoginEmail, colorStateList);
+                    }
+                    edtLoginEmail.getBackground().setColorFilter(getResources().getColor(R.color.colorBlue), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorGray));
 //                    edtLoginEmail.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorGray), PorterDuff.Mode.SRC_ATOP);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorGray));
+                        edtLoginEmail.setBackgroundTintList(colorStateList);
+                        ViewCompat.setBackgroundTintList(edtLoginEmail, colorStateList);
+                        edtLoginEmail.getBackground().setColorFilter(getResources().getColor(R.color.colorGray), PorterDuff.Mode.SRC_ATOP);
 
+                    }
                 }
             }
         };
@@ -296,10 +312,24 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 String password = edtLoginPassword.getText().toString();
                 if (!TextUtils.isEmpty(password)) {
                     DrawableCompat.setTint(edtLoginPassword.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorBlue));
+                        edtLoginPassword.setBackgroundTintList(colorStateList);
+                        ViewCompat.setBackgroundTintList(edtLoginPassword, colorStateList);
+                    }
+                    edtLoginPassword.getBackground().setColorFilter(getResources().getColor(R.color.colorBlue), PorterDuff.Mode.SRC_ATOP);
+
 //                    edtLoginPassword.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorBlue), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     DrawableCompat.setTint(edtLoginPassword.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorGray));
 //                    edtLoginPassword.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorGray), PorterDuff.Mode.SRC_ATOP);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ColorStateList colorStateList = ColorStateList.valueOf(getResources().getColor(R.color.colorGray));
+                        edtLoginPassword.setBackgroundTintList(colorStateList);
+                        ViewCompat.setBackgroundTintList(edtLoginPassword, colorStateList);
+                    }
+                    edtLoginPassword.getBackground().setColorFilter(getResources().getColor(R.color.colorGray), PorterDuff.Mode.SRC_ATOP);
+
                 }
             }
         };

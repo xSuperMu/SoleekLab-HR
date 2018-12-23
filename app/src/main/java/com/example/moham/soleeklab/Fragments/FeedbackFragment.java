@@ -24,7 +24,6 @@ public class FeedbackFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG_FRAG_FEEDBACK, "onCreateView() has been instantiated");
-//        Log.d(TAG_FRAG_FEEDBACK, "Backstack count ----> " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
 
         View view = inflater.inflate(R.layout.fragment_feedback, container, false);
         return view;
@@ -35,8 +34,5 @@ public class FeedbackFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG_FRAG_FEEDBACK, "onDestroy() has been instantiated");
-
-        // TODO DELETE
-//        getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

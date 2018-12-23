@@ -19,11 +19,16 @@ public class Constants {
     public static final String TAG_FRAG_RESET_PASS = "tag-frag-reset-password";
     public static final String TAG_FRAG_ATTENDANCE = "tag-frag-attendance";
     public static final String TAG_FRAG_FEEDBACK = "tag-frag-feedback";
+    public static final String TAG_FRAG_TODO = "tag-frag-todo";
+    public static final String TAG_FRAG_DONE = "tag-frag-done";
     public static final String TAG_LOADING_RECEIVER = "tag-loading-receiver";
     public static final String TAG_LOADING_RECEIVER_ACTION_CLOSE = "com.example.moham.soleeklab.ACTION_CLOSE";
     public static final String TAG_EMPLOYEE_SHARED_PREF = "tag-shared-pref";
     public static final String TAG_ATTENDANCE_ADAPTER = "AttendanceAdapter";
     public static final String TAG_NOTIFICATION_ADAPTER = "NotificationAdapter";
+    public static final String TAG_TASKS_TODO_ADAPTER = "TasksToDoAdapter";
+    public static final String TAG_TASKS_DONE_ADAPTER = "TasksDoneAdapter";
+    public static final String TAG_VACATION_ADAPTER = "VacationAdapter";
 
     public static final String FONT_DOSIS_BOLD = "fonts/Dosis-Bold.ttf";
     public static final String FONT_DOSIS_MEDIUM = "fonts/Dosis-Medium.ttf";

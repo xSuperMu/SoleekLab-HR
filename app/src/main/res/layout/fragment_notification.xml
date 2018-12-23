@@ -73,13 +73,13 @@
         android:id="@+id/srlNotificationSwipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
         android:visibility="gone">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_notification"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:listitem="@layout/notification_list_item"
             android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

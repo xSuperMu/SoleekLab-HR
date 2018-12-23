@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorWhite"
-    android:paddingTop="26dp"
-    android:paddingBottom="20dp">
+    android:paddingTop="26dp">
 
     <TextView
         android:id="@+id/tv_task_todo_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:textColor="@color/colorTextDark"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,6 +26,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="20dp"
         android:background="@color/colorWhite"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:textColor="@color/colorInputText"
         android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="@id/tv_task_todo_name"
@@ -32,10 +35,13 @@
         tools:text="Deadline: 08/23/2018" />
 
     <LinearLayout
+        android:id="@+id/ll_done_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_constraintStart_toStartOf="@id/tv_task_todo_deadline"
         app:layout_constraintTop_toBottomOf="@id/tv_task_todo_deadline">
 
@@ -64,5 +70,13 @@
             android:src="@mipmap/history" />
     </LinearLayout>
 
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:alpha="0.15"
+        android:background="@color/colorGray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_done_date" />
 </android.support.constraint.ConstraintLayout>

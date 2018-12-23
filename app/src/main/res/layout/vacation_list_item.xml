@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorWhite"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp">
+    android:paddingTop="20dp">
 
     <TextView
         android:id="@+id/tv_vacation_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:textColor="@color/colorTextDark"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -23,6 +23,7 @@
     <TextView
         android:layout_width="67dp"
         android:layout_height="21dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/button_green"
         android:gravity="center_vertical|center"
         android:textColor="@color/colorWhite"
@@ -113,33 +114,54 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:gravity="start"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:textColor="@color/colorGray"
         android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="@id/ll_admin_vacation_period"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_admin_vacation_period"
         tools:text="Some more words to descrip reson in just two rows or one" />
 
-
-    <ImageView
-        android:id="@+id/iv_chat_icon"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="8dp"
-        android:src="@mipmap/chat"
-        android:visibility="visible"
-        app:layout_constraintLeft_toLeftOf="@id/tv_vacation_reason"
-        app:layout_constraintTop_toBottomOf="@id/tv_vacation_reason" />
-
-    <TextView
-        android:id="@+id/tv_refusing_reason"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_rejection_reason"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:gravity="start"
-        android:textSize="14sp"
-        android:visibility="visible"
-        app:layout_constraintLeft_toRightOf="@id/iv_chat_icon"
-        app:layout_constraintTop_toTopOf="@id/iv_chat_icon"
-        tools:text="Refusing reason to be written here that descrips the reason why my vacation been refused" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_vacation_reason">
+
+        <ImageView
+            android:id="@+id/iv_chat_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="start"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@mipmap/chat"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_refusing_reason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:textSize="14sp"
+            android:visibility="visible"
+            tools:text="Refusing reason to be written here that describes the reason why my vacation been refused" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:alpha="0.15"
+        android:background="#57606f"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_rejection_reason" />
 </android.support.constraint.ConstraintLayout>

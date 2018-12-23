@@ -162,7 +162,7 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
             tilRetypeNewPasswordLayout.setError(null);
             return true;
         }
-        tilRetypeNewPasswordLayout.setError(getString(R.string.error_short_password));
+        tilRetypeNewPasswordLayout.setError(getString(R.string.error_match_password));
         return false;
     }
 

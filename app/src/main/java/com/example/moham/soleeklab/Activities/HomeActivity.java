@@ -23,6 +23,8 @@ import com.example.moham.soleeklab.Fragments.HomeFragment;
 import com.example.moham.soleeklab.Fragments.MoreFragment;
 import com.example.moham.soleeklab.Fragments.NewVacationFragment;
 import com.example.moham.soleeklab.Fragments.NotificationFragment;
+import com.example.moham.soleeklab.Fragments.TaskDoneFragment;
+import com.example.moham.soleeklab.Fragments.TaskToDoFragment;
 import com.example.moham.soleeklab.Fragments.TasksFragment;
 import com.example.moham.soleeklab.Fragments.VacationFragment;
 import com.example.moham.soleeklab.Interfaces.HomeActivityInterface;
@@ -157,6 +159,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
             switchFragment(INT_FRAGMENT_MORE_POS, TAG_FRAG_MORE);
         } else if (fragment instanceof FeedbackFragment) {
             switchFragment(INT_FRAGMENT_MORE_POS, TAG_FRAG_MORE);
+        } else if (fragment instanceof TaskToDoFragment) {
+            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+        } else if (fragment instanceof TaskDoneFragment) {
+            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
         } else {
             switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
         }

@@ -61,7 +61,6 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
     @Override
     public void replaceFragmentWithAnimation(Fragment fragment, String tag) {
         Log.d(TAG_FRAG_CHECK_IN, "replaceFragmentWithAnimation() has been instantiated");
-
     }
 
     @Override

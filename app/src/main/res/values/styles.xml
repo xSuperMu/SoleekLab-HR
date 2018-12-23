@@ -7,9 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorBlue</item>
 
-
-        <!--<item name="colorControlActivated">@color/colorBlue</item>-->
-        <!--<item name="colorControlHighlight">@color/colorBlue</item>-->
+        <item name="colorControlNormal">@color/colorGray</item>
+        <item name="colorControlActivated">@color/colorBlue</item>
+        <item name="colorControlHighlight">@color/colorBlue</item>
 
         // PinView
         <item name="pinViewStyle">@style/PinWidget.PinView</item>
@@ -113,8 +113,18 @@
 
     // for pre Lollipop, api 21 and below
 
-    <style name="MyEditTextStyle2" parent="Widget.AppCompat.EditText">
+    <style name="EditTextTheme" parent="Widget.AppCompat.EditText">
         <item name="colorControlNormal">@color/colorGray</item>
         <item name="colorControlActivated">@color/colorBlue</item>
+        <item name="android:colorAccent">@color/colorBlue</item>
+        <item name="colorControlHighlight">@color/colorBlue</item>
+    </style>
+
+    <style name="TextInputLayoutTheme" parent="@android:style/TextAppearance">
+        <item name="colorControlNormal">@color/colorGray</item>
+        <item name="colorControlActivated">@color/colorBlue</item>
+        <item name="android:colorAccent">@color/colorBlue</item>
+        <item name="colorControlHighlight">@color/colorBlue</item>
+
     </style>
 </resources>
