@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="54dp"
+            android:layout_marginTop="24dp"
             android:clickable="false">
 
             <ImageView
@@ -101,7 +101,7 @@
             android:id="@+id/ll_check_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="48dp"
+            android:layout_marginBottom="20dp"
             android:orientation="vertical"
             android:visibility="visible">
 
@@ -110,7 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="34dp">
+                android:layout_marginTop="24dp">
 
                 <View
                     android:layout_width="108dp"
@@ -146,10 +146,10 @@
             <TextView
                 android:id="@+id/tv_check_out_message"
                 android:layout_width="wrap_content"
-                android:gravity="center"
-                android:textAlignment="center"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:textAlignment="center"
                 android:textColor="@color/colorGray"
                 tools:text="Checked-in 11:43AM (8h 36m)" />
 

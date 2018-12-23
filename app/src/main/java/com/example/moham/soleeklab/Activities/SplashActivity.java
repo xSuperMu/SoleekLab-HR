@@ -43,7 +43,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        String token = sharedPref.getString("EMPLOYEE_TOKEN", "");
+        String token = sharedPref.getString("EMPLOYEE", "");
         Log.d(TAG_SPLASH_ACTIVITY, "checkUserSession: Employee Token = " + token);
 
         if (!TextUtils.isEmpty(token)) {

@@ -9,7 +9,13 @@ public class Employee implements Serializable {
 
     @SerializedName("data")
     @Expose
-    private Data data;
+    private Employee employee;
+    @SerializedName("user")
+    @Expose
+    private User user;
+    @SerializedName("token")
+    @Expose
+    private String token;
     @SerializedName("message")
     @Expose
     private String message;
@@ -20,18 +26,9 @@ public class Employee implements Serializable {
     public Employee() {
     }
 
-    public Employee(Data data, String message, String error) {
+    public Employee(String message, String error) {
         this.message = message;
         this.error = error;
-        this.data = data;
-    }
-
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
     }
 
     public String getMessage() {
@@ -48,5 +45,29 @@ public class Employee implements Serializable {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 }

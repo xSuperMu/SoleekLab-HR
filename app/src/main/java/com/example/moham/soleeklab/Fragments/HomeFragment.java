@@ -1,6 +1,5 @@
 package com.example.moham.soleeklab.Fragments;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -26,6 +25,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG_FRAG_HOME, "onCreateView() has been instantiated");
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
         return view;
     }
 

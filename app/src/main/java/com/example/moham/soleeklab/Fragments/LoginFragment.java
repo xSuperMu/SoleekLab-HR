@@ -197,10 +197,18 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
                     if (response.isSuccessful()) {
                         Log.e(TAG_FRAG_LOGIN, "Response code -> " + response.code() + " " + response.message() + " ");
-                        currentEmployee = response.body();
+                        currentEmployee = response.body().getEmployee();
+
+
                         EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
+
+                        // TODO (1): get today attendance
+                        // TODO (2): check code 404, if true, show CheckIn Fragment
+                        // TODO (3): if checkIn date != null && checkOut date == null, Show Home Fragment
+
                         startActivity(new Intent(getActivity(), HomeActivity.class));
                         getActivity().finish();
+
                     } else {
                         getResponseErrorMessage(getActivity(), response);
                     }
