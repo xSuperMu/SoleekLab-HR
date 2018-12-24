@@ -467,19 +467,19 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
     @Override
     public void getResponseErrorMessage(Context context, Response response) {
-        Log.d(TAG_FRAG_VERIFY_IDENTITY, "getResponseErrorMessage() has been instantiated");
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "getLoginResponseErrorMessage() has been instantiated");
         if (response.code() == 401 || response.code() == 400) {
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "Response code ------> " + response.code() + " " + response.message());
             try {
                 Gson gson = new Gson();
                 Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
                 if (errorModel.getMessage() != null) {
-                    Log.i(TAG_FRAG_VERIFY_IDENTITY, "getResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
+                    Log.i(TAG_FRAG_VERIFY_IDENTITY, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
                     getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText(errorModel.getMessage());
                 } else {
-                    Log.i(TAG_FRAG_VERIFY_IDENTITY, "getResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
+                    Log.i(TAG_FRAG_VERIFY_IDENTITY, "getLoginResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
                     getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
                 }

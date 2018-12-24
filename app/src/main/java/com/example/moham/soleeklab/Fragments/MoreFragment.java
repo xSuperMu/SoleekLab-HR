@@ -143,6 +143,7 @@ public class MoreFragment extends Fragment implements MoreFragmentInterface {
                 Log.d(TAG_FRAG_MORE, "Clearing user credentials");
                 EmployeeSharedPreferences.clearPreferences(getActivity());
                 Intent authIntent = new Intent(getActivity(), AuthActivity.class);
+                dialog.dismiss();
                 getActivity().startActivity(authIntent);
                 getActivity().finish();
             }

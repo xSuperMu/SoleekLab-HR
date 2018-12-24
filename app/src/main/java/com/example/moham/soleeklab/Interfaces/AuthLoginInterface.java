@@ -26,5 +26,7 @@ public interface AuthLoginInterface {
 
     void setFontsToViews();
 
-    void getResponseErrorMessage(Context context, Response response);
+    void getLoginResponseErrorMessage(Context context, Response response);
+
+    void handleCheckInResponseError(Context context, Response response);
 }

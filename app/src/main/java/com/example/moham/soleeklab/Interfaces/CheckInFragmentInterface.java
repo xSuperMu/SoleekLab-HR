@@ -13,4 +13,6 @@ public interface CheckInFragmentInterface {
     void setFontsToViews();
 
     void handleCheckIn();
+
+    void switchFragment(Fragment fragment, String tag);
 }

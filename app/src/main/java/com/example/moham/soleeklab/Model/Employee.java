@@ -26,11 +26,6 @@ public class Employee implements Serializable {
     public Employee() {
     }
 
-    public Employee(String message, String error) {
-        this.message = message;
-        this.error = error;
-    }
-
     public String getMessage() {
         return message;
     }

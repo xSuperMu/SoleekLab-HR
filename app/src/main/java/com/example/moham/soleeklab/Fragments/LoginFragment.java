@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.AuthLoginInterface;
+import com.example.moham.soleeklab.Model.CheckInResponse;
 import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
@@ -43,6 +44,7 @@ import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -197,20 +199,52 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
                     if (response.isSuccessful()) {
                         Log.e(TAG_FRAG_LOGIN, "Response code -> " + response.code() + " " + response.message() + " ");
+                        Log.e(TAG_FRAG_LOGIN, "User Logged in successfully");
                         currentEmployee = response.body().getEmployee();
-
-
+                        Log.e(TAG_FRAG_LOGIN, "Saving Employee to shared preferences");
                         EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
 
-                        // TODO (1): get today attendance
-                        // TODO (2): check code 404, if true, show CheckIn Fragment
-                        // TODO (3): if checkIn date != null && checkOut date == null, Show Home Fragment
+                        Log.e(TAG_FRAG_LOGIN, "Getting employee check in status");
+                        // get employee check in status
+                        ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+                        String employeeToken = currentEmployee.getToken();
+                        Log.d(TAG_FRAG_LOGIN, "employeeToken: " + employeeToken);
+                        String KEY_CONTENT_TYPE_HEADER = "Content-Type";
+                        String KEY_AUTH_HEADER = "Authorization";
+                        String KEY_Bearer = "Bearer ";
+                        String APPLICATION_JSON = "application/json";
 
-                        startActivity(new Intent(getActivity(), HomeActivity.class));
-                        getActivity().finish();
+                        HashMap<String, String> headers = new HashMap<>();
+                        headers.put(KEY_CONTENT_TYPE_HEADER, APPLICATION_JSON);
+                        headers.put(KEY_AUTH_HEADER, KEY_Bearer + employeeToken);
 
+                        Call<CheckInResponse> callGetAttendance = service.getTodayAttendance(headers);
+                        callGetAttendance.enqueue(new Callback<CheckInResponse>() {
+                            @Override
+                            public void onResponse(Call<CheckInResponse> call, Response<CheckInResponse> response) {
+                                if (response.isSuccessful()) {
+                                    Log.e(TAG_FRAG_LOGIN, "Response code -> " + response.code() + " " + response.message() + " ");
+
+                                    EmployeeSharedPreferences.SaveCheckInResponseToPreferences(getActivity(), response.body());
+                                    Log.e(TAG_FRAG_LOGIN, "User Checked In Before, Moving to HomeActivity");
+                                    startActivity(new Intent(getActivity(), HomeActivity.class).putExtra("response code", 200));
+                                    getActivity().finish();
+                                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                                } else {
+                                    // handle checkIn response error
+                                    handleCheckInResponseError(getActivity(), response);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<CheckInResponse> call, Throwable t) {
+                                Log.e(TAG_FRAG_LOGIN, "onFailure(): " + t.toString());
+                                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                                Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     } else {
-                        getResponseErrorMessage(getActivity(), response);
+                        getLoginResponseErrorMessage(getActivity(), response);
                     }
                 }
 
@@ -418,20 +452,20 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     }
 
     @Override
-    public void getResponseErrorMessage(Context context, Response response) {
-        Log.d(TAG_FRAG_LOGIN, "getResponseErrorMessage() has been instantiated");
+    public void getLoginResponseErrorMessage(Context context, Response response) {
+        Log.d(TAG_FRAG_LOGIN, "getLoginResponseErrorMessage() has been instantiated");
         if (response.code() == 401 || response.code() == 400) {
             Log.d(TAG_FRAG_LOGIN, "Response code ------> " + response.code() + " " + response.message());
             try {
                 Gson gson = new Gson();
                 Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
                 if (errorModel.getMessage() != null) {
-                    Log.i(TAG_FRAG_LOGIN, "getResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
+                    Log.i(TAG_FRAG_LOGIN, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
                     getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText(errorModel.getMessage());
                 } else {
-                    Log.i(TAG_FRAG_LOGIN, "getResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
+                    Log.i(TAG_FRAG_LOGIN, "getLoginResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
                     getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
@@ -445,6 +479,33 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         } else {
             getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void handleCheckInResponseError(Context context, Response response) {
+        Log.d(TAG_FRAG_LOGIN, "handleCheckInResponseError() has been instantiated");
+        if (response.code() == 404) {
+            Log.d(TAG_FRAG_LOGIN, "Response code ------> " + response.code() + " " + response.message());
+            Log.d(TAG_FRAG_LOGIN, "User Doesn't Checked In Before, Moving to MainActivity --> CheckIn Fragment");
+            try {
+                Gson gson = new Gson();
+                CheckInResponse checkInErrorModel = gson.fromJson(response.errorBody().string(), CheckInResponse.class);
+                if (checkInErrorModel.getMessage() != null) {
+                    Log.i(TAG_FRAG_LOGIN, "handleCheckInResponseError() errorModel.Message = " + checkInErrorModel.getMessage());
+
+                    // Save object to preferences
+                    EmployeeSharedPreferences.SaveCheckInResponseToPreferences(getActivity(), checkInErrorModel);
+
+                    // Start CheckIn Fragment from HomeActivity
+                    startActivity(new Intent(getActivity(), HomeActivity.class).putExtra("response code", 404));
+                    getActivity().finish();
+
+                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

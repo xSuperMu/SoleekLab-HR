@@ -38,9 +38,17 @@ public class Constants {
 
     public static boolean sDisableFragmentAnimations = false;
 
+    public static final String STR_PREF_EMPLOYEE = "EMPLOYEE";
+    public static final String STR_PREF_CHECK_IN = "CHECK_IN";
+
+    public static final String STR_EMP_STATUS_ABSENCE = "absence";
+    public static final String STR_EMP_STATUS_VACATION = "vacation";
+    public static final String STR_EMP_STATUS_ATTEND = "attend";
+
     public static final int TOTAL_NUMBER_OF_ITEMS = 4;
     public static final int SPLASH_SCREEN_MILLI_SEC = 2000;
     public static final int LOGIN_PASS_MIN_LENGTH = 8;
+
     public static final int INT_BTN_NAV_FRAGMENTS_COUNT = 6;
     public static final int INT_FRAGMENT_CHECK_IN_POS = 0;
     public static final int INT_FRAGMENT_HOME_POS = 1;

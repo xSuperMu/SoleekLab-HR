@@ -101,7 +101,6 @@
             android:id="@+id/ll_check_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
             android:orientation="vertical"
             android:visibility="visible">
 
@@ -113,6 +112,7 @@
                 android:layout_marginTop="24dp">
 
                 <View
+                    android:id="@+id/view_checkout_circle"
                     android:layout_width="108dp"
                     android:layout_height="108dp"
                     android:layout_gravity="center_horizontal"
@@ -132,7 +132,6 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </android.support.constraint.ConstraintLayout>
-
 
             <TextView
                 android:id="@+id/tv_check_out_text"
@@ -159,52 +158,54 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="12dp"
                 android:background="#9b9b9b" />
+        </LinearLayout>
 
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_task_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_task_this_week"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:text="@string/tasks_this_week"
+                android:textColor="@color/colorInputText"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-                <TextView
-                    android:id="@+id/tv_task_this_week"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/tasks_this_week"
-                    android:textColor="@color/colorInputText"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+            <TextView
+                android:id="@+id/tv_task_progress_this_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorInputText"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="12/43" />
 
-                <TextView
-                    android:id="@+id/tv_task_progress_this_week"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorInputText"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="12/43" />
+            <FrameLayout
+                android:id="@+id/fl_holder"
+                android:layout_width="match_parent"
+                android:layout_height="18dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/progress_bar_background"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_task_progress_this_week">
 
-                <FrameLayout
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="18dp"
-                    android:layout_marginTop="7dp"
-                    android:background="@drawable/progress_bar_background"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_task_progress_this_week">
-
-                    <ProgressBar
-                        android:id="@+id/progress_bar"
-                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="16dp"
-                        android:indeterminate="false"
-                        android:progressDrawable="@drawable/curved_progress_bar" />
-                </FrameLayout>
-            </android.support.constraint.ConstraintLayout>
+                    android:layout_height="16dp"
+                    android:indeterminate="false"
+                    android:progressDrawable="@drawable/curved_progress_bar" />
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/tv_view_all_tasks"
@@ -214,7 +215,11 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/view_all_tasks"
                 android:textColor="#5957606f"
-                android:textSize="12sp" />
-        </LinearLayout>
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fl_holder" />
+        </android.support.constraint.ConstraintLayout>
     </LinearLayout>
+
 </ScrollView>

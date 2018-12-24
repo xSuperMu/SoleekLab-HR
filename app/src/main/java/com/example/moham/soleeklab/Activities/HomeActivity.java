@@ -28,7 +28,9 @@ import com.example.moham.soleeklab.Fragments.TaskToDoFragment;
 import com.example.moham.soleeklab.Fragments.TasksFragment;
 import com.example.moham.soleeklab.Fragments.VacationFragment;
 import com.example.moham.soleeklab.Interfaces.HomeActivityInterface;
+import com.example.moham.soleeklab.Model.CheckInResponse;
 import com.example.moham.soleeklab.R;
+import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -37,20 +39,20 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 import static com.example.moham.soleeklab.Utils.Constants.INT_BTN_NAV_FRAGMENTS_COUNT;
 import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_CHECK_IN_POS;
+import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_HOME_POS;
 import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_MORE_POS;
 import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_NOTIFICATIONS_POS;
 import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_TASKS_POS;
 import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_VACATION_POS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_CHECK_IN;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_HOME;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_MORE;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_NOTIFICATION;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_TASKS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VACATION;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_HOME_ACTIVITY;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
 
 public class HomeActivity extends AppCompatActivity implements HomeActivityInterface {
 
@@ -58,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
     public BottomNavigationView bnvNavigation;
     private List<Fragment> mFragmentsList = new ArrayList<>(INT_BTN_NAV_FRAGMENTS_COUNT);
     private boolean doubleClickToExitPressedOnce = false;
-
+    private int responseCode;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -98,12 +100,9 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
         getSupportActionBar().hide();
 
-        // Clear fragment manager backstack
-        getSupportFragmentManager().popBackStack(null, POP_BACK_STACK_INCLUSIVE);
-        Log.d(TAG_HOME_ACTIVITY, "BackStack count -------> " + getSupportFragmentManager().getBackStackEntryCount());
-
-        // To hide the loading screen
-        sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+        Intent loginExtra = getIntent();
+        responseCode = loginExtra.getIntExtra("response code", 0);
+        Log.d(TAG_HOME_ACTIVITY, "LoginExtra: response code --> " + responseCode);
 
         instantiateViews();
     }
@@ -178,7 +177,37 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         disableShiftMode(bnvNavigation);
 
         buildFragmentsList();
-        getSupportFragmentManager().beginTransaction().add(R.id.frame_fragment_holder, CheckInFragment.newInstance()).commit();
+
+        // Navigate to the appropriate Fragment
+        if (responseCode == 200) {
+            switchFragment(INT_FRAGMENT_HOME_POS, TAG_FRAG_HOME);
+        } else if (responseCode == 404) {
+            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+        } else {
+            Log.d(TAG_HOME_ACTIVITY, "ERROR! Response code = " + responseCode);
+
+            Log.d(TAG_HOME_ACTIVITY, "Loading CheckInResponse from preferences");
+            CheckInResponse checkInResponse = EmployeeSharedPreferences.readCheckInResponseFromPreferences(this);
+            String data = null;
+            try {
+                data = checkInResponse.getState();
+            } catch (NullPointerException e) {
+                data = null;
+            }
+
+            if (data == null) {
+                Log.d(TAG_HOME_ACTIVITY, "CheckInResponse Data ---> Null");
+                Log.d(TAG_HOME_ACTIVITY, "Navigating to CheckInFragment");
+                switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+            } else {
+                Log.d(TAG_HOME_ACTIVITY, "CheckInResponse Data ---> NOT Null");
+                Log.d(TAG_HOME_ACTIVITY, "Navigating to HomeFragment");
+                switchFragment(INT_FRAGMENT_HOME_POS, TAG_FRAG_HOME);
+            }
+
+        }
+
+        Log.d(TAG_HOME_ACTIVITY, "instantiateViews() has been returned");
     }
 
     @SuppressLint("RestrictedApi")

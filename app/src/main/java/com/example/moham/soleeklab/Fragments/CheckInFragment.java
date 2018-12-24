@@ -2,29 +2,47 @@ package com.example.moham.soleeklab.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moham.soleeklab.Activities.HomeActivity;
+import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.CheckInFragmentInterface;
+import com.example.moham.soleeklab.Model.CheckInResponse;
+import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
+import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_MEDIUM;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_LIBREFRANKLIN_MEDIUM;
 import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_CHECK_IN_POS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_CHECK_IN;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_HOME;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
 
 public class CheckInFragment extends Fragment implements CheckInFragmentInterface {
 
@@ -37,6 +55,10 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
     @BindView(R.id.tv_check_in_text)
     TextView tvCheckInText;
     Unbinder unbinder;
+    @BindView(R.id.v_circle)
+    View vCircle;
+    @BindView(R.id.cl_user_status_login)
+    ConstraintLayout clUserStatusLogin;
 
     HomeActivity mHomeActivity;
 
@@ -87,13 +109,56 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
     }
 
 
-    @OnClick(R.id.cl_user_status_login)
+    @OnClick(R.id.v_circle)
     @Override
     public void handleCheckIn() {
         Log.d(TAG_FRAG_CHECK_IN, "handleCheckIn() has been instantiated");
+        Log.d(TAG_FRAG_CHECK_IN, "Showing loading activity");
+        startActivity(new Intent(getContext(), LoadingActivity.class));
 
+        Log.e(TAG_FRAG_CHECK_IN, "Reading employee data from preferences");
+        Employee curEmp = EmployeeSharedPreferences.readEmployeeFromPreferences(getActivity());
+
+        String empToken = curEmp.getToken();
+        Log.e(TAG_FRAG_CHECK_IN, "Employee token --> " + empToken);
+
+        Log.e(TAG_FRAG_CHECK_IN, "Checking employee in");
+        ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+
+        String KEY_CONTENT_TYPE_HEADER = "Content-Type";
+        String KEY_AUTH_HEADER = "Authorization";
+        String KEY_Bearer = "Bearer ";
+        String APPLICATION_JSON = "application/json";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put(KEY_CONTENT_TYPE_HEADER, APPLICATION_JSON);
+        headers.put(KEY_AUTH_HEADER, KEY_Bearer + empToken);
+
+        Log.d(TAG_FRAG_CHECK_IN, "SERVICE: checkIn");
+        Call<CheckInResponse> call = service.checkInUser(headers);
+        call.enqueue(new Callback<CheckInResponse>() {
+            @Override
+            public void onResponse(Call<CheckInResponse> call, Response<CheckInResponse> response) {
+                if (response.isSuccessful()) {
+
+                    Log.e(TAG_FRAG_CHECK_IN, "Response code -> " + response.code() + " " + response.message() + " ");
+                    Log.d(TAG_FRAG_CHECK_IN, "Saving CheckInResponse object to preferences");
+                    EmployeeSharedPreferences.SaveCheckInResponseToPreferences(getActivity(), response.body());
+
+                    // Navigate to HomeFragment, Show everything
+                    Log.d(TAG_FRAG_CHECK_IN, "Navigating to the HomeFragment");
+                    switchFragment(HomeFragment.newInstance(), TAG_FRAG_HOME);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CheckInResponse> call, Throwable t) {
+                Log.e(TAG_FRAG_CHECK_IN, "onFailure(): " + t.toString());
+                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -102,4 +167,14 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
         if (context instanceof Activity)
             mHomeActivity = (HomeActivity) context;
     }
+
+    @Override
+    public void switchFragment(Fragment fragment, final String tag) {
+        Log.d(TAG_FRAG_CHECK_IN, "switchFragment() has been instantiated");
+        final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.frame_fragment_holder, fragment, tag);
+        transaction.commit();
+    }
+
 }

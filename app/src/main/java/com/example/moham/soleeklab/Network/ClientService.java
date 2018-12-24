@@ -1,11 +1,15 @@
 package com.example.moham.soleeklab.Network;
 
+import com.example.moham.soleeklab.Model.CheckInResponse;
 import com.example.moham.soleeklab.Model.Employee;
+
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
 
 public interface ClientService {
@@ -27,18 +31,16 @@ public interface ClientService {
     Call<Employee> resetUserPassword(@Field("email") String email, @Field("password") String password, @Field("code") String code);
 
     @GET("api/members/today_attendance")
-    @FormUrlEncoded
-    Call<Employee> getTodayAttendance(@Field("token") String token);
+    Call<CheckInResponse> getTodayAttendance(@HeaderMap Map<String, String> headers);
 
     @POST("api/members/checkin")
-    @FormUrlEncoded
-    Call<Employee> checkInUser(@Field("token") String token);
+    Call<CheckInResponse> checkInUser(@HeaderMap Map<String, String> headers);
 
     @POST("api/members/checkout")
     @FormUrlEncoded
-    Call<Employee> checkOutUser(@Field("token") String token);
+    Call<CheckInResponse> checkOutUser(@HeaderMap Map<String, String> headers);
 
-    @GET("api/members/attendance")
-    @FormUrlEncoded
-    Call<Employee> getUserAttendanceSheet(@Field("token") String token, @Field("date") String date);
+//    @GET("api/members/attendance")
+//    @FormUrlEncoded
+//    Call<Employee> getUserAttendanceSheet(@Field("token") String token, @Field("date") String date);
 }
