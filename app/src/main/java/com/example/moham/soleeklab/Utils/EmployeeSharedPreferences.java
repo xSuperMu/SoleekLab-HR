@@ -45,7 +45,7 @@ public class EmployeeSharedPreferences {
             String empStr = sharedPref.getString(STR_PREF_EMPLOYEE, "");
             Log.d(TAG_EMPLOYEE_SHARED_PREF, "empStr --> " + empStr);
             employee = gson.fromJson(empStr, Employee.class);
-            Log.d(TAG_EMPLOYEE_SHARED_PREF, "Employee toString(): " + employee);
+            Log.d(TAG_EMPLOYEE_SHARED_PREF, "Employee toString(): " + employee.getUser().toString());
             Log.d(TAG_EMPLOYEE_SHARED_PREF, "Employee.Token --> " + employee.getToken());
         } catch (NullPointerException e) {
             return null;
@@ -55,7 +55,6 @@ public class EmployeeSharedPreferences {
             Log.d(TAG_EMPLOYEE_SHARED_PREF, "Returning null");
             return null;
         }
-
 
         return employee;
     }

@@ -17,6 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.CheckInFragmentInterface;
@@ -75,8 +79,9 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
         Log.d(TAG_FRAG_CHECK_IN, "onCreateView() has been instantiated");
         View view = inflater.inflate(R.layout.fragment_check_in, container, false);
         mHomeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_CHECK_IN_POS).setChecked(true);
-
         unbinder = ButterKnife.bind(this, view);
+        instantiateViews();
+
         return view;
     }
 
@@ -177,4 +182,24 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
         transaction.commit();
     }
 
+
+    public void instantiateViews() {
+        Log.d(TAG_FRAG_CHECK_IN, "instantiateViews() has been instantiated");
+        setFontsToViews();
+
+        Log.d(TAG_FRAG_CHECK_IN, "Loading CheckInResponse from the preferences");
+        Employee curEmp = EmployeeSharedPreferences.readEmployeeFromPreferences(getActivity());
+
+        String empJobTitle = curEmp.getUser().getJobTitle();
+        Log.d(TAG_FRAG_CHECK_IN, "empJobTitle ------>" + empJobTitle);
+        tvUserJobTitle.setText(empJobTitle);
+
+        String empName = curEmp.getUser().getName();
+        Log.d(TAG_FRAG_CHECK_IN, "empName ------>" + empName);
+        tvUserName.setText(empName);
+
+        String empProfilePicStr = curEmp.getUser().getProfilePic();
+        Log.d(TAG_FRAG_CHECK_IN, "empProfilePicStr ------>" + empProfilePicStr);
+        Glide.with(this).load(empProfilePicStr).apply(new RequestOptions().fitCenter().format(DecodeFormat.PREFER_ARGB_8888).override(Target.SIZE_ORIGINAL)).into(ivUserProfilePic);
+    }
 }

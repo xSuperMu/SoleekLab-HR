@@ -36,6 +36,11 @@
     <string name="preference_file_key">com.soleeklab.muhammad.soleekapp.SHARED_PREFERENCES</string>
     <string name="user_profile_picture">user profile picture</string>
 
+
+    <string name="vacation_text">You’re on a vacation, Stay Away!</string>
+    <string name="absence_text">You’ve been marked as Absent for today</string>
+    <string name="away_text">Looks like you’re so far away from Soleek planet!</string>
+
     <string name="title_home">Home</string>
     <string name="title_vacation">Vacation</string>
     <string name="title_tasks">Tasks</string>

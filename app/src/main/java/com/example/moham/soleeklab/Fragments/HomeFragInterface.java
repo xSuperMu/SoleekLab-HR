@@ -1,5 +1,8 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.content.Context;
+import android.graphics.Typeface;
+
 public interface HomeFragInterface {
     void instantiateViews();
 
@@ -12,4 +15,8 @@ public interface HomeFragInterface {
     void handleAttendState();
 
     void handleZombieState();
+
+    void setFontsToViews();
+
+    Typeface loadFont(Context context, String fontPath);
 }

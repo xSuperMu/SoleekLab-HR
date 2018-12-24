@@ -1,6 +1,8 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -14,7 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.moham.soleeklab.Model.CheckInResponse;
+import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 import com.github.abdularis.civ.CircleImageView;
@@ -24,10 +31,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_MEDIUM;
+import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
+import static com.example.moham.soleeklab.Utils.Constants.FONT_LIBREFRANKLIN_MEDIUM;
 import static com.example.moham.soleeklab.Utils.Constants.STR_EMP_STATUS_ABSENCE;
 import static com.example.moham.soleeklab.Utils.Constants.STR_EMP_STATUS_ATTEND;
 import static com.example.moham.soleeklab.Utils.Constants.STR_EMP_STATUS_VACATION;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_CHECK_IN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_HOME;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
 
@@ -98,7 +107,23 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     @Override
     public void instantiateViews() {
         Log.d(TAG_FRAG_HOME, "Loading CheckInResponse from the preferences");
+        setFontsToViews();
         checkInResponse = EmployeeSharedPreferences.readCheckInResponseFromPreferences(getActivity());
+
+        Log.d(TAG_FRAG_HOME, "Loading CheckInResponse from the preferences");
+        Employee curEmp = EmployeeSharedPreferences.readEmployeeFromPreferences(getActivity());
+
+        String empJobTitle = curEmp.getUser().getJobTitle();
+        Log.d(TAG_FRAG_HOME, "empJobTitle ------>" + empJobTitle);
+        tvUserJobTitle.setText(empJobTitle);
+
+        String empName = curEmp.getUser().getName();
+        Log.d(TAG_FRAG_HOME, "empName ------>" + empName);
+        tvUserName.setText(empName);
+
+        String empProfilePicStr = curEmp.getUser().getProfilePic();
+        Log.d(TAG_FRAG_HOME, "empProfilePicStr ------>" + empProfilePicStr);
+        Glide.with(this).load(empProfilePicStr).apply(new RequestOptions().fitCenter().format(DecodeFormat.PREFER_ARGB_8888).override(Target.SIZE_ORIGINAL)).into(civUserProfilePic);
 
         Log.d(TAG_FRAG_HOME, "checkInResponse Object ---->" + checkInResponse.toString());
         Log.d(TAG_FRAG_HOME, "User status ---->" + checkInResponse.getState());
@@ -145,7 +170,9 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         ivUserStatusImage.setImageDrawable(getResources().getDrawable(R.mipmap.research_1));
         llUserStatus.setVisibility(View.VISIBLE);
 
-        Log.d(TAG_FRAG_CHECK_IN, "Hiding loading activity");
+
+        tvUserStatusText.setText(getString(R.string.absence_text));
+        Log.d(TAG_FRAG_HOME, "Hiding loading activity");
         getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
     }
 
@@ -157,7 +184,8 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         ivUserStatusImage.setImageDrawable(getResources().getDrawable(R.mipmap.ufo));
         llUserStatus.setVisibility(View.VISIBLE);
 
-        Log.d(TAG_FRAG_CHECK_IN, "Hiding loading activity");
+        tvUserStatusText.setText(getString(R.string.vacation_text));
+        Log.d(TAG_FRAG_HOME, "Hiding loading activity");
         getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
     }
 
@@ -195,7 +223,28 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
             handleZombieState();
         }
 
-        Log.d(TAG_FRAG_CHECK_IN, "Hiding loading activity");
+        Log.d(TAG_FRAG_HOME, "Hiding loading activity");
         getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+    }
+
+    @Override
+    public Typeface loadFont(Context context, String fontPath) {
+        Log.d(TAG_FRAG_HOME, "loadFont() has been instantiated");
+
+        return Typeface.createFromAsset(context.getAssets(), fontPath);
+    }
+
+    @Override
+    public void setFontsToViews() {
+        Log.d(TAG_FRAG_HOME, "setFontsToViews() has been instantiated");
+        tvUserName.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+        tvUserJobTitle.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+        tvUserStatusText.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+        tvCheckOutText.setTypeface(loadFont(getActivity(), FONT_LIBREFRANKLIN_MEDIUM));
+        tvCheckOutMessage.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+        tvTaskThisWeek.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+        tvTaskProgressThisWeek.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+        tvViewAllTasks.setTypeface(loadFont(getActivity(), FONT_DOSIS_REGULAR));
+
     }
 }

@@ -145,6 +145,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                 }
             }, 2750);
         } else if (fragment instanceof VacationFragment) {
+            // Check user today attendance , if data == null --> show CheckInFragment, else show HomeFragment
+            // TODO
             switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
         } else if (fragment instanceof NewVacationFragment) {
             switchFragment(INT_FRAGMENT_VACATION_POS, TAG_FRAG_VACATION);
