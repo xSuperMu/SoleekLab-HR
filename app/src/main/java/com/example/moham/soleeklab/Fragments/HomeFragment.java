@@ -17,22 +17,31 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.moham.soleeklab.Activities.HomeActivity;
+import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Model.CheckInResponse;
 import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 import com.github.abdularis.civ.CircleImageView;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_MEDIUM;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
@@ -59,8 +68,8 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     @BindView(R.id.ll_user_status)
     LinearLayout llUserStatus;
     @BindView(R.id.view_checkout_circle)
-    View viewLogoutCircle;
-    @BindView(R.id.cl_user_status_login)
+    View viewCheckoutCircle;
+    @BindView(R.id.cl_user_status_checkout)
     ConstraintLayout clUserStatusLogin;
     @BindView(R.id.tv_check_out_text)
     TextView tvCheckOutText;
@@ -81,6 +90,12 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     Unbinder unbinder;
     @BindView(R.id.cl_task_progress)
     ConstraintLayout clTaskProgress;
+    @BindView(R.id.tv_check_in_time)
+    TextView tvCheckInTime;
+    @BindView(R.id.tv_check_out_time)
+    TextView tvCheckOutTime;
+    @BindView(R.id.tv_total_work_time)
+    TextView tvTotalWorkTime;
     private CheckInResponse checkInResponse;
     HomeActivity mHomeActivity;
 
@@ -120,6 +135,8 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
 
     @Override
     public void instantiateViews() {
+        Log.d(TAG_FRAG_HOME, "instantiateViews() has been instantiated");
+
         Log.d(TAG_FRAG_HOME, "Loading CheckInResponse from the preferences");
         setFontsToViews();
         checkInResponse = EmployeeSharedPreferences.readCheckInResponseFromPreferences(getActivity());
@@ -174,6 +191,51 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     @Override
     public void handleCheckoutClick() {
         Log.d(TAG_FRAG_HOME, "handleCheckoutClick() has been instantiated");
+
+        Log.d(TAG_FRAG_HOME, "Showing loading activity");
+        startActivity(new Intent(getContext(), LoadingActivity.class));
+
+        Log.e(TAG_FRAG_HOME, "Reading employee data from preferences");
+        Employee curEmp = EmployeeSharedPreferences.readEmployeeFromPreferences(getActivity());
+
+        String empToken = curEmp.getToken();
+        Log.e(TAG_FRAG_HOME, "Employee token --> " + empToken);
+
+        Log.e(TAG_FRAG_HOME, "Checking employee out");
+        ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+
+        String KEY_CONTENT_TYPE_HEADER = "Content-Type";
+        String KEY_AUTH_HEADER = "Authorization";
+        String KEY_Bearer = "Bearer ";
+        String APPLICATION_JSON = "application/json";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put(KEY_CONTENT_TYPE_HEADER, APPLICATION_JSON);
+        headers.put(KEY_AUTH_HEADER, KEY_Bearer + empToken);
+
+        Log.d(TAG_FRAG_HOME, "SERVICE: checkOut");
+        Call<CheckInResponse> call = service.checkOutUser(headers);
+        call.enqueue(new Callback<CheckInResponse>() {
+            @Override
+            public void onResponse(Call<CheckInResponse> call, Response<CheckInResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.e(TAG_FRAG_HOME, "Response code -> " + response.code() + " " + response.message() + " ");
+                    Log.d(TAG_FRAG_HOME, "Saving CheckInResponse object to preferences");
+                    EmployeeSharedPreferences.SaveCheckInResponseToPreferences(getActivity(), response.body());
+
+                    // Hide Checkout Button
+                    handleZombieState();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CheckInResponse> call, Throwable t) {
+                Log.e(TAG_FRAG_HOME, "onFailure(): " + t.toString());
+                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
@@ -207,10 +269,17 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     public void handleZombieState() {
         Log.d(TAG_FRAG_HOME, "handleZombieState() has been instantiated");
         llUserStatus.setVisibility(View.GONE);
-        viewLogoutCircle.setVisibility(View.GONE);
+        viewCheckoutCircle.setVisibility(View.GONE);
         tvCheckOutText.setVisibility(View.GONE);
+        tvCheckOutMessage.setVisibility(View.GONE);
+        tvCheckInTime.setVisibility(View.VISIBLE);
+        tvCheckOutTime.setVisibility(View.VISIBLE);
+        tvTotalWorkTime.setVisibility(View.VISIBLE);
         llCheckOut.setVisibility(View.VISIBLE);
-        clTaskProgress.setVisibility(View.VISIBLE);
+        clTaskProgress.setVisibility(View.GONE);
+
+        Log.d(TAG_FRAG_HOME, "Hiding loading activity");
+        getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
     }
 
     @Override
@@ -261,6 +330,9 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         tvUserStatusText.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
         tvCheckOutText.setTypeface(loadFont(getActivity(), FONT_LIBREFRANKLIN_MEDIUM));
         tvCheckOutMessage.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+        tvCheckInTime.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+        tvCheckOutTime.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+        tvTotalWorkTime.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
         tvTaskThisWeek.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
         tvTaskProgressThisWeek.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
         tvViewAllTasks.setTypeface(loadFont(getActivity(), FONT_DOSIS_REGULAR));

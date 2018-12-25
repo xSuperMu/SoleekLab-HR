@@ -61,7 +61,7 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
     Unbinder unbinder;
     @BindView(R.id.v_circle)
     View vCircle;
-    @BindView(R.id.cl_user_status_login)
+    @BindView(R.id.cl_user_status_checkout)
     ConstraintLayout clUserStatusLogin;
 
     HomeActivity mHomeActivity;

@@ -105,7 +105,7 @@
             android:visibility="visible">
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/cl_user_status_login"
+                android:id="@+id/cl_user_status_checkout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -125,12 +125,12 @@
                 <ImageView
                     android:layout_width="33dp"
                     android:layout_height="48dp"
-                    android:contentDescription="@string/login_icon"
                     android:src="@mipmap/logout_icon"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
             </android.support.constraint.ConstraintLayout>
 
             <TextView
@@ -155,11 +155,50 @@
                 android:textColor="@color/colorGray"
                 android:textSize="13sp" />
 
+            <TextView
+                android:id="@+id/tv_check_in_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Checked-in 11:43AM"
+                android:textAlignment="center"
+                android:textColor="@color/colorGray"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_check_out_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="Checked-out 11:43AM"
+                android:textAlignment="center"
+                android:textColor="@color/colorGray"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_total_work_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="(8h 36mtools)"
+                android:textAlignment="center"
+                android:textColor="@color/colorGray"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
             <View
                 android:layout_width="156dp"
                 android:layout_height="1dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
                 android:alpha="0.15"
                 android:background="#9b9b9b" />
         </LinearLayout>

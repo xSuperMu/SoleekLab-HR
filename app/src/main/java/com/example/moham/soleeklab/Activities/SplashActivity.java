@@ -26,7 +26,6 @@ public class SplashActivity extends AppCompatActivity {
 //        getSupportActionBar().hide();
 
         checkUserSession();
-
     }
 
 
@@ -38,8 +37,6 @@ public class SplashActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        // TODO (): Check today attendance
 
         Employee employee = EmployeeSharedPreferences.readEmployeeFromPreferences(this);
 

@@ -37,7 +37,6 @@ public interface ClientService {
     Call<CheckInResponse> checkInUser(@HeaderMap Map<String, String> headers);
 
     @POST("api/members/checkout")
-    @FormUrlEncoded
     Call<CheckInResponse> checkOutUser(@HeaderMap Map<String, String> headers);
 
 //    @GET("api/members/attendance")

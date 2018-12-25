@@ -24,19 +24,16 @@ public class LoadingActivity extends AppCompatActivity {
 
     private LoadingReceiver loadingReceiver;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
         Log.d(TAG_LOADING_ACTIVITY, "onCreate() has been instantiated");
 
-
         Log.d(TAG_LOADING_ACTIVITY, "Registering the receiver");
         IntentFilter filter = new IntentFilter(TAG_LOADING_RECEIVER_ACTION_CLOSE);
         loadingReceiver = new LoadingReceiver();
         registerReceiver(loadingReceiver, filter);
-
 
         try {
             Log.d(TAG_LOADING_ACTIVITY, "Trying to Load the GIF");
