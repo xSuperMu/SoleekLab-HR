@@ -12,8 +12,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,7 +35,6 @@ import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
-import com.example.moham.soleeklab.Utils.Constants;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -79,9 +77,6 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     @BindView(R.id.error_message)
     TextView tvErrorMessage;
 
-    private TextWatcher mPassTextWatcher;
-    private TextWatcher mRetypedPassTextWatcher;
-    private TextWatcher mEnableBtnTextWatcher;
     private String extraVerificationCode;
     private String extraEmail;
     private Employee currentEmployee;
@@ -99,9 +94,7 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
         Log.d(TAG_FRAG_RESET_PASS, "onCreateView() has been instantiated");
         View view = inflater.inflate(R.layout.fragment_resetting_password, container, false);
         unbinder = ButterKnife.bind(this, view);
-
         instantiateViews();
-
         return view;
     }
 
@@ -121,7 +114,6 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     @OnClick(R.id.ib_back)
     public void handleBackClicked() {
         Log.d(TAG_FRAG_RESET_PASS, "back::ImageView has been clicked");
-        clearBackStack();
         replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
     }
 
@@ -150,7 +142,6 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                 return false;
             }
         }
-
         return false;
     }
 
@@ -196,9 +187,8 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                         Log.e(TAG_FRAG_RESET_PASS, "Response code -> " + response.code() + " " + response.message() + " ");
                         currentEmployee = response.body();
                         if (currentEmployee.getError() == null) {
-                            clearBackStack();
                             replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
-                            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                             Toast.makeText(getActivity(), "Password Changed Successfully", Toast.LENGTH_SHORT).show();
                         } else {
                             getResponseErrorMessage(getActivity(), response);
@@ -212,34 +202,9 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                 public void onFailure(Call<Employee> call, Throwable t) {
                     Log.e(TAG_FRAG_VERIFY_IDENTITY, "onFailure(): " + t.toString());
                     Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                 }
             });
-
-
-//            // Do reset
-//            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
-//            LayoutInflater inflater = LayoutInflater.from(getContext());
-//            View view = inflater.inflate(R.layout.loading, null);
-//            showLoadingDialog.setView(view);
-//
-//            try {
-//                GifImageView gifImageView = view.findViewById(R.id.gif_loading);
-//                GifDrawable gifFromAssets = new GifDrawable(getActivity().getAssets(), "logoloading.gif");
-//                gifImageView.setImageDrawable(gifFromAssets);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-
-//            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-//            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
-//
-//            final AlertDialog dialog = showLoadingDialog.create();
-//            dialog.show();
-//            dialog.getWindow().setAttributes(layoutParams);
-//            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
         }
     }
 
@@ -269,16 +234,13 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
             Log.d(TAG_FRAG_RESET_PASS, "Bundle extra verification code -> NULL");
         }
 
-
-        mPassTextWatcher = new TextWatcher() {
+        TextWatcher mPassTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -295,15 +257,13 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
             }
         };
 
-        mRetypedPassTextWatcher = new TextWatcher() {
+        TextWatcher mRetypedPassTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -320,15 +280,13 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
             }
         };
 
-        mEnableBtnTextWatcher = new TextWatcher() {
+        TextWatcher mEnableBtnTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -375,8 +333,7 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     @Override
     public boolean isNetworkAvailable() {
         Log.d(TAG_FRAG_RESET_PASS, "isNetworkAvailable() has been instantiated");
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
@@ -385,41 +342,13 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     public void replaceFragmentWithAnimation(Fragment fragment, String tag) {
         Log.d(TAG_FRAG_RESET_PASS, "replaceFragmentWithAnimation() has been instantiated");
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
-//                R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragment_holder, fragment);
-        transaction.addToBackStack(tag);
         transaction.commit();
-
-    }
-
-    @Override
-    public void clearBackStack() {
-        Log.d(TAG_FRAG_RESET_PASS, "clearBackStack() has been instantiated");
-        FragmentManager manager = getActivity().getSupportFragmentManager();
-        if (manager != null) {
-            Constants.sDisableFragmentAnimations = true;
-            manager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            Constants.sDisableFragmentAnimations = false;
-        } else
-            Log.w(TAG_FRAG_RESET_PASS, "FragmentManager -> null");
-    }
-
-    @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (Constants.sDisableFragmentAnimations) {
-            Animation a = new Animation() {
-            };
-            a.setDuration(0);
-            return a;
-        }
-        return super.onCreateAnimation(transit, enter, nextAnim);
     }
 
     @Override
     public Typeface loadFont(Context context, String fontPath) {
         Log.d(TAG_FRAG_RESET_PASS, "loadFont() has been instantiated");
-
         return Typeface.createFromAsset(context.getAssets(), fontPath);
     }
 
@@ -444,22 +373,22 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                 Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_RESET_PASS, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText(errorModel.getMessage());
                 } else {
                     Log.i(TAG_FRAG_RESET_PASS, "getLoginResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (response.code() == 500) {
-            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         } else {
-            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         }
     }

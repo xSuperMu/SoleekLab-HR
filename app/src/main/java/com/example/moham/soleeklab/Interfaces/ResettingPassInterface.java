@@ -22,8 +22,6 @@ public interface ResettingPassInterface {
 
     void replaceFragmentWithAnimation(Fragment fragment, String tag);
 
-    void clearBackStack();
-
     Typeface loadFont(Context context, String fontPath);
 
     void setFontsToViews();

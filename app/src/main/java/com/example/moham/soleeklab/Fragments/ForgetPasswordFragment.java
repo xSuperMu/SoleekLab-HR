@@ -1,8 +1,6 @@
 package com.example.moham.soleeklab.Fragments;
 
-
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -13,8 +11,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -24,7 +22,6 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,7 +35,6 @@ import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
-import com.example.moham.soleeklab.Utils.Constants;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -76,8 +72,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     @BindView(R.id.error_message)
     TextView tvErrorMessage;
 
-    private ProgressDialog mLoadingDialog;
-    private TextWatcher mEmailTextWatcher;
     private Employee currentEmployee;
 
     public ForgetPasswordFragment() {
@@ -95,15 +89,12 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         unbinder = ButterKnife.bind(this, view);
 
         instantiateViews();
-
         return view;
     }
-
 
     @Override
     public void onDestroyView() {
         Log.d(TAG_FRAG_FORGET_PASS, "onDestroyView() has been instantiated");
-
         super.onDestroyView();
         unbinder.unbind();
 
@@ -117,7 +108,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     @OnClick(R.id.ib_back)
     public void onIbBackClicked() {
         Log.d(TAG_FRAG_FORGET_PASS, "back::ImageView has been clicked");
-        clearBackStack();
         replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
     }
 
@@ -138,38 +128,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
             tvErrorMessage.setVisibility(View.GONE);
             startActivity(new Intent(getContext(), LoadingActivity.class));
 
-//            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
-//            LayoutInflater inflater = LayoutInflater.from(getContext());
-//            View view = inflater.inflate(R.layout.loading, null);
-//            showLoadingDialog.setView(view);
-//
-//            try {
-//                GifImageView gifImageView = view.findViewById(R.id.gif_loading);
-//                GifDrawable gifFromAssets = new GifDrawable(getActivity().getAssets(), "logoloading.gif");
-//                gifImageView.setImageDrawable(gifFromAssets);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-//            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
-//
-//            final AlertDialog dialog = showLoadingDialog.create();
-//
-//            dialog.show();
-//            dialog.getWindow().setAttributes(layoutParams);
-//            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
-
-//            if (email.equals("1@1.1")) {
-//
-//                dialog.dismiss();
-//
-//                VerifyIdentityFragment fragment = new VerifyIdentityFragment();
-//                Bundle extraEmail = new Bundle();
-//                extraEmail.putString("extra_email", email);
-//                fragment.setArguments(extraEmail);
-//                replaceFragmentWithAnimation(fragment, TAG_FRAG_VERIFY_IDENTITY);
             ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
             Call<Employee> call = service.sendEmailToResetPassword(email);
 
@@ -185,7 +143,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                             VerifyIdentityFragment fragment = new VerifyIdentityFragment();
                             fragment.setArguments(extraEmail);
                             replaceFragmentWithAnimation(fragment, TAG_FRAG_VERIFY_IDENTITY);
-                            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                         } else {
                             getResponseErrorMessage(getActivity(), response);
                         }
@@ -198,10 +156,9 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                 public void onFailure(Call<Employee> call, Throwable t) {
                     Log.e(TAG_FRAG_FORGET_PASS, "onFailure(): " + t.toString());
                     Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                 }
             });
-
         }
     }
 
@@ -220,10 +177,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     @Override
     public void instantiateViews() {
         Log.d(TAG_FRAG_FORGET_PASS, "instantiateViews() has been instantiated");
-
         setFontsToViews();
-//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-//        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         View view = getActivity().getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -234,14 +188,13 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         btnSendEmail.setBackgroundResource(R.drawable.button_gray);
         btnSendEmail.setEnabled(false);
 
-        mEmailTextWatcher = new TextWatcher() {
+        TextWatcher mEmailTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -262,7 +215,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                     btnSendEmail.setBackgroundResource(R.drawable.button_gray);
                 }
             }
-
         };
         edtForgetEmail.addTextChangedListener(mEmailTextWatcher);
     }
@@ -270,8 +222,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     @Override
     public boolean isNetworkAvailable() {
         Log.d(TAG_FRAG_FORGET_PASS, "isNetworkAvailable() has been instantiated");
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
@@ -302,40 +253,24 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         Log.d(TAG_FRAG_FORGET_PASS, "replaceFragmentWithAnimation() has been instantiated");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
-//                R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragment_holder, fragment);
-        transaction.addToBackStack(tag);
         transaction.commitAllowingStateLoss();
     }
 
-    @Override
-    public void clearBackStack() {
-        Log.d(TAG_FRAG_FORGET_PASS, "clearBackStack() has been instantiated");
-        FragmentManager manager = getActivity().getSupportFragmentManager();
-        if (manager != null) {
-            Constants.sDisableFragmentAnimations = true;
-            manager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            Constants.sDisableFragmentAnimations = false;
-        } else
-            Log.w(TAG_FRAG_FORGET_PASS, "FragmentManager -> null");
-    }
-
-    @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (Constants.sDisableFragmentAnimations) {
-            Animation a = new Animation() {
-            };
-            a.setDuration(0);
-            return a;
-        }
-        return super.onCreateAnimation(transit, enter, nextAnim);
-    }
+//    @Override
+//    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+//        if (Constants.sDisableFragmentAnimations) {
+//            Animation a = new Animation() {
+//            };
+//            a.setDuration(0);
+//            return a;
+//        }
+//        return super.onCreateAnimation(transit, enter, nextAnim);
+//    }
 
     @Override
     public Typeface loadFont(Context context, String fontPath) {
         Log.d(TAG_FRAG_FORGET_PASS, "loadFont() has been instantiated");
-
         return Typeface.createFromAsset(context.getAssets(), fontPath);
     }
 
@@ -359,22 +294,22 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                 Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_FORGET_PASS, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText(errorModel.getMessage());
                 } else {
                     Log.i(TAG_FRAG_FORGET_PASS, "getLoginResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (response.code() == 500) {
-            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         } else {
-            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         }
     }

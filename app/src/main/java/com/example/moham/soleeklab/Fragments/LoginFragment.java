@@ -14,6 +14,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
@@ -38,13 +39,14 @@ import com.example.moham.soleeklab.Interfaces.AuthLoginInterface;
 import com.example.moham.soleeklab.Model.CheckInResponse;
 import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.HeaderInjector;
+import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -84,11 +86,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     TextView tvLogin;
     @BindView(R.id.tv_more_info)
     TextView tvMoreInfo;
-
-    private TextWatcher mEmailTextWatcher;
-    private TextWatcher mPasswordTextWatcher;
-    private TextWatcher mTextWatcher;
-
+    private HeaderInjector headerInjector;
     private Employee currentEmployee;
 
     public LoginFragment() {
@@ -114,7 +112,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG_FRAG_LOGIN, "onDestroyView() has been instantiated");
-
         unbinder.unbind();
 
         View view = getActivity().getCurrentFocus();
@@ -135,10 +132,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         Log.d(TAG_FRAG_LOGIN, "replaceFragmentWithAnimation() has been instantiated");
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
-//                R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragment_holder, fragment);
-        transaction.addToBackStack(tag);
         transaction.commit();
     }
 
@@ -178,9 +172,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
         if (!isNetworkAvailable()) {
             Log.d(TAG_FRAG_LOGIN, "No network, Showing the dialog");
-
             showNoNetworkDialog();
-
             return;
         }
 
@@ -205,20 +197,9 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                         EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
 
                         Log.e(TAG_FRAG_LOGIN, "Getting employee check in status");
-                        // get employee check in status
                         ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
-                        String employeeToken = currentEmployee.getToken();
-                        Log.d(TAG_FRAG_LOGIN, "employeeToken: " + employeeToken);
-                        String KEY_CONTENT_TYPE_HEADER = "Content-Type";
-                        String KEY_AUTH_HEADER = "Authorization";
-                        String KEY_Bearer = "Bearer ";
-                        String APPLICATION_JSON = "application/json";
 
-                        HashMap<String, String> headers = new HashMap<>();
-                        headers.put(KEY_CONTENT_TYPE_HEADER, APPLICATION_JSON);
-                        headers.put(KEY_AUTH_HEADER, KEY_Bearer + employeeToken);
-
-                        Call<CheckInResponse> callGetAttendance = service.getTodayAttendance(headers);
+                        Call<CheckInResponse> callGetAttendance = service.getTodayAttendance(headerInjector.getHeaders());
                         callGetAttendance.enqueue(new Callback<CheckInResponse>() {
                             @Override
                             public void onResponse(Call<CheckInResponse> call, Response<CheckInResponse> response) {
@@ -231,7 +212,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                                     getActivity().finish();
                                     getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                                 } else {
-                                    // handle checkIn response error
                                     handleCheckInResponseError(getActivity(), response);
                                 }
                             }
@@ -239,7 +219,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                             @Override
                             public void onFailure(Call<CheckInResponse> call, Throwable t) {
                                 Log.e(TAG_FRAG_LOGIN, "onFailure(): " + t.toString());
-                                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                                 Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -250,9 +230,8 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
                 @Override
                 public void onFailure(Call<Employee> call, Throwable t) {
-                    // Network Error - Failure
                     Log.e(TAG_FRAG_LOGIN, "onFailure(): " + t.toString());
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -265,6 +244,8 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
 
         setFontsToViews();
 
+        headerInjector = new HeaderInjectorImplementation(getContext());
+
         View view = getActivity().getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -276,15 +257,13 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         btnLoginBtn.setBackgroundResource(R.drawable.button_gray);
         btnLoginBtn.setEnabled(false);
 
-        mTextWatcher = new TextWatcher() {
+        TextWatcher mTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -302,20 +281,18 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             }
         };
 
-        mEmailTextWatcher = new TextWatcher() {
+        TextWatcher mEmailTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 String email = edtLoginEmail.getText().toString();
-//
                 if (!TextUtils.isEmpty(email)) {
                     DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
 //                    edtLoginEmail.getBackground().mutate().setColorFilter(getResources().getColor(R.color.colorBlue), PorterDuff.Mode.SRC_ATOP);
@@ -339,14 +316,13 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             }
         };
 
-        mPasswordTextWatcher = new TextWatcher() {
+        TextWatcher mPasswordTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -386,10 +362,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                             tilInputEmailLayout.setError(null);
                     }
                 }
-//                else {
-//                    if (v != null && tilInputEmailLayout != null)
-//                        DrawableCompat.setTint(edtLoginEmail.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
-//                }
             }
         });
 
@@ -403,10 +375,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                             tilInputPasswordLayout.setError(null);
                     }
                 }
-//                else {
-//                    if (v != null && tilInputPasswordLayout != null)
-//                        DrawableCompat.setTint(edtLoginPassword.getBackground(), ContextCompat.getColor(getActivity(), R.color.colorBlue));
-//                }
             }
         });
 
@@ -461,23 +429,22 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_LOGIN, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText(errorModel.getMessage());
                 } else {
                     Log.i(TAG_FRAG_LOGIN, "getLoginResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (response.code() == 500) {
-            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
-
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         } else {
-            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         }
     }
@@ -494,14 +461,12 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 if (checkInErrorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_LOGIN, "handleCheckInResponseError() errorModel.Message = " + checkInErrorModel.getMessage());
 
-                    // Save object to preferences
                     EmployeeSharedPreferences.SaveCheckInResponseToPreferences(getActivity(), checkInErrorModel);
 
-                    // Start CheckIn Fragment from HomeActivity
                     startActivity(new Intent(getActivity(), HomeActivity.class).putExtra("response code", 404));
                     getActivity().finish();
 
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

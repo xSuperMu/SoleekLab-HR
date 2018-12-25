@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,12 +29,12 @@ import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Model.CheckInResponse;
 import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.HeaderInjector;
+import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 import com.github.abdularis.civ.CircleImageView;
-
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,6 +98,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     @BindView(R.id.tv_total_work_time)
     TextView tvTotalWorkTime;
     private CheckInResponse checkInResponse;
+    private HeaderInjector headerInjector;
     HomeActivity mHomeActivity;
 
     public HomeFragment() {
@@ -137,6 +139,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     public void instantiateViews() {
         Log.d(TAG_FRAG_HOME, "instantiateViews() has been instantiated");
 
+        headerInjector = new HeaderInjectorImplementation(getActivity());
         Log.d(TAG_FRAG_HOME, "Loading CheckInResponse from the preferences");
         setFontsToViews();
         checkInResponse = EmployeeSharedPreferences.readCheckInResponseFromPreferences(getActivity());
@@ -195,26 +198,10 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         Log.d(TAG_FRAG_HOME, "Showing loading activity");
         startActivity(new Intent(getContext(), LoadingActivity.class));
 
-        Log.e(TAG_FRAG_HOME, "Reading employee data from preferences");
-        Employee curEmp = EmployeeSharedPreferences.readEmployeeFromPreferences(getActivity());
-
-        String empToken = curEmp.getToken();
-        Log.e(TAG_FRAG_HOME, "Employee token --> " + empToken);
 
         Log.e(TAG_FRAG_HOME, "Checking employee out");
         ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
-
-        String KEY_CONTENT_TYPE_HEADER = "Content-Type";
-        String KEY_AUTH_HEADER = "Authorization";
-        String KEY_Bearer = "Bearer ";
-        String APPLICATION_JSON = "application/json";
-
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put(KEY_CONTENT_TYPE_HEADER, APPLICATION_JSON);
-        headers.put(KEY_AUTH_HEADER, KEY_Bearer + empToken);
-
-        Log.d(TAG_FRAG_HOME, "SERVICE: checkOut");
-        Call<CheckInResponse> call = service.checkOutUser(headers);
+        Call<CheckInResponse> call = service.checkOutUser(headerInjector.getHeaders());
         call.enqueue(new Callback<CheckInResponse>() {
             @Override
             public void onResponse(Call<CheckInResponse> call, Response<CheckInResponse> response) {
@@ -231,7 +218,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
             @Override
             public void onFailure(Call<CheckInResponse> call, Throwable t) {
                 Log.e(TAG_FRAG_HOME, "onFailure(): " + t.toString());
-                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                 Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
@@ -249,7 +236,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
 
         tvUserStatusText.setText(getString(R.string.absence_text));
         Log.d(TAG_FRAG_HOME, "Hiding loading activity");
-        getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
     }
 
     @Override
@@ -262,7 +249,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
 
         tvUserStatusText.setText(getString(R.string.vacation_text));
         Log.d(TAG_FRAG_HOME, "Hiding loading activity");
-        getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
     }
 
     @Override
@@ -279,7 +266,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         clTaskProgress.setVisibility(View.GONE);
 
         Log.d(TAG_FRAG_HOME, "Hiding loading activity");
-        getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
     }
 
     @Override
@@ -307,7 +294,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         }
 
         Log.d(TAG_FRAG_HOME, "Hiding loading activity");
-        getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
     }
 
     @Override

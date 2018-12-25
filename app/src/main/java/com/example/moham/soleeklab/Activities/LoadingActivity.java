@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -33,7 +34,8 @@ public class LoadingActivity extends AppCompatActivity {
         Log.d(TAG_LOADING_ACTIVITY, "Registering the receiver");
         IntentFilter filter = new IntentFilter(TAG_LOADING_RECEIVER_ACTION_CLOSE);
         loadingReceiver = new LoadingReceiver();
-        registerReceiver(loadingReceiver, filter);
+//        registerReceiver(loadingReceiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(loadingReceiver, filter);
 
         try {
             Log.d(TAG_LOADING_ACTIVITY, "Trying to Load the GIF");
@@ -52,7 +54,8 @@ public class LoadingActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG_LOADING_ACTIVITY, "onDestroy() has been instantiated");
-        unregisterReceiver(loadingReceiver);
+//        unregisterReceiver(loadingReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(loadingReceiver);
     }
 
     class LoadingReceiver extends BroadcastReceiver {

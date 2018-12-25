@@ -12,6 +12,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -118,7 +119,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        headerInjector = new HeaderInjectorImplementation(this);
 
         Log.d(TAG_HOME_ACTIVITY, "onCreate() has been instantiated");
 
@@ -149,7 +149,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         final FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.frame_fragment_holder, mFragmentsList.get(pos));
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     @Override
@@ -205,6 +205,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
     public void instantiateViews() {
         Log.d(TAG_HOME_ACTIVITY, "instantiateViews() has been instantiated");
 
+        headerInjector = new HeaderInjectorImplementation(this);
+
         bnvNavigation.getMenu().getItem(INT_FRAGMENT_CHECK_IN_POS).setChecked(true);
         bnvNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         disableShiftMode(bnvNavigation);
@@ -252,7 +254,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                             switchFragment(INT_FRAGMENT_HOME_POS, TAG_FRAG_HOME);
                         }
                         Log.d(TAG_HOME_ACTIVITY, "Hiding loading activity");
-                        sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                        sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                        LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     } else {
                         handleCheckInResponseError(HomeActivity.this, response);
                     }
@@ -261,13 +264,12 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                 @Override
                 public void onFailure(Call<CheckInResponse> call, Throwable t) {
                     Log.e(TAG_HOME_ACTIVITY, "onFailure(): " + t.toString());
-                    sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                    sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     Toast.makeText(HomeActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             });
-
         }
-
 
         Log.d(TAG_HOME_ACTIVITY, "instantiateViews() has been returned");
     }
@@ -309,6 +311,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         return null;
     }
 
+    @Override
     public void handleCheckInResponseError(Context context, Response response) {
         Log.d(TAG_HOME_ACTIVITY, "handleCheckInResponseError() has been instantiated");
         if (response.code() == 404) {
@@ -343,7 +346,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                         switchFragment(INT_FRAGMENT_HOME_POS, TAG_FRAG_HOME);
                     }
                     Log.d(TAG_HOME_ACTIVITY, "Hiding loading activity");
-                    sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                    sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

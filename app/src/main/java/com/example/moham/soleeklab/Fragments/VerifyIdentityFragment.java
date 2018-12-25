@@ -11,8 +11,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,7 +35,6 @@ import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
-import com.example.moham.soleeklab.Utils.Constants;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -108,11 +106,8 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
         View view = inflater.inflate(R.layout.fragment_verify_identity, container, false);
         unbinder = ButterKnife.bind(this, view);
-
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
         instantiateViews();
-
         return view;
     }
 
@@ -127,7 +122,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-
 
         if (timer != null) {
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "onDestroy: Cancelling Timer");
@@ -150,7 +144,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
         }
 
         startTimer();
-
 
         btnVerifyIdentity.setEnabled(false);
         btnVerifyIdentity.setBackgroundResource(R.drawable.button_gray);
@@ -176,13 +169,11 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 int length = s.toString().length();
-
                 switch (length) {
                     case 1:
                         cvBackground1.setVisibility(View.VISIBLE);
@@ -221,7 +212,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                         cvBackground3.setVisibility(View.INVISIBLE);
                         cvBackground4.setVisibility(View.INVISIBLE);
                         btnVerifyIdentity.setBackgroundResource(R.drawable.button_gray);
-
                 }
 
                 if (length == TOTAL_NUMBER_OF_ITEMS) {
@@ -235,7 +225,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 } else {
                     btnVerifyIdentity.setEnabled(false);
                     btnVerifyIdentity.setBackgroundResource(R.drawable.button_gray);
-
                 }
             }
         });
@@ -248,7 +237,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
         if (!isNetworkAvailable()) {
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "No Network Connection");
-
             showNoNetworkDialog();
             return;
         }
@@ -256,28 +244,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
         if (!TextUtils.isEmpty(verificationCode)) {
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "Verifying Email address");
 
-//            final AlertDialog.Builder showLoadingDialog = new AlertDialog.Builder(getContext());
-//            LayoutInflater inflater = LayoutInflater.from(getContext());
-//            View view = inflater.inflate(R.layout.loading, null);
-//            showLoadingDialog.setView(view);
-//
-//            try {
-//                GifImageView gifImageView = view.findViewById(R.id.gif_loading);
-//                GifDrawable gifFromAssets = new GifDrawable(getActivity().getAssets(), "logoloading.gif");
-//                gifImageView.setImageDrawable(gifFromAssets);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-//            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-//            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
-//
-//            final AlertDialog dialog = showLoadingDialog.create();
-//
-//            dialog.show();
-//            dialog.getWindow().setAttributes(layoutParams);
-//            dialog.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
             tvErrorMessage.setVisibility(View.GONE);
             startActivity(new Intent(getContext(), LoadingActivity.class));
 
@@ -299,7 +265,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                                 ResettingPasswordFragment fragment = new ResettingPasswordFragment();
                                 fragment.setArguments(bundle);
                                 replaceFragmentWithAnimation(fragment, TAG_FRAG_RESET_PASS);
-                                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                             } else {
                                 getResponseErrorMessage(getActivity(), response);
                             }
@@ -312,40 +278,31 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                     public void onFailure(Call<Employee> call, Throwable t) {
                         Log.e(TAG_FRAG_VERIFY_IDENTITY, "onFailure(): " + t.toString());
                         Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
-                        getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     }
                 });
-
-
             }
         }
-
     }
 
     @OnClick(R.id.ib_verify_back)
     public void onIbBackClicked() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "back::ImageView has been clicked");
-        clearBackStack();
         replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
     }
 
     @Override
     public void replaceFragmentWithAnimation(Fragment fragment, String tag) {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "replaceFragmentWithAnimation() has been instantiated");
-
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
-//                R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.fragment_holder, fragment);
-        transaction.addToBackStack(tag);
         transaction.commit();
     }
 
     @Override
     public boolean isNetworkAvailable() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "isNetworkAvailable() has been instantiated");
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
@@ -426,32 +383,8 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     }
 
     @Override
-    public void clearBackStack() {
-        Log.d(TAG_FRAG_VERIFY_IDENTITY, "clearBackStack() has been instantiated");
-        FragmentManager manager = getActivity().getSupportFragmentManager();
-        if (manager != null) {
-            Constants.sDisableFragmentAnimations = true;
-            manager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            Constants.sDisableFragmentAnimations = false;
-        } else
-            Log.w(TAG_FRAG_VERIFY_IDENTITY, "FragmentManager -> null");
-    }
-
-    @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (Constants.sDisableFragmentAnimations) {
-            Animation a = new Animation() {
-            };
-            a.setDuration(0);
-            return a;
-        }
-        return super.onCreateAnimation(transit, enter, nextAnim);
-    }
-
-    @Override
     public Typeface loadFont(Context context, String fontPath) {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "loadFont() has been instantiated");
-
         return Typeface.createFromAsset(context.getAssets(), fontPath);
     }
 
@@ -475,22 +408,22 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_VERIFY_IDENTITY, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText(errorModel.getMessage());
                 } else {
                     Log.i(TAG_FRAG_VERIFY_IDENTITY, "getLoginResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
-                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (response.code() == 500) {
-            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         } else {
-            getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         }
     }
@@ -513,9 +446,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
         ibReload.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_gray_24dp));
         tvResend.setEnabled(false);
         tvResend.setTextColor(getResources().getColor(R.color.colorGray));
-
     }
-
 
     public void startTimer() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "startTimer() has been instantiated");
@@ -530,7 +461,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 if (timer != null)
                     tvResend.setText("" + new SimpleDateFormat("mm:ss").format(new Date(millisUntilFinished)));
             }
-
             @Override
             public void onFinish() {
                 enableViews();

@@ -9,6 +9,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,11 +28,11 @@ import com.example.moham.soleeklab.Interfaces.CheckInFragmentInterface;
 import com.example.moham.soleeklab.Model.CheckInResponse;
 import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.HeaderInjector;
+import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
-
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,7 +64,7 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
     View vCircle;
     @BindView(R.id.cl_user_status_checkout)
     ConstraintLayout clUserStatusLogin;
-
+    private HeaderInjector headerInjector;
     HomeActivity mHomeActivity;
 
     public CheckInFragment() {
@@ -121,26 +122,9 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
         Log.d(TAG_FRAG_CHECK_IN, "Showing loading activity");
         startActivity(new Intent(getContext(), LoadingActivity.class));
 
-        Log.e(TAG_FRAG_CHECK_IN, "Reading employee data from preferences");
-        Employee curEmp = EmployeeSharedPreferences.readEmployeeFromPreferences(getActivity());
-
-        String empToken = curEmp.getToken();
-        Log.e(TAG_FRAG_CHECK_IN, "Employee token --> " + empToken);
-
         Log.e(TAG_FRAG_CHECK_IN, "Checking employee in");
         ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
-
-        String KEY_CONTENT_TYPE_HEADER = "Content-Type";
-        String KEY_AUTH_HEADER = "Authorization";
-        String KEY_Bearer = "Bearer ";
-        String APPLICATION_JSON = "application/json";
-
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put(KEY_CONTENT_TYPE_HEADER, APPLICATION_JSON);
-        headers.put(KEY_AUTH_HEADER, KEY_Bearer + empToken);
-
-        Log.d(TAG_FRAG_CHECK_IN, "SERVICE: checkIn");
-        Call<CheckInResponse> call = service.checkInUser(headers);
+        Call<CheckInResponse> call = service.checkInUser(headerInjector.getHeaders());
         call.enqueue(new Callback<CheckInResponse>() {
             @Override
             public void onResponse(Call<CheckInResponse> call, Response<CheckInResponse> response) {
@@ -159,7 +143,8 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
             @Override
             public void onFailure(Call<CheckInResponse> call, Throwable t) {
                 Log.e(TAG_FRAG_CHECK_IN, "onFailure(): " + t.toString());
-                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
                 Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
@@ -187,6 +172,7 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
     public void instantiateViews() {
         Log.d(TAG_FRAG_CHECK_IN, "instantiateViews() has been instantiated");
         setFontsToViews();
+        headerInjector = new HeaderInjectorImplementation(getActivity());
 
         Log.d(TAG_FRAG_CHECK_IN, "Loading CheckInResponse from the preferences");
         Employee curEmp = EmployeeSharedPreferences.readEmployeeFromPreferences(getActivity());

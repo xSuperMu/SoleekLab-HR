@@ -14,10 +14,14 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.example.moham.soleeklab.Fragments.ForgetPasswordFragment;
 import com.example.moham.soleeklab.Fragments.LoginFragment;
+import com.example.moham.soleeklab.Fragments.ResettingPasswordFragment;
+import com.example.moham.soleeklab.Fragments.VerifyIdentityFragment;
 import com.example.moham.soleeklab.Interfaces.AuthActivityInterface;
 import com.example.moham.soleeklab.R;
-import com.example.moham.soleeklab.Utils.Constants;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,10 +54,9 @@ public class AuthActivity extends AppCompatActivity implements AuthActivityInter
             }
         });
 
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.fragment_holder, LoginFragment.newInstance()).addToBackStack(TAG_FRAG_LOGIN).commit();
+                .add(R.id.fragment_holder, LoginFragment.newInstance()).commit();
     }
 
     @Override
@@ -81,21 +84,16 @@ public class AuthActivity extends AppCompatActivity implements AuthActivityInter
         ivAuthBackground.getLayoutParams().height = newHeight;
 
         Log.d(TAG_AUTH_ACTIVITY, "onWindowFocusChanged() has been returned");
-
     }
 
     @Override
     public void onBackPressed() {
         Log.d(TAG_AUTH_ACTIVITY, "onBackPressed() has been instantiated");
 
-
-        // Todo : handle onBackPressed
         if (doubleClickToExitPressedOnce) finish();
 
-        int count = getSupportFragmentManager().getBackStackEntryCount();
-        Log.i(TAG_AUTH_ACTIVITY, "BackStackEntryCount() == " + count);
-
-        if (count == 1) {
+        Fragment fragment = getVisibleFragment();
+        if (fragment instanceof LoginFragment) {
             Toast.makeText(this, "Click once more to close the app", Toast.LENGTH_SHORT).show();
             doubleClickToExitPressedOnce = true;
             new Handler().postDelayed(new Runnable() {
@@ -104,23 +102,11 @@ public class AuthActivity extends AppCompatActivity implements AuthActivityInter
                     doubleClickToExitPressedOnce = false;
                 }
             }, 2750);
-        } else {
-            clearBackStack();
+        } else if (fragment instanceof ForgetPasswordFragment || fragment instanceof ResettingPasswordFragment || fragment instanceof VerifyIdentityFragment)
+            replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
+        else {
             replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
         }
-
-    }
-
-    @Override
-    public void clearBackStack() {
-        Log.d(TAG_AUTH_ACTIVITY, "clearBackStack() has been instantiated");
-        FragmentManager manager = getSupportFragmentManager();
-        if (manager != null) {
-            Constants.sDisableFragmentAnimations = true;
-            manager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            Constants.sDisableFragmentAnimations = false;
-        } else
-            Log.w(TAG_AUTH_ACTIVITY, "FragmentManager -> null");
     }
 
     @Override
@@ -128,9 +114,17 @@ public class AuthActivity extends AppCompatActivity implements AuthActivityInter
         Log.d(TAG_AUTH_ACTIVITY, "replaceFragmentWithAnimation() has been instantiated");
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_holder, fragment);
-        transaction.addToBackStack(tag);
         transaction.commit();
     }
 
-
+    @Override
+    public Fragment getVisibleFragment() {
+        Log.d(TAG_AUTH_ACTIVITY, "getVisibleFragment() has been instantiated");
+        FragmentManager fragmentManager = AuthActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments)
+            if (fragment != null && fragment.isVisible())
+                return fragment;
+        return null;
+    }
 }
