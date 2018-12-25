@@ -1,9 +1,11 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Model.CheckInResponse;
 import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.R;
@@ -34,6 +37,7 @@ import butterknife.Unbinder;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_MEDIUM;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_LIBREFRANKLIN_MEDIUM;
+import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_CHECK_IN_POS;
 import static com.example.moham.soleeklab.Utils.Constants.STR_EMP_STATUS_ABSENCE;
 import static com.example.moham.soleeklab.Utils.Constants.STR_EMP_STATUS_ATTEND;
 import static com.example.moham.soleeklab.Utils.Constants.STR_EMP_STATUS_VACATION;
@@ -78,6 +82,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     @BindView(R.id.cl_task_progress)
     ConstraintLayout clTaskProgress;
     private CheckInResponse checkInResponse;
+    HomeActivity mHomeActivity;
 
     public HomeFragment() {
     }
@@ -90,10 +95,19 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG_FRAG_HOME, "onCreateView() has been instantiated");
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        mHomeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_CHECK_IN_POS).setChecked(true);
         unbinder = ButterKnife.bind(this, view);
 
         instantiateViews();
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG_FRAG_HOME, "onAttach() has been instantiated");
+        if (context instanceof Activity)
+            mHomeActivity = (HomeActivity) context;
     }
 
     @Override
@@ -232,6 +246,11 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         Log.d(TAG_FRAG_HOME, "loadFont() has been instantiated");
 
         return Typeface.createFromAsset(context.getAssets(), fontPath);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+
     }
 
     @Override

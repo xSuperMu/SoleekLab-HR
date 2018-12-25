@@ -88,6 +88,8 @@ public class AuthActivity extends AppCompatActivity implements AuthActivityInter
     public void onBackPressed() {
         Log.d(TAG_AUTH_ACTIVITY, "onBackPressed() has been instantiated");
 
+
+        // Todo : handle onBackPressed
         if (doubleClickToExitPressedOnce) finish();
 
         int count = getSupportFragmentManager().getBackStackEntryCount();

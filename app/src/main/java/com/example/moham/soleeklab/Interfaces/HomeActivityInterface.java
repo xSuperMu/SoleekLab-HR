@@ -13,4 +13,6 @@ public interface HomeActivityInterface {
     void disableShiftMode(BottomNavigationView view);
 
     Fragment getVisibleFragment();
+
+    void navigateToHomeOrCheckIn(String state);
 }

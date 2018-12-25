@@ -173,13 +173,14 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
             mHomeActivity = (HomeActivity) context;
     }
 
+
     @Override
     public void switchFragment(Fragment fragment, final String tag) {
         Log.d(TAG_FRAG_CHECK_IN, "switchFragment() has been instantiated");
         final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.frame_fragment_holder, fragment, tag);
-        transaction.commit();
+        transaction.replace(R.id.frame_fragment_holder, fragment);
+        transaction.commitAllowingStateLoss();
     }
 
 
@@ -202,4 +203,5 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
         Log.d(TAG_FRAG_CHECK_IN, "empProfilePicStr ------>" + empProfilePicStr);
         Glide.with(this).load(empProfilePicStr).apply(new RequestOptions().fitCenter().format(DecodeFormat.PREFER_ARGB_8888).override(Target.SIZE_ORIGINAL)).into(ivUserProfilePic);
     }
+
 }

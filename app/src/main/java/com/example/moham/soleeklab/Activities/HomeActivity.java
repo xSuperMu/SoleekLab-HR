@@ -67,24 +67,34 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case R.id.navigation_home:
-                            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
-                            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
+                            CheckInResponse response = null;
+                            String state;
+                            try {
+                                Log.d(TAG_HOME_ACTIVITY, "trying to load CheckInResponse from preferences----> ");
+                                response = EmployeeSharedPreferences.readCheckInResponseFromPreferences(HomeActivity.this);
+                                Log.d(TAG_HOME_ACTIVITY, "CheckInResponse toString() ----> " + response.toString());
+                                state = response.getState();
+                                Log.d(TAG_HOME_ACTIVITY, "CheckInResponse state toString() ----> " + response.getState());
+                            } catch (NullPointerException e) {
+                                Log.d(TAG_HOME_ACTIVITY, "CheckInResponse state ----> NULL");
+                                state = null;
+                            }
+                            if (state == null)
+                                switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+                            else
+                                switchFragment(INT_FRAGMENT_HOME_POS, TAG_FRAG_HOME);
                             return true;
                         case R.id.navigation_vacation:
                             switchFragment(INT_FRAGMENT_VACATION_POS, TAG_FRAG_VACATION);
-                            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
                             return true;
                         case R.id.navigation_task:
                             switchFragment(INT_FRAGMENT_TASKS_POS, TAG_FRAG_TASKS);
-                            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
                             return true;
                         case R.id.navigation_notification:
                             switchFragment(INT_FRAGMENT_NOTIFICATIONS_POS, TAG_FRAG_NOTIFICATION);
-                            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
                             return true;
                         case R.id.navigation_more:
                             switchFragment(INT_FRAGMENT_MORE_POS, TAG_FRAG_MORE);
-                            Log.d(TAG_HOME_ACTIVITY, "Backstack count ----> " + getSupportFragmentManager().getBackStackEntryCount());
                             return true;
                     }
                     return false;
@@ -124,7 +134,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         doubleClickToExitPressedOnce = false;
         final FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.frame_fragment_holder, mFragmentsList.get(pos), tag);
+        transaction.replace(R.id.frame_fragment_holder, mFragmentsList.get(pos));
         transaction.commit();
     }
 
@@ -133,6 +143,18 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         Log.d(TAG_HOME_ACTIVITY, "onBackPressed() has been instantiated");
         if (doubleClickToExitPressedOnce) finish();
 
+        CheckInResponse response = null;
+        String state;
+        try {
+            Log.d(TAG_HOME_ACTIVITY, "onBackPressed: trying to load CheckInResponse from preferences----> ");
+            response = EmployeeSharedPreferences.readCheckInResponseFromPreferences(this);
+            Log.d(TAG_HOME_ACTIVITY, "onBackPressed: CheckInResponse toString() ----> " + response.toString());
+            state = response.getState();
+            Log.d(TAG_HOME_ACTIVITY, "onBackPressed: CheckInResponse state toString() ----> " + response.getState());
+        } catch (NullPointerException e) {
+            Log.d(TAG_HOME_ACTIVITY, "onBackPressed: CheckInResponse state ----> NULL");
+            state = null;
+        }
 
         Fragment fragment = getVisibleFragment();
         if (fragment instanceof HomeFragment || fragment instanceof CheckInFragment) {
@@ -144,30 +166,25 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                     doubleClickToExitPressedOnce = false;
                 }
             }, 2750);
-        } else if (fragment instanceof VacationFragment) {
-            // Check user today attendance , if data == null --> show CheckInFragment, else show HomeFragment
-            // TODO
-            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+        } else if (fragment instanceof VacationFragment || fragment instanceof TasksFragment || fragment instanceof NotificationFragment || fragment instanceof MoreFragment || fragment instanceof TaskToDoFragment || fragment instanceof TaskDoneFragment) {
+            navigateToHomeOrCheckIn(state);
         } else if (fragment instanceof NewVacationFragment) {
             switchFragment(INT_FRAGMENT_VACATION_POS, TAG_FRAG_VACATION);
-        } else if (fragment instanceof TasksFragment) {
-            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
-        } else if (fragment instanceof NotificationFragment) {
-            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
-        } else if (fragment instanceof MoreFragment) {
-            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
-        } else if (fragment instanceof AttendanceFragment) {
+        } else if (fragment instanceof AttendanceFragment || fragment instanceof FeedbackFragment) {
             switchFragment(INT_FRAGMENT_MORE_POS, TAG_FRAG_MORE);
-        } else if (fragment instanceof FeedbackFragment) {
-            switchFragment(INT_FRAGMENT_MORE_POS, TAG_FRAG_MORE);
-        } else if (fragment instanceof TaskToDoFragment) {
-            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
-        } else if (fragment instanceof TaskDoneFragment) {
-            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
         } else {
-            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+            navigateToHomeOrCheckIn(state);
         }
+    }
 
+    @Override
+    public void navigateToHomeOrCheckIn(String state) {
+        Log.d(TAG_HOME_ACTIVITY, "navigateToHomeOrCheckIn() has been instantiated");
+
+        if (state == null)
+            switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
+        else
+            switchFragment(INT_FRAGMENT_HOME_POS, TAG_HOME_ACTIVITY);
     }
 
     @Override
