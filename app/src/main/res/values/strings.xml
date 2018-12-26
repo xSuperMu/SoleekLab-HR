@@ -83,4 +83,11 @@
     <string name="changed_by">— —Changed By %1$s: %2$s</string>
     <string name="text_for">for</string>
     <string name="tasks_todo">ToDo</string>
+
+    <string name="date_format">h:mm a</string>
+    <string name="original_date_format">yyyy-MM-dd HH:mm:ss</string>
+
+    <string name="checkin_msg">Check-in %1$s</string>
+    <string name="checkout_msg">Check-out %1$s</string>
+    <string name="total_time_msg">(%1$s)</string>
 </resources>

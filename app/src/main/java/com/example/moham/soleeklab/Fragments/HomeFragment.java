@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,12 @@ import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 import com.github.abdularis.civ.CircleImageView;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -132,7 +139,6 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         super.onDestroyView();
         Log.d(TAG_FRAG_HOME, "onDestroyView() has been instantiated");
         unbinder.unbind();
-
     }
 
     @Override
@@ -159,6 +165,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         Log.d(TAG_FRAG_HOME, "empProfilePicStr ------>" + empProfilePicStr);
         Glide.with(this).load(empProfilePicStr).apply(new RequestOptions().fitCenter().format(DecodeFormat.PREFER_ARGB_8888).override(Target.SIZE_ORIGINAL)).into(civUserProfilePic);
 
+
         Log.d(TAG_FRAG_HOME, "checkInResponse Object ---->" + checkInResponse.toString());
         Log.d(TAG_FRAG_HOME, "User status ---->" + checkInResponse.getState());
 
@@ -174,10 +181,10 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
          *  if status == attend
          *  |
          *  |
-         *  checkIn == null ---> normal state (show checkout)
+         *  checkOut == null ---> normal state (show checkout)
          *  |
          *  |
-         *  checkIn == data ---> handleZombieState()
+         *  checkOut == data ---> handleZombieState()
          *
          * */
 
@@ -259,11 +266,37 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         viewCheckoutCircle.setVisibility(View.GONE);
         tvCheckOutText.setVisibility(View.GONE);
         tvCheckOutMessage.setVisibility(View.GONE);
+        clTaskProgress.setVisibility(View.GONE);
+
+        checkInResponse = EmployeeSharedPreferences.readCheckInResponseFromPreferences(getActivity());
+
+        String checkInTime = null;
+        String checkOutTime = null;
+        String totalWorkTime = null;
+
+        try {
+            checkInTime = formatTime(getActivity(), checkInResponse.getCheckIn());
+            checkOutTime = formatTime(getActivity(), checkInResponse.getCheckOut());
+            totalWorkTime = subtractDates(checkInResponse.getCheckOut(), checkInResponse.getCheckIn());
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // Update Views
+        if (!TextUtils.isEmpty(checkInTime) && !TextUtils.isEmpty(totalWorkTime) && !TextUtils.isEmpty(checkOutTime)) {
+            String chkInTimeStr = getString(R.string.checkin_msg, checkInTime);
+            String chkOutTimeStr = getString(R.string.checkout_msg, checkOutTime);
+            String totTimeStr = getString(R.string.total_time_msg, totalWorkTime);
+            tvCheckInTime.setText(chkInTimeStr);
+            tvCheckOutTime.setText(chkOutTimeStr);
+            tvTotalWorkTime.setText(totTimeStr);
+        }
+
         tvCheckInTime.setVisibility(View.VISIBLE);
         tvCheckOutTime.setVisibility(View.VISIBLE);
         tvTotalWorkTime.setVisibility(View.VISIBLE);
         llCheckOut.setVisibility(View.VISIBLE);
-        clTaskProgress.setVisibility(View.GONE);
 
         Log.d(TAG_FRAG_HOME, "Hiding loading activity");
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
@@ -285,8 +318,29 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         if (checkout == null) {
             Log.d(TAG_FRAG_HOME, "checkOut ----> Null");
             Log.d(TAG_FRAG_HOME, "Show normal state");
+
+
+            String checkInTime = null;
+            String totalWorkTime = null;
+            try {
+                checkInTime = formatTime(getActivity(), checkInResponse.getCheckIn());
+
+                SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.original_date_format));
+                String currentTime = sdf.format(new Date());
+
+                totalWorkTime = subtractDates(currentTime, checkInResponse.getCheckIn());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            // Update Views
+            if (!TextUtils.isEmpty(checkInTime) && !TextUtils.isEmpty(totalWorkTime)) {
+                String checkInTimeStr = getString(R.string.check_out_messages, checkInTime, totalWorkTime);
+                tvCheckOutMessage.setText(checkInTimeStr);
+            }
             llCheckOut.setVisibility(View.VISIBLE);
             clTaskProgress.setVisibility(View.GONE);
+
         } else {
             Log.d(TAG_FRAG_HOME, "checkOut ----> " + checkout);
             Log.d(TAG_FRAG_HOME, "Show ZOMBIE state");
@@ -324,5 +378,36 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         tvTaskProgressThisWeek.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
         tvViewAllTasks.setTypeface(loadFont(getActivity(), FONT_DOSIS_REGULAR));
 
+    }
+
+    @Override
+    public String formatTime(Context context, String timeToFormat) throws ParseException {
+        Log.d(TAG_FRAG_HOME, "formatTime() has been instantiated");
+
+        String pattern = context.getString(R.string.date_format);
+        DateFormat formatter = new SimpleDateFormat(pattern);
+        DateFormat originalFormat = new SimpleDateFormat(context.getString(R.string.original_date_format), Locale.ENGLISH);
+        Date date = originalFormat.parse(timeToFormat);
+        return formatter.format(date);
+    }
+
+    @Override
+    public String subtractDates(String checkOut, String checkIn) throws ParseException {
+        Log.d(TAG_FRAG_HOME, "subtractDates() has been instantiated");
+
+        String totalTime = null;
+        DateFormat originalFormat = new SimpleDateFormat(getString(R.string.original_date_format), Locale.ENGLISH);
+
+        Date checkOutDate = originalFormat.parse(checkOut);
+        Date checkInDate = originalFormat.parse(checkIn);
+
+        long dateDifference = checkOutDate.getTime() - checkInDate.getTime();
+
+        String diffHours = String.valueOf((int) (dateDifference / (60 * 60 * 1000)));
+        String diffMins = String.valueOf((int) (dateDifference / (60 * 1000)));
+
+        totalTime = diffHours + "h " + diffMins + "m";
+
+        return totalTime;
     }
 }

@@ -150,10 +150,10 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:text="Checked-in 11:43AM (8h 36mtools)"
                 android:textAlignment="center"
                 android:textColor="@color/colorGray"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                tools:text="Checked-in 11:43AM (8h 36m)" />
 
             <TextView
                 android:id="@+id/tv_check_in_time"
@@ -162,11 +162,11 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="24dp"
                 android:gravity="center"
-                android:text="Checked-in 11:43AM"
                 android:textAlignment="center"
                 android:textColor="@color/colorGray"
                 android:textSize="13sp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:text="Checked-in 11:43AM" />
 
             <TextView
                 android:id="@+id/tv_check_out_time"
@@ -175,11 +175,11 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:text="Checked-out 11:43AM"
                 android:textAlignment="center"
                 android:textColor="@color/colorGray"
                 android:textSize="13sp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:text="Checked-out 11:43AM" />
 
             <TextView
                 android:id="@+id/tv_total_work_time"
@@ -188,11 +188,11 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:text="(8h 36mtools)"
                 android:textAlignment="center"
                 android:textColor="@color/colorGray"
                 android:textSize="13sp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:text="(8h 36m)" />
 
             <View
                 android:layout_width="156dp"

@@ -58,18 +58,11 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG_FRAG_ATTENDANCE, "onCreateView() has been instantiated");
-//        Log.d(TAG_FRAG_ATTENDANCE, "Backstack count ----> " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
-//        if (getActivity().getSupportFragmentManager().getBackStackEntryCount() > 1) {
-//            getActivity().getSupportFragmentManager().popBackStack(TAG_FRAG_MORE, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//            Log.d(TAG_FRAG_ATTENDANCE, "if condition, Backstack count ----> " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
 
-//        }
         View view = inflater.inflate(R.layout.fragment_attendance, container, false);
         unbinder = ButterKnife.bind(this, view);
-
         instantiateViews();
         return view;
     }
@@ -104,10 +97,6 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG_FRAG_ATTENDANCE, "onDestroyView() has been instantiated");
-
-        // TODO DELETE
-//        getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
         unbinder.unbind();
     }
 
@@ -134,13 +123,11 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
 
         mAttendanceAdapter.swapAttendanceDataList(list);
         srlAttendanceSwipe.setRefreshing(false);
-
     }
 
     @Override
     public Typeface loadFont(Context context, String fontPath) {
         Log.d(TAG_FRAG_ATTENDANCE, "loadFont() has been instantiated");
-
         return Typeface.createFromAsset(context.getAssets(), fontPath);
     }
 
