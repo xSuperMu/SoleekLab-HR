@@ -47,8 +47,8 @@ public class NotificationFragment extends Fragment implements NotificationFragIn
     @BindView(R.id.srlNotificationSwipe)
     SwipeRefreshLayout srlNotificationSwipe;
     NotificationAdapter mNotificationAdapter;
-    private List<Notification> mUserNotifications;
     HomeActivity mHomeActivity;
+    private List<Notification> mUserNotifications;
 
     public NotificationFragment() {
     }

@@ -16,13 +16,23 @@ import java.io.IOException;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_FORGET_PASS;
+import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_LOGIN;
+import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_RESET_PASS;
+import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_VERIFY_IDENTITY;
+import static com.example.moham.soleeklab.Utils.Constants.STR_EXTRA_CODE;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_ACTIVITY;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_REC;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_FORGET_PASS;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_LOGIN;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_RESET_PASS;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_VERIFY_IDENTITY;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN;
 
 public class LoadingActivity extends AppCompatActivity {
 
 
+    private int extraInt;
     private LoadingReceiver loadingReceiver;
 
     @Override
@@ -32,10 +42,18 @@ public class LoadingActivity extends AppCompatActivity {
         Log.d(TAG_LOADING_ACTIVITY, "onCreate() has been instantiated");
 
         Log.d(TAG_LOADING_ACTIVITY, "Registering the receiver");
-        IntentFilter filter = new IntentFilter(TAG_LOADING_RECEIVER_ACTION_CLOSE);
+        IntentFilter filter = new IntentFilter(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN);
         loadingReceiver = new LoadingReceiver();
-//        registerReceiver(loadingReceiver, filter);
         LocalBroadcastManager.getInstance(this).registerReceiver(loadingReceiver, filter);
+
+        Intent intent = getIntent();
+        if (getIntent() != null) {
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                extraInt = extras.getInt(STR_EXTRA_CODE);
+            }
+        }
+
 
         try {
             Log.d(TAG_LOADING_ACTIVITY, "Trying to Load the GIF");
@@ -54,16 +72,42 @@ public class LoadingActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG_LOADING_ACTIVITY, "onDestroy() has been instantiated");
-//        unregisterReceiver(loadingReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loadingReceiver);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG_LOADING_REC, "onBackPressed() has been instantiated");
+
+        Log.d(TAG_LOADING_REC, "extraInt: " + extraInt);
+        switch (extraInt) {
+            case INT_CANCEL_LOGIN:
+                Log.d(TAG_LOADING_REC, "Sending cancel login request broadcast");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CANCEL_LOGIN));
+                break;
+            case INT_CANCEL_FORGET_PASS:
+                Log.d(TAG_LOADING_REC, "Sending cancel forget pass request broadcast");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CANCEL_FORGET_PASS));
+                break;
+            case INT_CANCEL_RESET_PASS:
+                Log.d(TAG_LOADING_REC, "Sending cancel reset pass request broadcast");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CANCEL_RESET_PASS));
+                break;
+            case INT_CANCEL_VERIFY_IDENTITY:
+                Log.d(TAG_LOADING_REC, "Sending cancel verify identity request broadcast");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CANCEL_VERIFY_IDENTITY));
+                break;
+            default:
+                this.finish();
+        }
     }
 
     class LoadingReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG_LOADING_RECEIVER, "onReceive() has been instantiated");
-            if (intent.getAction().equals(TAG_LOADING_RECEIVER_ACTION_CLOSE)) {
+            Log.d(TAG_LOADING_REC, "onReceive() has been instantiated");
+            if (intent.getAction().equals(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN)) {
                 LoadingActivity.this.finish();
             }
         }

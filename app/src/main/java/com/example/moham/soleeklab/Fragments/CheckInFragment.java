@@ -48,7 +48,7 @@ import static com.example.moham.soleeklab.Utils.Constants.FONT_LIBREFRANKLIN_MED
 import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_CHECK_IN_POS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_CHECK_IN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_HOME;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN;
 
 public class CheckInFragment extends Fragment implements CheckInFragmentInterface {
 
@@ -65,8 +65,8 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
     View vCircle;
     @BindView(R.id.cl_user_status_checkout)
     ConstraintLayout clUserStatusLogin;
-    private HeaderInjector headerInjector;
     HomeActivity mHomeActivity;
+    private HeaderInjector headerInjector;
 
     public CheckInFragment() {
     }
@@ -151,8 +151,8 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
             @Override
             public void onFailure(Call<CheckInResponse> call, Throwable t) {
                 Log.e(TAG_FRAG_CHECK_IN, "onFailure(): " + t.toString());
-//                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
-                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                 Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
             }
         });

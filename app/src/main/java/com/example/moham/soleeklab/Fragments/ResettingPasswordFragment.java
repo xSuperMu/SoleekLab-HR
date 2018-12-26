@@ -1,11 +1,14 @@
 package com.example.moham.soleeklab.Fragments;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -46,13 +49,17 @@ import retrofit2.Response;
 
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_SEMI_BOLD;
+import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_RESET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.INT_NEW_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.INT_RETYPED_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.LOGIN_PASS_MIN_LENGTH;
+import static com.example.moham.soleeklab.Utils.Constants.STR_EXTRA_CODE;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_RESET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VERIFY_IDENTITY;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_RESET_PASS;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_RESET_PASS_REC;
 
 public class ResettingPasswordFragment extends Fragment implements ResettingPassInterface {
 
@@ -77,8 +84,20 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     private String extraVerificationCode;
     private String extraEmail;
     private Employee currentEmployee;
+    private Call<Employee> ResetPassRequestCall;
+    private ResetPassReceiver mResetPassReceiver;
 
     public ResettingPasswordFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG_FRAG_RESET_PASS, "onCreate() has been instantiated");
+
+        IntentFilter filter = new IntentFilter(TAG_LOADING_RECEIVER_ACTION_CANCEL_RESET_PASS);
+        mResetPassReceiver = new ResetPassReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mResetPassReceiver, filter);
     }
 
     public static ResettingPasswordFragment newInstance() {
@@ -106,6 +125,8 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mResetPassReceiver);
     }
 
     @OnClick(R.id.ib_back)
@@ -172,12 +193,17 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
             Log.d(TAG_FRAG_RESET_PASS, "Resetting user password");
 
             tvErrorMessage.setVisibility(View.GONE);
-            startActivity(new Intent(getContext(), LoadingActivity.class));
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(STR_EXTRA_CODE, INT_CANCEL_RESET_PASS);
+            Intent intent = new Intent(getContext(), LoadingActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
 
             ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
-            Call<Employee> call = service.resetUserPassword(extraEmail, pass, extraVerificationCode);
+            ResetPassRequestCall = service.resetUserPassword(extraEmail, pass, extraVerificationCode);
 
-            call.enqueue(new Callback<Employee>() {
+            ResetPassRequestCall.enqueue(new Callback<Employee>() {
                 @Override
                 public void onResponse(Call<Employee> call, Response<Employee> response) {
                     if (response.isSuccessful()) {
@@ -185,7 +211,7 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                         currentEmployee = response.body();
                         if (currentEmployee.getError() == null) {
                             replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
-                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                             Toast.makeText(getActivity(), "Password Changed Successfully", Toast.LENGTH_SHORT).show();
                         } else {
                             getResponseErrorMessage(getActivity(), response);
@@ -198,8 +224,11 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                 @Override
                 public void onFailure(Call<Employee> call, Throwable t) {
                     Log.e(TAG_FRAG_VERIFY_IDENTITY, "onFailure(): " + t.toString());
-                    Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                    if (call.isCanceled())
+                        Toast.makeText(getActivity(), "Canceled!", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -342,23 +371,34 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                 Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_RESET_PASS, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText(errorModel.getMessage());
                 } else {
                     Log.i(TAG_FRAG_RESET_PASS, "getLoginResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (response.code() == 500) {
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         } else {
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    class ResetPassReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG_RESET_PASS_REC, "onReceive() has been instantiated");
+            if (intent.getAction().equals(TAG_LOADING_RECEIVER_ACTION_CANCEL_RESET_PASS)) {
+                Log.d(TAG_RESET_PASS_REC, "cancelling reset password request");
+                ResetPassRequestCall.cancel();
+            }
         }
     }
 }

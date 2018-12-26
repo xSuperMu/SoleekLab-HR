@@ -1,12 +1,15 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -55,10 +58,14 @@ import retrofit2.Response;
 
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_SEMI_BOLD;
+import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.LOGIN_PASS_MIN_LENGTH;
+import static com.example.moham.soleeklab.Utils.Constants.STR_EXTRA_CODE;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_FORGET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_LOGIN;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOGIN_REC;
 
 public class LoginFragment extends Fragment implements AuthLoginInterface {
 
@@ -85,6 +92,8 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     TextView tvMoreInfo;
     private HeaderInjector headerInjector;
     private Employee currentEmployee;
+    private Call<Employee> loginRequestCall;
+    private LoginReceiver mLoginReceiver;
 
     public LoginFragment() {
     }
@@ -92,6 +101,15 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     public static LoginFragment newInstance() {
         Log.d(TAG_FRAG_LOGIN, "newInstance() has been instantiated");
         return new LoginFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG_FRAG_LOGIN, "onCreate() has been instantiated");
+        IntentFilter filter = new IntentFilter(TAG_LOADING_RECEIVER_ACTION_CANCEL_LOGIN);
+        mLoginReceiver = new LoginReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mLoginReceiver, filter);
     }
 
     @Override
@@ -116,6 +134,8 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mLoginReceiver);
     }
 
     @OnClick(R.id.tv_forget_password)
@@ -177,12 +197,18 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             Log.d(TAG_FRAG_LOGIN, "Logging user in");
 
             tvErrorMessage.setVisibility(View.GONE);
-            startActivity(new Intent(getContext(), LoadingActivity.class));
+            // Informing the loading screen who instantiated it
+            Bundle bundle = new Bundle();
+            bundle.putInt(STR_EXTRA_CODE, INT_CANCEL_LOGIN);
+            Intent intent = new Intent(getContext(), LoadingActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+
 
             ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
-            Call<Employee> call = service.loginEmployee(email, password);
+            loginRequestCall = service.loginEmployee(email, password);
 
-            call.enqueue(new Callback<Employee>() {
+            loginRequestCall.enqueue(new Callback<Employee>() {
                 @Override
                 public void onResponse(Call<Employee> call, Response<Employee> response) {
 
@@ -207,7 +233,8 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                                     Log.e(TAG_FRAG_LOGIN, "User Checked In Before, Moving to HomeActivity");
                                     startActivity(new Intent(getActivity(), HomeActivity.class).putExtra("response code", 200));
                                     getActivity().finish();
-                                    getActivity().sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+
                                 } else {
                                     handleCheckInResponseError(getActivity(), response);
                                 }
@@ -216,7 +243,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                             @Override
                             public void onFailure(Call<CheckInResponse> call, Throwable t) {
                                 Log.e(TAG_FRAG_LOGIN, "onFailure(): " + t.toString());
-                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                                 Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -228,8 +255,11 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 @Override
                 public void onFailure(Call<Employee> call, Throwable t) {
                     Log.e(TAG_FRAG_LOGIN, "onFailure(): " + t.toString());
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
-                    Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                    if (call.isCanceled())
+                        Toast.makeText(getActivity(), "Canceled!", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -391,22 +421,22 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_LOGIN, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText(errorModel.getMessage());
                 } else {
                     Log.i(TAG_FRAG_LOGIN, "getLoginResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (response.code() == 500) {
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         } else {
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         }
     }
@@ -428,7 +458,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                     startActivity(new Intent(getActivity(), HomeActivity.class).putExtra("response code", 404));
                     getActivity().finish();
 
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -454,5 +484,16 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         edtLoginPassword.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
         tvForgetPassword.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
         btnLoginBtn.setTypeface(loadFont(getContext(), FONT_DOSIS_SEMI_BOLD));
+    }
+
+    class LoginReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG_LOGIN_REC, "onReceive() has been instantiated");
+            if (intent.getAction().equals(TAG_LOADING_RECEIVER_ACTION_CANCEL_LOGIN)) {
+                Log.d(TAG_LOGIN_REC, "cancelling login request");
+                loginRequestCall.cancel();
+            }
+        }
     }
 }

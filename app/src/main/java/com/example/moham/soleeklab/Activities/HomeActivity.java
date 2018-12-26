@@ -64,7 +64,7 @@ import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_NOTIFICATION;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_TASKS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VACATION;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_HOME_ACTIVITY;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN;
 
 public class HomeActivity extends AppCompatActivity implements HomeActivityInterface {
 
@@ -81,7 +81,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                     switch (menuItem.getItemId()) {
                         case R.id.navigation_home:
                             CheckInResponse response = null;
-                            String state;
+                            int state;
                             try {
                                 Log.d(TAG_HOME_ACTIVITY, "trying to load CheckInResponse from preferences----> ");
                                 response = EmployeeSharedPreferences.readCheckInResponseFromPreferences(HomeActivity.this);
@@ -90,9 +90,9 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                                 Log.d(TAG_HOME_ACTIVITY, "CheckInResponse state toString() ----> " + response.getState());
                             } catch (NullPointerException e) {
                                 Log.d(TAG_HOME_ACTIVITY, "CheckInResponse state ----> NULL");
-                                state = null;
+                                state = 0;
                             }
-                            if (state == null)
+                            if (state == 0)
                                 switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
                             else
                                 switchFragment(INT_FRAGMENT_HOME_POS, TAG_FRAG_HOME);
@@ -158,7 +158,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         if (doubleClickToExitPressedOnce) finish();
 
         CheckInResponse response = null;
-        String state;
+        int state;
         try {
             Log.d(TAG_HOME_ACTIVITY, "onBackPressed: trying to load CheckInResponse from preferences----> ");
             response = EmployeeSharedPreferences.readCheckInResponseFromPreferences(this);
@@ -167,7 +167,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
             Log.d(TAG_HOME_ACTIVITY, "onBackPressed: CheckInResponse state toString() ----> " + response.getState());
         } catch (NullPointerException e) {
             Log.d(TAG_HOME_ACTIVITY, "onBackPressed: CheckInResponse state ----> NULL");
-            state = null;
+            state = 0;
         }
 
         Fragment fragment = getVisibleFragment();
@@ -192,10 +192,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
     }
 
     @Override
-    public void navigateToHomeOrCheckIn(String state) {
+    public void navigateToHomeOrCheckIn(int state) {
         Log.d(TAG_HOME_ACTIVITY, "navigateToHomeOrCheckIn() has been instantiated");
 
-        if (state == null)
+        if (state == 0)
             switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
         else
             switchFragment(INT_FRAGMENT_HOME_POS, TAG_HOME_ACTIVITY);
@@ -238,14 +238,14 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
                         Log.d(TAG_HOME_ACTIVITY, "Loading CheckInResponse from preferences");
                         CheckInResponse checkInResponse = EmployeeSharedPreferences.readCheckInResponseFromPreferences(HomeActivity.this);
-                        String data = null;
+                        int data;
                         try {
                             data = checkInResponse.getState();
                         } catch (NullPointerException e) {
-                            data = null;
+                            data = 0;
                         }
 
-                        if (data == null) {
+                        if (data == 0) {
                             Log.d(TAG_HOME_ACTIVITY, "CheckInResponse Data ---> Null");
                             Log.d(TAG_HOME_ACTIVITY, "Navigating to CheckInFragment");
                             switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
@@ -255,8 +255,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                             switchFragment(INT_FRAGMENT_HOME_POS, TAG_FRAG_HOME);
                         }
                         Log.d(TAG_HOME_ACTIVITY, "Hiding loading activity");
-//                        sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
-                        LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                        sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                        LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     } else {
                         handleCheckInResponseError(HomeActivity.this, response);
                     }
@@ -265,8 +265,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                 @Override
                 public void onFailure(Call<CheckInResponse> call, Throwable t) {
                     Log.e(TAG_HOME_ACTIVITY, "onFailure(): " + t.toString());
-//                    sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
-                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                    sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     Toast.makeText(HomeActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -330,14 +330,14 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
                     Log.d(TAG_HOME_ACTIVITY, "Loading CheckInResponse from preferences");
                     CheckInResponse checkInResponse = EmployeeSharedPreferences.readCheckInResponseFromPreferences(HomeActivity.this);
-                    String data = null;
+                    int data;
                     try {
                         data = checkInResponse.getState();
                     } catch (NullPointerException e) {
-                        data = null;
+                        data = 0;
                     }
 
-                    if (data == null) {
+                    if (data == 0) {
                         Log.d(TAG_HOME_ACTIVITY, "CheckInResponse Data ---> Null");
                         Log.d(TAG_HOME_ACTIVITY, "Navigating to CheckInFragment");
                         switchFragment(INT_FRAGMENT_CHECK_IN_POS, TAG_FRAG_CHECK_IN);
@@ -347,8 +347,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                         switchFragment(INT_FRAGMENT_HOME_POS, TAG_FRAG_HOME);
                     }
                     Log.d(TAG_HOME_ACTIVITY, "Hiding loading activity");
-//                    sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
-                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+//                    sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -79,8 +79,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_attendance"
             android:layout_width="match_parent"
-            tools:listitem="@layout/attendance_list_item"
             android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            tools:listitem="@layout/attendance_list_item" />
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

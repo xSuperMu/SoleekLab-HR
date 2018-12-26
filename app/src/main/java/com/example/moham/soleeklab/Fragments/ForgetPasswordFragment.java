@@ -1,10 +1,13 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -46,10 +49,14 @@ import retrofit2.Response;
 
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_SEMI_BOLD;
+import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_FORGET_PASS;
+import static com.example.moham.soleeklab.Utils.Constants.STR_EXTRA_CODE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FOR_PASS_REC;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_FORGET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VERIFY_IDENTITY;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_FORGET_PASS;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN;
 
 public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswordInterface {
 
@@ -68,10 +75,21 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     TextView tvForgetPasswordMessage;
     @BindView(R.id.error_message)
     TextView tvErrorMessage;
-
     private Employee currentEmployee;
+    Call<Employee> sendEmailRequestCall;
+    private ForgetPassReceiver mForgetPassReceiver;
 
     public ForgetPasswordFragment() {
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG_FRAG_FORGET_PASS, "onCreate() has been instantiated");
+        IntentFilter filter = new IntentFilter(TAG_LOADING_RECEIVER_ACTION_CANCEL_FORGET_PASS);
+        mForgetPassReceiver = new ForgetPassReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mForgetPassReceiver, filter);
     }
 
     public static ForgetPasswordFragment newInstance() {
@@ -100,6 +118,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mForgetPassReceiver);
     }
 
     @OnClick(R.id.ib_back)
@@ -121,14 +140,18 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         final String email = edtForgetEmail.getText().toString();
         if (checkEmailValidation(email) && NetworkUtils.isNetworkAvailable(getActivity())) {
             Log.d(TAG_FRAG_FORGET_PASS, "Valid Email address");
-
             tvErrorMessage.setVisibility(View.GONE);
-            startActivity(new Intent(getContext(), LoadingActivity.class));
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(STR_EXTRA_CODE, INT_CANCEL_FORGET_PASS);
+            Intent intent = new Intent(getContext(), LoadingActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
 
             ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
-            Call<Employee> call = service.sendEmailToResetPassword(email);
+            sendEmailRequestCall = service.sendEmailToResetPassword(email);
 
-            call.enqueue(new Callback<Employee>() {
+            sendEmailRequestCall.enqueue(new Callback<Employee>() {
                 @Override
                 public void onResponse(Call<Employee> call, Response<Employee> response) {
                     if (response.isSuccessful()) {
@@ -140,7 +163,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                             VerifyIdentityFragment fragment = new VerifyIdentityFragment();
                             fragment.setArguments(extraEmail);
                             replaceFragmentWithAnimation(fragment, TAG_FRAG_VERIFY_IDENTITY);
-                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                         } else {
                             getResponseErrorMessage(getActivity(), response);
                         }
@@ -152,8 +175,11 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                 @Override
                 public void onFailure(Call<Employee> call, Throwable t) {
                     Log.e(TAG_FRAG_FORGET_PASS, "onFailure(): " + t.toString());
-                    Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                    if (call.isCanceled())
+                        Toast.makeText(getActivity(), "Canceled!", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -226,17 +252,6 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
         transaction.commitAllowingStateLoss();
     }
 
-//    @Override
-//    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-//        if (Constants.sDisableFragmentAnimations) {
-//            Animation a = new Animation() {
-//            };
-//            a.setDuration(0);
-//            return a;
-//        }
-//        return super.onCreateAnimation(transit, enter, nextAnim);
-//    }
-
     @Override
     public Typeface loadFont(Context context, String fontPath) {
         Log.d(TAG_FRAG_FORGET_PASS, "loadFont() has been instantiated");
@@ -263,24 +278,34 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                 Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_FORGET_PASS, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText(errorModel.getMessage());
                 } else {
                     Log.i(TAG_FRAG_FORGET_PASS, "getLoginResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (response.code() == 500) {
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         } else {
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         }
     }
 
+    class ForgetPassReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG_FOR_PASS_REC, "onReceive() has been instantiated");
+            if (intent.getAction().equals(TAG_LOADING_RECEIVER_ACTION_CANCEL_FORGET_PASS)) {
+                Log.d(TAG_FOR_PASS_REC, "cancelling forget pass request");
+                sendEmailRequestCall.cancel();
+            }
+        }
+    }
 }

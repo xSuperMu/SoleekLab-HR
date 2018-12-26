@@ -17,7 +17,7 @@ public interface HomeActivityInterface {
 
     Fragment getVisibleFragment();
 
-    void navigateToHomeOrCheckIn(String state);
+    void navigateToHomeOrCheckIn(int state);
 
     void handleCheckInResponseError(Context context, Response response);
 }

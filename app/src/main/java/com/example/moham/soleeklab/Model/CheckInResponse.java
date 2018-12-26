@@ -30,7 +30,7 @@ public class CheckInResponse implements Serializable {
     private Double extraTime;
     @SerializedName("state")
     @Expose
-    private String state;
+    private int state;
     @SerializedName("comment")
     @Expose
     private Object comment;
@@ -101,11 +101,11 @@ public class CheckInResponse implements Serializable {
         this.extraTime = extraTime;
     }
 
-    public String getState() {
+    public int getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(int state) {
         this.state = state;
     }
 

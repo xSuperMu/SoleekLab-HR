@@ -55,14 +55,14 @@
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/login_email"
+                style="@style/EditTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/e_mail_address"
-                style="@style/EditTextTheme"
-                android:textSize="16sp"
                 android:inputType="textEmailAddress"
                 android:singleLine="true"
                 android:textColor="@color/colorTextDark"
+                android:textSize="16sp"
                 android:theme="@style/EditTextTheme" />
         </android.support.design.widget.TextInputLayout>
 

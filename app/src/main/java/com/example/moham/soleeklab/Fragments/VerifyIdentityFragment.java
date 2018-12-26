@@ -1,11 +1,14 @@
 package com.example.moham.soleeklab.Fragments;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
@@ -49,11 +52,15 @@ import retrofit2.Response;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_SEMI_BOLD;
+import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_VERIFY_IDENTITY;
+import static com.example.moham.soleeklab.Utils.Constants.STR_EXTRA_CODE;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_FORGET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_RESET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VERIFY_IDENTITY;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_VERIFY_IDENTITY;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_VERIFY_ID_REC;
 import static com.example.moham.soleeklab.Utils.Constants.TOTAL_NUMBER_OF_ITEMS;
 
 public class VerifyIdentityFragment extends Fragment implements VerifyIdentityInterface {
@@ -83,11 +90,23 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     ImageView ibReload;
     @BindView(R.id.tv_verify_identity)
     TextView tvVerifyIdentity;
-
+    CountDownTimer timer = null;
     private String mailExtra = null;
     private String verificationCode = null;
-    CountDownTimer timer = null;
     private Employee currentEmployee;
+
+    private Call<Employee> verifyIdentityRequestCall;
+    private VerifyIdentityReceiver mVerifyIdentityReceiver;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG_FRAG_VERIFY_IDENTITY, "onCreate() has been instantiated");
+
+        IntentFilter filter = new IntentFilter(TAG_LOADING_RECEIVER_ACTION_CANCEL_VERIFY_IDENTITY);
+        mVerifyIdentityReceiver = new VerifyIdentityReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mVerifyIdentityReceiver, filter);
+    }
 
     public VerifyIdentityFragment() {
     }
@@ -125,6 +144,9 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             timer.cancel();
             timer = null;
         }
+
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mVerifyIdentityReceiver);
+
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "onDestroyView() has finished");
     }
 
@@ -242,14 +264,19 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "Verifying Email address");
 
             tvErrorMessage.setVisibility(View.GONE);
-            startActivity(new Intent(getContext(), LoadingActivity.class));
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(STR_EXTRA_CODE, INT_CANCEL_VERIFY_IDENTITY);
+            Intent intent = new Intent(getContext(), LoadingActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
 
             if (verificationCode != null && mailExtra != null) {
 
                 ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
-                Call<Employee> call = service.verifyRestCode(mailExtra, Integer.parseInt(verificationCode));
+                verifyIdentityRequestCall = service.verifyRestCode(mailExtra, Integer.parseInt(verificationCode));
 
-                call.enqueue(new Callback<Employee>() {
+                verifyIdentityRequestCall.enqueue(new Callback<Employee>() {
                     @Override
                     public void onResponse(Call<Employee> call, Response<Employee> response) {
                         if (response.isSuccessful()) {
@@ -262,7 +289,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                                 ResettingPasswordFragment fragment = new ResettingPasswordFragment();
                                 fragment.setArguments(bundle);
                                 replaceFragmentWithAnimation(fragment, TAG_FRAG_RESET_PASS);
-                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                             } else {
                                 getResponseErrorMessage(getActivity(), response);
                             }
@@ -274,8 +301,11 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                     @Override
                     public void onFailure(Call<Employee> call, Throwable t) {
                         Log.e(TAG_FRAG_VERIFY_IDENTITY, "onFailure(): " + t.toString());
-                        Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
-                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                        if (call.isCanceled())
+                            Toast.makeText(getActivity(), "Canceled!", Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -319,9 +349,9 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
             tvErrorMessage.setVisibility(View.GONE);
             ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
-            Call<Employee> call = service.sendEmailToResetPassword(mailExtra);
+            Call<Employee> mResendEmailRequestCall = service.sendEmailToResetPassword(mailExtra);
 
-            call.enqueue(new Callback<Employee>() {
+            mResendEmailRequestCall.enqueue(new Callback<Employee>() {
                 @Override
                 public void onResponse(Call<Employee> call, Response<Employee> response) {
                     if (response.isSuccessful()) {
@@ -376,22 +406,22 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_VERIFY_IDENTITY, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     tvErrorMessage.setVisibility(View.VISIBLE);
                     tvErrorMessage.setText(errorModel.getMessage());
                 } else {
                     Log.i(TAG_FRAG_VERIFY_IDENTITY, "getLoginResponseErrorMessage() errorModel.Message = SOMETHING_WENT_WRONG");
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (response.code() == 500) {
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         } else {
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
             Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show();
         }
     }
@@ -429,10 +459,22 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 if (timer != null)
                     tvResend.setText("" + new SimpleDateFormat("mm:ss").format(new Date(millisUntilFinished)));
             }
+
             @Override
             public void onFinish() {
                 enableViews();
             }
         }.start();
+    }
+
+    class VerifyIdentityReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG_VERIFY_ID_REC, "onReceive() has been instantiated");
+            if (intent.getAction().equals(TAG_LOADING_RECEIVER_ACTION_CANCEL_VERIFY_IDENTITY)) {
+                Log.d(TAG_VERIFY_ID_REC, "cancelling verify identity request");
+                verifyIdentityRequestCall.cancel();
+            }
+        }
     }
 }

@@ -61,7 +61,7 @@ import static com.example.moham.soleeklab.Utils.Constants.STR_EMP_STATUS_ABSENCE
 import static com.example.moham.soleeklab.Utils.Constants.STR_EMP_STATUS_ATTEND;
 import static com.example.moham.soleeklab.Utils.Constants.STR_EMP_STATUS_VACATION;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_HOME;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN;
 
 public class HomeFragment extends Fragment implements HomeFragInterface {
 
@@ -106,9 +106,9 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     TextView tvCheckOutTime;
     @BindView(R.id.tv_total_work_time)
     TextView tvTotalWorkTime;
+    HomeActivity mHomeActivity;
     private CheckInResponse checkInResponse;
     private HeaderInjector headerInjector;
-    HomeActivity mHomeActivity;
 
     public HomeFragment() {
     }
@@ -171,7 +171,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         Log.d(TAG_FRAG_HOME, "checkInResponse Object ---->" + checkInResponse.toString());
         Log.d(TAG_FRAG_HOME, "User status ---->" + checkInResponse.getState());
 
-        String status = checkInResponse.getState();
+        int status = checkInResponse.getState();
         /*
          *
          *  check user status
@@ -190,11 +190,11 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
          *
          * */
 
-        if (status.equals(STR_EMP_STATUS_ABSENCE)) {
+        if (status == STR_EMP_STATUS_ABSENCE) {
             handleAbsenceState();
-        } else if (status.equals(STR_EMP_STATUS_ATTEND)) {
+        } else if (status == STR_EMP_STATUS_ATTEND) {
             handleAttendState();
-        } else if (status.equals(STR_EMP_STATUS_VACATION)) {
+        } else if (status == STR_EMP_STATUS_VACATION) {
             handleVacationState();
         }
     }
@@ -233,7 +233,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
             @Override
             public void onFailure(Call<CheckInResponse> call, Throwable t) {
                 Log.e(TAG_FRAG_HOME, "onFailure(): " + t.toString());
-                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                 Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
@@ -251,7 +251,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
 
         tvUserStatusText.setText(getString(R.string.absence_text));
         Log.d(TAG_FRAG_HOME, "Hiding loading activity");
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
     }
 
     @Override
@@ -264,7 +264,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
 
         tvUserStatusText.setText(getString(R.string.vacation_text));
         Log.d(TAG_FRAG_HOME, "Hiding loading activity");
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
     }
 
     @Override
@@ -307,7 +307,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         llCheckOut.setVisibility(View.VISIBLE);
 
         Log.d(TAG_FRAG_HOME, "Hiding loading activity");
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
     }
 
     @Override
@@ -356,7 +356,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         }
 
         Log.d(TAG_FRAG_HOME, "Hiding loading activity");
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE));
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
     }
 
     @Override

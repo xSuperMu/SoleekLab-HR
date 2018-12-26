@@ -79,7 +79,7 @@
             android:id="@+id/rv_notification"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/notification_list_item"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            tools:listitem="@layout/notification_list_item" />
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
