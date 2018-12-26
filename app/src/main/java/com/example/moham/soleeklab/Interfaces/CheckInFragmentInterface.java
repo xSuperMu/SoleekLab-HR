@@ -15,4 +15,6 @@ public interface CheckInFragmentInterface {
     void handleCheckIn();
 
     void switchFragment(Fragment fragment, String tag);
+
+    void instantiateViews();
 }

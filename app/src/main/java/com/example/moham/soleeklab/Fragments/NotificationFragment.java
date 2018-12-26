@@ -1,5 +1,7 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Adapter.NotificationAdapter;
 import com.example.moham.soleeklab.Interfaces.NotificationFragInterface;
 import com.example.moham.soleeklab.Model.Notification;
@@ -24,7 +27,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_NOTIFICATIONS_POS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_NOTIFICATION;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_TASKS;
 
 public class NotificationFragment extends Fragment implements NotificationFragInterface, SwipeRefreshLayout.OnRefreshListener {
 
@@ -43,6 +48,7 @@ public class NotificationFragment extends Fragment implements NotificationFragIn
     SwipeRefreshLayout srlNotificationSwipe;
     NotificationAdapter mNotificationAdapter;
     private List<Notification> mUserNotifications;
+    HomeActivity mHomeActivity;
 
     public NotificationFragment() {
     }
@@ -54,7 +60,9 @@ public class NotificationFragment extends Fragment implements NotificationFragIn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG_FRAG_NOTIFICATION, "onCreateView() has been instantiated");
+        mHomeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_NOTIFICATIONS_POS - 1).setChecked(true);
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
+
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -107,5 +115,12 @@ public class NotificationFragment extends Fragment implements NotificationFragIn
         // refresh the data
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG_FRAG_TASKS, "onAttach() has been instantiated");
 
+        if (context instanceof Activity)
+            mHomeActivity = (HomeActivity) context;
+    }
 }

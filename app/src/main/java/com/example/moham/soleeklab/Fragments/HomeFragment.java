@@ -27,11 +27,13 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Activities.LoadingActivity;
+import com.example.moham.soleeklab.Interfaces.HomeFragInterface;
 import com.example.moham.soleeklab.Model.CheckInResponse;
 import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.HeaderInjector;
 import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;
+import com.example.moham.soleeklab.Network.NetworkUtils;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
@@ -201,6 +203,12 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     @Override
     public void handleCheckoutClick() {
         Log.d(TAG_FRAG_HOME, "handleCheckoutClick() has been instantiated");
+
+        if (!NetworkUtils.isNetworkAvailable(getActivity())) {
+            Log.d(TAG_FRAG_HOME, "No Network Connection");
+            NetworkUtils.showNoNetworkDialog(getActivity());
+            return;
+        }
 
         Log.d(TAG_FRAG_HOME, "Showing loading activity");
         startActivity(new Intent(getContext(), LoadingActivity.class));
@@ -410,4 +418,5 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
 
         return totalTime;
     }
+
 }

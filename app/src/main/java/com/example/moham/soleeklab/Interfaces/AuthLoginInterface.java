@@ -16,10 +16,6 @@ public interface AuthLoginInterface {
 
     void instantiateViews();
 
-    boolean isNetworkAvailable();
-
-    void showNoNetworkDialog();
-
     void replaceFragmentWithAnimation(Fragment fragment, String tag);
 
     Typeface loadFont(Context context, String fontPath);

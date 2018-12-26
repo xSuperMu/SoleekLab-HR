@@ -12,10 +12,6 @@ public interface AuthForgetPasswordInterface {
 
     void instantiateViews();
 
-    void showNoNetworkDialog();
-
-    boolean isNetworkAvailable();
-
     void replaceFragmentWithAnimation(Fragment fragment, String tag);
 
     Typeface loadFont(Context context, String fontPath);

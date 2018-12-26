@@ -209,6 +209,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
         bnvNavigation.getMenu().getItem(INT_FRAGMENT_CHECK_IN_POS).setChecked(true);
         bnvNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
         disableShiftMode(bnvNavigation);
 
         buildFragmentsList();

@@ -1,13 +1,9 @@
 package com.example.moham.soleeklab.Fragments;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -33,6 +29,7 @@ import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.VerifyIdentityInterface;
 import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.NetworkUtils;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.google.gson.Gson;
@@ -235,9 +232,9 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     public void verifyUser() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "verifyUser() has been instantiated");
 
-        if (!isNetworkAvailable()) {
+        if (!NetworkUtils.isNetworkAvailable(getActivity())) {
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "No Network Connection");
-            showNoNetworkDialog();
+            NetworkUtils.showNoNetworkDialog(getActivity());
             return;
         }
 
@@ -299,35 +296,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
         transaction.commit();
     }
 
-    @Override
-    public boolean isNetworkAvailable() {
-        Log.d(TAG_FRAG_VERIFY_IDENTITY, "isNetworkAvailable() has been instantiated");
-        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    @Override
-    public void showNoNetworkDialog() {
-        Log.d(TAG_FRAG_VERIFY_IDENTITY, "showNoNetworkDialog() has been instantiated");
-
-        final AlertDialog.Builder noNetworkDialog = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View view = inflater.inflate(R.layout.no_internet_dialog, null);
-        noNetworkDialog.setView(view);
-
-        final AlertDialog dialog = noNetworkDialog.create();
-        dialog.show();
-        dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
-        Button btnDone = view.findViewById(R.id.btn_done);
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-    }
-
     @OnClick({R.id.tv_resend, R.id.ib_reload})
     public void handleResend() {
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "handleResend() has been instantiated");
@@ -346,7 +314,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             }
         }.start();
 
-        if (isNetworkAvailable()) {
+        if (NetworkUtils.isNetworkAvailable(getActivity())) {
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "Resending verification code");
 
             tvErrorMessage.setVisibility(View.GONE);

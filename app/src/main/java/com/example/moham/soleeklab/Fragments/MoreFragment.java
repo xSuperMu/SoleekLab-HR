@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.example.moham.soleeklab.Activities.AuthActivity;
 import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Interfaces.MoreFragmentInterface;
+import com.example.moham.soleeklab.Network.NetworkUtils;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 
@@ -69,11 +70,9 @@ public class MoreFragment extends Fragment implements MoreFragmentInterface {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG_FRAG_MORE, "onCreateView() has been instantiated");
-//        Log.d(TAG_FRAG_MORE, "Backstack count ----> " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
-
+        homeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_MORE_POS - 1).setChecked(true);
         View view = inflater.inflate(R.layout.fragment_more, container, false);
         unbinder = ButterKnife.bind(this, view);
-        homeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_MORE_POS - 1).setChecked(true);
         return view;
     }
 
@@ -89,7 +88,11 @@ public class MoreFragment extends Fragment implements MoreFragmentInterface {
     @Override
     public void handleAttendanceClick() {
         Log.d(TAG_FRAG_MORE, "Attendance::Button has been clicked");
-        switchFragment(AttendanceFragment.newInstance(), TAG_FRAG_ATTENDANCE);
+        if (!NetworkUtils.isNetworkAvailable(getActivity())) {
+            Log.d(TAG_FRAG_MORE, "No Network Connection");
+            NetworkUtils.showNoNetworkDialog(getActivity());
+        } else
+            switchFragment(AttendanceFragment.newInstance(), TAG_FRAG_ATTENDANCE);
     }
 
     @OnClick(R.id.ll_feedback)
@@ -113,7 +116,6 @@ public class MoreFragment extends Fragment implements MoreFragmentInterface {
         final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.frame_fragment_holder, fragment, tag);
-        transaction.addToBackStack(tag);
         transaction.commit();
     }
 

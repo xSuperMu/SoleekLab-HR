@@ -1,14 +1,10 @@
 package com.example.moham.soleeklab.Fragments;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -33,6 +29,7 @@ import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.ResettingPassInterface;
 import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.NetworkUtils;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.google.gson.Gson;
@@ -162,9 +159,9 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
     public void resetPassword() {
         Log.d(TAG_FRAG_RESET_PASS, "btnReset::Button has been clicked");
 
-        if (!isNetworkAvailable()) {
-            Log.d(TAG_FRAG_RESET_PASS, "No network, Showing the dialog");
-            showNoNetworkDialog();
+        if (!NetworkUtils.isNetworkAvailable(getActivity())) {
+            Log.d(TAG_FRAG_RESET_PASS, "No Network Connection");
+            NetworkUtils.showNoNetworkDialog(getActivity());
             return;
         }
 
@@ -308,34 +305,6 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
         edtRetypeNewPassword.addTextChangedListener(mRetypedPassTextWatcher);
         edtNewPassword.addTextChangedListener(mEnableBtnTextWatcher);
         edtRetypeNewPassword.addTextChangedListener(mEnableBtnTextWatcher);
-    }
-
-    @Override
-    public void showNoNetworkDialog() {
-        Log.d(TAG_FRAG_RESET_PASS, "showNoNetworkDialog() has been instantiated");
-        final AlertDialog.Builder noNetworkDialog = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View view = inflater.inflate(R.layout.no_internet_dialog, null);
-        noNetworkDialog.setView(view);
-
-        final AlertDialog dialog = noNetworkDialog.create();
-        dialog.show();
-        dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
-        Button btnDone = view.findViewById(R.id.btn_done);
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-    }
-
-    @Override
-    public boolean isNetworkAvailable() {
-        Log.d(TAG_FRAG_RESET_PASS, "isNetworkAvailable() has been instantiated");
-        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override

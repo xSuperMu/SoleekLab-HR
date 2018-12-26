@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_VACATION_POS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_NEW_VACATION;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_VACATION;
 
@@ -54,8 +55,8 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG_FRAG_VACATION, "onCreateView() has been instantiated");
-//        Log.d(TAG_FRAG_VACATION, "Backstack count ----> " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
-//        mHomeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_VACATION_POS - 1).setChecked(true);
+        mHomeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_VACATION_POS - 1).setChecked(true);
+
         View view = inflater.inflate(R.layout.fragment_vacation, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
@@ -82,7 +83,6 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
         FragmentManager manager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.frame_fragment_holder, fragment, tag);
-        transaction.addToBackStack(tag);
         transaction.commit();
     }
 

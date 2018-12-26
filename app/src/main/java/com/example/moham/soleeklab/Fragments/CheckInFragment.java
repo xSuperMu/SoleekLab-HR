@@ -30,6 +30,7 @@ import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.HeaderInjector;
 import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;
+import com.example.moham.soleeklab.Network.NetworkUtils;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
@@ -119,6 +120,13 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
     @Override
     public void handleCheckIn() {
         Log.d(TAG_FRAG_CHECK_IN, "handleCheckIn() has been instantiated");
+
+        if (!NetworkUtils.isNetworkAvailable(getActivity())) {
+            Log.d(TAG_FRAG_CHECK_IN, "No Network Connection");
+            NetworkUtils.showNoNetworkDialog(getActivity());
+            return;
+        }
+
         Log.d(TAG_FRAG_CHECK_IN, "Showing loading activity");
         startActivity(new Intent(getContext(), LoadingActivity.class));
 
@@ -158,7 +166,6 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
             mHomeActivity = (HomeActivity) context;
     }
 
-
     @Override
     public void switchFragment(Fragment fragment, final String tag) {
         Log.d(TAG_FRAG_CHECK_IN, "switchFragment() has been instantiated");
@@ -168,7 +175,7 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
         transaction.commitAllowingStateLoss();
     }
 
-
+    @Override
     public void instantiateViews() {
         Log.d(TAG_FRAG_CHECK_IN, "instantiateViews() has been instantiated");
         setFontsToViews();

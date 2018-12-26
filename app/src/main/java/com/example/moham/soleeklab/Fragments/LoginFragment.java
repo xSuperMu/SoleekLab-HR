@@ -3,11 +3,8 @@ package com.example.moham.soleeklab.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -17,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -41,6 +37,7 @@ import com.example.moham.soleeklab.Model.Employee;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.HeaderInjector;
 import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;
+import com.example.moham.soleeklab.Network.NetworkUtils;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
@@ -170,13 +167,13 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         String email = edtLoginEmail.getText().toString();
         String password = edtLoginPassword.getText().toString();
 
-        if (!isNetworkAvailable()) {
-            Log.d(TAG_FRAG_LOGIN, "No network, Showing the dialog");
-            showNoNetworkDialog();
+        if (!NetworkUtils.isNetworkAvailable(getActivity())) {
+            Log.d(TAG_FRAG_LOGIN, "No Network Connection");
+            NetworkUtils.showNoNetworkDialog(getActivity());
             return;
         }
 
-        if (checkEmailValidation(email) && checkPasswordValidation(password) && isNetworkAvailable()) {
+        if (checkEmailValidation(email) && checkPasswordValidation(password) && NetworkUtils.isNetworkAvailable(getActivity())) {
             Log.d(TAG_FRAG_LOGIN, "Logging user in");
 
             tvErrorMessage.setVisibility(View.GONE);
@@ -382,41 +379,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
         edtLoginPassword.addTextChangedListener(mPasswordTextWatcher);
         edtLoginEmail.addTextChangedListener(mTextWatcher);
         edtLoginPassword.addTextChangedListener(mTextWatcher);
-    }
-
-    @Override
-    public boolean isNetworkAvailable() {
-        Log.d(TAG_FRAG_LOGIN, "isNetworkAvailable() has been instantiated");
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    @Override
-    public void showNoNetworkDialog() {
-        Log.d(TAG_FRAG_LOGIN, "showNoNetworkDialog() has been instantiated");
-
-        final AlertDialog.Builder noNetworkDialog = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View view = inflater.inflate(R.layout.no_internet_dialog, null);
-        noNetworkDialog.setView(view);
-
-        final AlertDialog dialog = noNetworkDialog.create();
-        dialog.show();
-        dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
-        TextView infoMessage = view.findViewById(R.id.tv_info_message);
-        TextView extraInfoMessage = view.findViewById(R.id.tv_extra_info_message);
-        Button btnDone = view.findViewById(R.id.btn_done);
-        infoMessage.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
-        extraInfoMessage.setTypeface(loadFont(getContext(), FONT_DOSIS_REGULAR));
-        btnDone.setTypeface(loadFont(getContext(), FONT_DOSIS_SEMI_BOLD));
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
     }
 
     @Override

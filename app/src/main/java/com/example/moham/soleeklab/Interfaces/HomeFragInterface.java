@@ -1,4 +1,4 @@
-package com.example.moham.soleeklab.Fragments;
+package com.example.moham.soleeklab.Interfaces;
 
 import android.content.Context;
 import android.graphics.Typeface;

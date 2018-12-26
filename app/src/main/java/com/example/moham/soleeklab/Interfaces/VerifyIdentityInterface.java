@@ -12,10 +12,6 @@ public interface VerifyIdentityInterface {
 
     void verifyUser();
 
-    void showNoNetworkDialog();
-
-    boolean isNetworkAvailable();
-
     void replaceFragmentWithAnimation(Fragment fragment, String tag);
 
     Typeface loadFont(Context context, String fontPath);

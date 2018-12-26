@@ -29,6 +29,7 @@ public class Constants {
     public static final String TAG_TASKS_TODO_ADAPTER = "TasksToDoAdapter";
     public static final String TAG_TASKS_DONE_ADAPTER = "TasksDoneAdapter";
     public static final String TAG_VACATION_ADAPTER = "VacationAdapter";
+    public static final String TAG_NETWORK_UTILS = "NetworkUtils";
 
     public static final String FONT_DOSIS_BOLD = "fonts/Dosis-Bold.ttf";
     public static final String FONT_DOSIS_MEDIUM = "fonts/Dosis-Medium.ttf";
