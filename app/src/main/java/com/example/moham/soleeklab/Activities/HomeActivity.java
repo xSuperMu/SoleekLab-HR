@@ -252,6 +252,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                         } else {
                             Log.d(TAG_HOME_ACTIVITY, "CheckInResponse Data ---> NOT Null");
                             Log.d(TAG_HOME_ACTIVITY, "Navigating to HomeFragment");
+
                             switchFragment(INT_FRAGMENT_HOME_POS, TAG_FRAG_HOME);
                         }
                         Log.d(TAG_HOME_ACTIVITY, "Hiding loading activity");

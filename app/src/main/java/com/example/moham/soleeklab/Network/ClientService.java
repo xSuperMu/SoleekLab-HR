@@ -2,6 +2,7 @@ package com.example.moham.soleeklab.Network;
 
 import com.example.moham.soleeklab.Model.AttendanceSheetResponse;
 import com.example.moham.soleeklab.Model.CheckInResponse;
+import com.example.moham.soleeklab.Model.DeviceTokenResponse;
 import com.example.moham.soleeklab.Model.Employee;
 
 import java.util.Map;
@@ -43,4 +44,8 @@ public interface ClientService {
 
     @GET("api/members/attendance")
     Call<AttendanceSheetResponse> getUserAttendanceSheet(@HeaderMap Map<String, String> headers, @Query("date") String date);
+
+
+    @POST("api/members/notifications/add_token")
+    Call<DeviceTokenResponse> sendDeviceToken(@HeaderMap Map<String, String> headers, @Field("token") String deviceToken);
 }

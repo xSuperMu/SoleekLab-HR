@@ -26,9 +26,6 @@ public class AttendanceSheetResponse implements Serializable {
     @SerializedName("day")
     @Expose
     private String day;
-    @SerializedName("extra_time")
-    @Expose
-    private Double extraTime;
     @SerializedName("state")
     @Expose
     private int state;
@@ -101,14 +98,6 @@ public class AttendanceSheetResponse implements Serializable {
 
     public void setDay(String day) {
         this.day = day;
-    }
-
-    public Double getExtraTime() {
-        return extraTime;
-    }
-
-    public void setExtraTime(Double extraTime) {
-        this.extraTime = extraTime;
     }
 
     public int getState() {

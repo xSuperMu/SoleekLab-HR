@@ -14,17 +14,12 @@ import static com.example.moham.soleeklab.Utils.Constants.TAG_SPLASH_ACTIVITY;
 
 public class SplashActivity extends AppCompatActivity {
 
-//    @BindView(R.id.iv_splash_screen)u
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_splash);
-//        ButterKnife.bind(this);
         Log.d(TAG_SPLASH_ACTIVITY, "onCreate() has been instantiated");
 
 //        getSupportActionBar().hide();
-
         checkUserSession();
     }
 

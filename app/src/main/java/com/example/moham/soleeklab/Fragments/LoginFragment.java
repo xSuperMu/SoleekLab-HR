@@ -205,7 +205,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             startActivity(intent);
 
 
-            ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+            final ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
             loginRequestCall = service.loginEmployee(email, password);
 
             loginRequestCall.enqueue(new Callback<Employee>() {
@@ -218,6 +218,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                         currentEmployee = response.body().getEmployee();
                         Log.e(TAG_FRAG_LOGIN, "Saving Employee to shared preferences");
                         EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
+
 
                         Log.e(TAG_FRAG_LOGIN, "Getting employee check in status");
                         ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
