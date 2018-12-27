@@ -16,6 +16,7 @@ import java.io.IOException;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_ATTENDANCE;
 import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_FORGET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_RESET_PASS;
@@ -23,6 +24,7 @@ import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_VERIFY_IDEN
 import static com.example.moham.soleeklab.Utils.Constants.STR_EXTRA_CODE;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_ACTIVITY;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_REC;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_ATTENDANCE;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_FORGET_PASS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_RESET_PASS;
@@ -96,6 +98,10 @@ public class LoadingActivity extends AppCompatActivity {
             case INT_CANCEL_VERIFY_IDENTITY:
                 Log.d(TAG_LOADING_REC, "Sending cancel verify identity request broadcast");
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CANCEL_VERIFY_IDENTITY));
+                break;
+            case INT_CANCEL_ATTENDANCE:
+                Log.d(TAG_LOADING_REC, "Sending cancel getting attendance request broadcast");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CANCEL_ATTENDANCE));
                 break;
             default:
                 this.finish();

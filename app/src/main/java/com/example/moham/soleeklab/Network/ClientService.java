@@ -1,5 +1,6 @@
 package com.example.moham.soleeklab.Network;
 
+import com.example.moham.soleeklab.Model.AttendanceSheetResponse;
 import com.example.moham.soleeklab.Model.CheckInResponse;
 import com.example.moham.soleeklab.Model.Employee;
 
@@ -11,6 +12,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface ClientService {
 
@@ -39,7 +41,6 @@ public interface ClientService {
     @POST("api/members/checkout")
     Call<CheckInResponse> checkOutUser(@HeaderMap Map<String, String> headers);
 
-//    @GET("api/members/attendance")
-//    @FormUrlEncoded
-//    Call<Employee> getUserAttendanceSheet(@Field("token") String token, @Field("date") String date);
+    @GET("api/members/attendance")
+    Call<AttendanceSheetResponse> getUserAttendanceSheet(@HeaderMap Map<String, String> headers, @Query("date") String date);
 }

@@ -57,12 +57,14 @@ public class Constants {
     public static final String TAG_FOR_PASS_REC = "tag-forget-pass-rec";
     public static final String TAG_VERIFY_ID_REC = "tag-verify_id-rec";
     public static final String TAG_RESET_PASS_REC = "tag-reset-pass-rec";
+    public static final String TAG_ATTENDANCE_REC = "tag-attendance-rec";
 
     public static final String TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN = "com.example.moham.soleeklab.ACTION_CLOSE";
     public static final String TAG_LOADING_RECEIVER_ACTION_CANCEL_LOGIN = "com.example.moham.soleeklab.ACTION_CANCEL_LOGIN";
     public static final String TAG_LOADING_RECEIVER_ACTION_CANCEL_FORGET_PASS = "com.example.moham.soleeklab.ACTION_CANCEL_FORGET_PASS";
     public static final String TAG_LOADING_RECEIVER_ACTION_CANCEL_VERIFY_IDENTITY = "com.example.moham.soleeklab.ACTION_CANCEL_VERIFY_IDENTITY";
     public static final String TAG_LOADING_RECEIVER_ACTION_CANCEL_RESET_PASS = "com.example.moham.soleeklab.ACTION_CANCEL_RESET_PASS";
+    public static final String TAG_LOADING_RECEIVER_ACTION_CANCEL_ATTENDANCE = "com.example.moham.soleeklab.ACTION_CANCEL_ATTENDANCE";
 
     public static final String STR_EXTRA_CODE = "extra-request-code";
 
@@ -70,6 +72,7 @@ public class Constants {
     public static final int INT_CANCEL_FORGET_PASS = 10005;
     public static final int INT_CANCEL_RESET_PASS = 10006;
     public static final int INT_CANCEL_VERIFY_IDENTITY = 10007;
+    public static final int INT_CANCEL_ATTENDANCE = 10008;
 
 
 }

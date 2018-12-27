@@ -12,23 +12,26 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.moham.soleeklab.Model.Attendance;
+import com.example.moham.soleeklab.Model.AttendanceSheetResponse;
 import com.example.moham.soleeklab.R;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_MEDIUM;
-import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_REGULAR;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_ATTENDANCE_ADAPTER;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_ATTENDANCE;
 
 public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.AttendanceViewHolder> {
 
     private Context mContext;
-    private List<Attendance> mAttendanceList;
+    private List<AttendanceSheetResponse> mAttendanceList = null;
 
     public AttendanceAdapter(Context context) {
         mContext = context;
@@ -47,57 +50,98 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
     public void onBindViewHolder(@NonNull AttendanceViewHolder attendanceViewHolder, int i) {
         Log.d(TAG_ATTENDANCE_ADAPTER, "onBindViewHolder() has been instantiated");
 
-        Attendance userAttendance = mAttendanceList.get(i);
-        String day = userAttendance.getDay();
-        String dayDate = userAttendance.getDayDate();
-        String checkinTime = userAttendance.getCheckinTime();
-        String checkoutTime = userAttendance.getCheckoutTime();
-        String totaltime = userAttendance.getTotaltime();
-        String status = userAttendance.getStatus();
+        AttendanceSheetResponse userAttendance = mAttendanceList.get(i);
 
-        // Loading fonts
-        attendanceViewHolder.tvStatus.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
-        attendanceViewHolder.tvTotalWorkItem.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
-        attendanceViewHolder.tvCheckInTime.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
-        attendanceViewHolder.tvCheckOutTime.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
-        attendanceViewHolder.tvWeekDay.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
-        attendanceViewHolder.tvDate.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
+        int empState = userAttendance.getState();
 
-        if (!TextUtils.isEmpty(status)) {
+
+        String dayDate = userAttendance.getDay();
+        attendanceViewHolder.tvDate.setText(dayDate);
+
+
+        String getDayName = "Monday, ";
+        attendanceViewHolder.tvWeekDay.setText(getDayName);
+
+        if (empState == 1) {
+            attendanceViewHolder.tvStatus.setVisibility(View.GONE);
+            attendanceViewHolder.llWorkTime.setVisibility(View.VISIBLE);
+            attendanceViewHolder.tvTotalWorkItem.setVisibility(View.VISIBLE);
+
+            String checkinTime = userAttendance.getCheckIn();
+            String checkinTimeStr = null;
+            try {
+                checkinTimeStr = formatTime(checkinTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (!TextUtils.isEmpty(checkinTimeStr)) {
+                attendanceViewHolder.tvCheckInTime.setText(checkinTimeStr);
+            }
+
+            String checkoutTime = null;
+            String checkoutTimeStr = null;
+
+            try {
+                checkoutTime = userAttendance.getCheckOut();
+                checkoutTimeStr = formatTime(checkoutTime);
+            } catch (NullPointerException e) {
+                checkoutTimeStr = "NA";
+                checkoutTime = null;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+            if (checkoutTimeStr.equals("NA")) {
+                attendanceViewHolder.tvCheckOutTime.setText("NA");
+                attendanceViewHolder.tvTotalWorkItem.setText("NA");
+            } else {
+
+                if (!TextUtils.isEmpty(checkoutTimeStr)) {
+                    attendanceViewHolder.tvCheckOutTime.setText(checkoutTime);
+                    try {
+                        attendanceViewHolder.tvTotalWorkItem.setText(subtractDates(checkoutTime, checkinTime));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        } else {
             attendanceViewHolder.tvStatus.setVisibility(View.VISIBLE);
-            if (status.equals("Absence")) {
+            attendanceViewHolder.llWorkTime.setVisibility(View.GONE);
+
+            if (empState == 2) {
                 attendanceViewHolder.tvStatus.setText("Absence");
                 attendanceViewHolder.tvStatus.setBackground(mContext.getResources().getDrawable(R.drawable.round_view_red));
-            } else {
+            } else if (empState == 3) {
                 attendanceViewHolder.tvStatus.setText("Vacation");
                 attendanceViewHolder.tvStatus.setBackground(mContext.getResources().getDrawable(R.drawable.round_view_green));
+            } else {
+                attendanceViewHolder.tvStatus.setText("Empty");
+                attendanceViewHolder.tvStatus.setBackground(mContext.getResources().getDrawable(R.drawable.round_view_skin));
             }
-        } else {
-            attendanceViewHolder.tvStatus.setVisibility(View.GONE);
-            attendanceViewHolder.tvTotalWorkItem.setText(totaltime);
+
         }
-
-        attendanceViewHolder.tvWeekDay.setText(day);
-        attendanceViewHolder.tvDate.setText(dayDate);
-        if (!TextUtils.isEmpty(checkinTime) || !TextUtils.isEmpty(checkoutTime)) {
-            attendanceViewHolder.tvCheckInTime.setText(checkinTime);
-            attendanceViewHolder.tvCheckOutTime.setText(checkoutTime);
-            attendanceViewHolder.llWorkTime.setVisibility(View.VISIBLE);
-
-        } else {
-            attendanceViewHolder.llWorkTime.setVisibility(View.GONE);
-        }
-
+        // Loading fonts
+//        attendanceViewHolder.tvStatus.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
+//        attendanceViewHolder.tvTotalWorkItem.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
+//        attendanceViewHolder.tvCheckInTime.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
+//        attendanceViewHolder.tvCheckOutTime.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
+//        attendanceViewHolder.tvWeekDay.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
+//        attendanceViewHolder.tvDate.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
     }
+
 
     @Override
     public int getItemCount() {
-        if (mAttendanceList.size() != 0)
+        if (mAttendanceList != null)
             return mAttendanceList.size();
         return 0;
     }
 
-    public void swapAttendanceDataList(List<Attendance> attendanceList) {
+    public void swapAttendanceDataList(List<AttendanceSheetResponse> attendanceList) {
         Log.d(TAG_ATTENDANCE_ADAPTER, "swapDataList() has been instantiated");
         mAttendanceList = attendanceList;
         notifyDataSetChanged();
@@ -109,7 +153,36 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
         return Typeface.createFromAsset(context.getAssets(), fontPath);
     }
 
-    public class AttendanceViewHolder extends RecyclerView.ViewHolder {
+    String subtractDates(String checkOut, String checkIn) throws ParseException {
+        Log.d(TAG_FRAG_ATTENDANCE, "subtractDates() has been instantiated");
+
+        String totalTime = null;
+        DateFormat originalFormat = new SimpleDateFormat(mContext.getString(R.string.original_date_format), Locale.ENGLISH);
+
+        Date checkOutDate = originalFormat.parse(checkOut);
+        Date checkInDate = originalFormat.parse(checkIn);
+
+        long dateDifference = checkOutDate.getTime() - checkInDate.getTime();
+
+        String diffHours = String.valueOf((int) (dateDifference / (60 * 60 * 1000)));
+        String diffMins = String.valueOf((int) ((dateDifference / (60 * 1000)) % 60));
+
+        totalTime = diffHours + "h " + (diffMins) + "m";
+
+        return totalTime;
+    }
+
+    public String formatTime(String timeToFormat) throws ParseException {
+        Log.d(TAG_FRAG_ATTENDANCE, "formatTime() has been instantiated");
+
+        String pattern = mContext.getString(R.string.date_format);
+        DateFormat formatter = new SimpleDateFormat(pattern);
+        DateFormat originalFormat = new SimpleDateFormat(mContext.getString(R.string.original_date_format), Locale.ENGLISH);
+        Date date = originalFormat.parse(timeToFormat);
+        return formatter.format(date);
+    }
+
+    class AttendanceViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_week_day)
         public TextView tvWeekDay;
@@ -130,5 +203,6 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
     }
 }

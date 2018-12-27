@@ -1,10 +1,15 @@
 package com.example.moham.soleeklab.Fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,22 +19,39 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.moham.soleeklab.Activities.AuthActivity;
 import com.example.moham.soleeklab.Adapter.AttendanceAdapter;
 import com.example.moham.soleeklab.Interfaces.AttendanceFregInterface;
-import com.example.moham.soleeklab.Model.Attendance;
+import com.example.moham.soleeklab.Model.AttendanceSheetResponse;
+import com.example.moham.soleeklab.Network.ClientService;
+import com.example.moham.soleeklab.Network.HeaderInjector;
+import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;
+import com.example.moham.soleeklab.Network.NetworkUtils;
+import com.example.moham.soleeklab.Network.RetrofitClientInstance;
 import com.example.moham.soleeklab.R;
+import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_BOLD;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_MEDIUM;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_ATTENDANCE_REC;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_ATTENDANCE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_ATTENDANCE;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_LOGIN;
+import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN;
 
 public class AttendanceFragment extends Fragment implements AttendanceFregInterface, SwipeRefreshLayout.OnRefreshListener {
 
@@ -47,10 +69,21 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     @BindView(R.id.srlAttendanceSwipe)
     SwipeRefreshLayout srlAttendanceSwipe;
     AttendanceAdapter mAttendanceAdapter;
-
-    private List<Attendance> mUserAttendances;
+    private List<AttendanceSheetResponse> mUserAttendances;
+    private AttendanceReceiver mAttendanceReceiver;
+    private HeaderInjector headerInjector;
 
     public AttendanceFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG_FRAG_ATTENDANCE, "onCreate() has been instantiated");
+
+        IntentFilter filter = new IntentFilter(TAG_LOADING_RECEIVER_ACTION_CANCEL_ATTENDANCE);
+        mAttendanceReceiver = new AttendanceReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mAttendanceReceiver, filter);
     }
 
     public static AttendanceFragment newInstance() {
@@ -67,12 +100,22 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
         return view;
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG_FRAG_ATTENDANCE, "onStart() has been instantiated");
+
+        // show loading screen
+    }
+
     @Override
     public void instantiateViews() {
         Log.d(TAG_FRAG_ATTENDANCE, "instantiateViews() has been instantiated");
 
         setFontsToViews();
 
+        headerInjector = new HeaderInjectorImplementation(getActivity());
         // RecyclerView object dependencies
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvAttendance.setLayoutManager(mLinearLayoutManager);
@@ -88,6 +131,7 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
                 android.R.color.holo_blue_dark);
 
         srlAttendanceSwipe.setRefreshing(true);
+
         loadAttendanceData();
 
         Log.d(TAG_FRAG_ATTENDANCE, "instantiateViews() return");
@@ -113,16 +157,46 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     public void loadAttendanceData() {
         Log.d(TAG_FRAG_ATTENDANCE, "loadAttendanceData() has been instantiated");
 
-        List<Attendance> list = new ArrayList<>();
-        list.add(new Attendance("Today, ", "31/08/2018", "09:38 AM", "06:59 PM", "8h 32m", null));
-        list.add(new Attendance("Yesterday, ", "30/08/2018", "09:38 AM", "NA", "NA", null));
-        list.add(new Attendance("Tuesday, ", "29/08/2018", null, null, null, "Absence"));
-        list.add(new Attendance("Monday, ", "28/08/2018", null, null, null, "Vacation"));
-        list.add(new Attendance("Sunday, ", "27/08/2018", "09:38 AM", "06:59 PM", "8h 32m", null));
-        list.add(new Attendance("Saturday, ", "26/08/2018", "09:38 AM", "06:59 PM", "8h 32m", null));
+        if (!NetworkUtils.isNetworkAvailable(getActivity())) {
+            Log.d(TAG_FRAG_ATTENDANCE, "No Network Connection");
+            NetworkUtils.showNoNetworkDialog(getActivity());
+            return;
+        }
 
-        mAttendanceAdapter.swapAttendanceDataList(list);
-        srlAttendanceSwipe.setRefreshing(false);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+        String date = sdf.format(new Date());
+        Log.d(TAG_FRAG_ATTENDANCE, "date ----> " + date);
+        ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+        Call<AttendanceSheetResponse> loadAttendanceSheet = service.getUserAttendanceSheet(headerInjector.getHeaders(), date);
+        loadAttendanceSheet.enqueue(new Callback<AttendanceSheetResponse>() {
+            @Override
+            public void onResponse(Call<AttendanceSheetResponse> call, Response<AttendanceSheetResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.e(TAG_FRAG_ATTENDANCE, "Response code -> " + response.code() + " " + response.message() + " ");
+
+                    // TODO (1)  show no attendance history if size() == 0
+
+                    Log.e(TAG_FRAG_ATTENDANCE, "swapping Attendance Data List");
+                    mAttendanceAdapter.swapAttendanceDataList(response.body().getAttendanceSheetResponse());
+                    srlAttendanceSwipe.setRefreshing(false);
+//                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                } else {
+                    handleAttendanceSheetResponseError(getActivity(), response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AttendanceSheetResponse> call, Throwable t) {
+                Log.e(TAG_FRAG_ATTENDANCE, "onFailure(): " + t.toString());
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                if (call.isCanceled())
+                    Toast.makeText(getActivity(), "Canceled!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
     @Override
@@ -136,6 +210,28 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
         Log.d(TAG_FRAG_ATTENDANCE, "setFontsToViews() has been instantiated");
         tvActionBarAttendance.setTypeface(loadFont(getActivity(), FONT_DOSIS_BOLD));
         tvNoAttendanceText.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
-        tvNoAttendanceText.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+    }
+
+    public void handleAttendanceSheetResponseError(Context context, Response response) {
+        Log.d(TAG_FRAG_ATTENDANCE, "handleAttendanceSheetResponseError() has been instantiated");
+        if (response.code() == 404) {
+            Log.d(TAG_FRAG_LOGIN, "Response code ------> " + response.code() + " " + response.message());
+            Log.d(TAG_FRAG_LOGIN, "Moving to LoginFragment ");
+            EmployeeSharedPreferences.clearPreferences(getActivity());
+            Intent authIntent = new Intent(getActivity(), AuthActivity.class);
+            getActivity().startActivity(authIntent);
+            getActivity().finish();
+        }
+    }
+
+    class AttendanceReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG_ATTENDANCE_REC, "onReceive() has been instantiated");
+            if (intent.getAction().equals(TAG_LOADING_RECEIVER_ACTION_CANCEL_LOGIN)) {
+                Log.d(TAG_ATTENDANCE_REC, "cancelling attendance request");
+//                loginRequestCall.cancel();
+            }
+        }
     }
 }

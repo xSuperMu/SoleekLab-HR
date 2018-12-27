@@ -412,9 +412,9 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         long dateDifference = checkOutDate.getTime() - checkInDate.getTime();
 
         String diffHours = String.valueOf((int) (dateDifference / (60 * 60 * 1000)));
-        String diffMins = String.valueOf((int) (dateDifference / (60 * 1000)));
+        String diffMins = String.valueOf((int) ((dateDifference / (60 * 1000)) % 60));
 
-        totalTime = diffHours + "h " + diffMins + "m";
+        totalTime = diffHours + "h " + (diffMins) + "m";
 
         return totalTime;
     }
