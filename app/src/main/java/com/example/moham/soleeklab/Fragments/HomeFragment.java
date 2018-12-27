@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     @BindView(R.id.view_checkout_circle)
     View viewCheckoutCircle;
     @BindView(R.id.cl_user_status_checkout)
-    ConstraintLayout clUserStatusLogin;
+    ConstraintLayout clUserStatusCheckout;
     @BindView(R.id.tv_check_out_text)
     TextView tvCheckOutText;
     @BindView(R.id.tv_check_out_message)
@@ -272,6 +272,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         Log.d(TAG_FRAG_HOME, "handleZombieState() has been instantiated");
         llUserStatus.setVisibility(View.GONE);
         viewCheckoutCircle.setVisibility(View.GONE);
+        clUserStatusCheckout.setVisibility(View.GONE);
         tvCheckOutText.setVisibility(View.GONE);
         tvCheckOutMessage.setVisibility(View.GONE);
         clTaskProgress.setVisibility(View.GONE);

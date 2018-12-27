@@ -34,6 +34,7 @@ import com.example.moham.soleeklab.R;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -142,6 +143,9 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
         super.onDestroyView();
         Log.d(TAG_FRAG_ATTENDANCE, "onDestroyView() has been instantiated");
         unbinder.unbind();
+
+        // Destroy resources
+        srlAttendanceSwipe = new SwipeRefreshLayout(getActivity());
     }
 
     @Override
@@ -160,8 +164,10 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
         if (!NetworkUtils.isNetworkAvailable(getActivity())) {
             Log.d(TAG_FRAG_ATTENDANCE, "No Network Connection");
             NetworkUtils.showNoNetworkDialog(getActivity());
+            srlAttendanceSwipe.setRefreshing(false);
             return;
         }
+
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         String date = sdf.format(new Date());
@@ -176,10 +182,18 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
 
                     // TODO (1)  show no attendance history if size() == 0
 
-                    Log.e(TAG_FRAG_ATTENDANCE, "swapping Attendance Data List");
-                    mAttendanceAdapter.swapAttendanceDataList(response.body().getAttendanceSheetResponse());
-                    srlAttendanceSwipe.setRefreshing(false);
-//                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+                    List<AttendanceSheetResponse> upsideDown = response.body().getAttendanceSheetResponse();
+                    Collections.reverse(upsideDown);
+                    if (upsideDown.size() == 0) {
+                        srlAttendanceSwipe.setVisibility(View.GONE);
+                        clNoAttendance.setVisibility(View.VISIBLE);
+                    } else {
+                        Log.e(TAG_FRAG_ATTENDANCE, "swapping Attendance Data List");
+                        mAttendanceAdapter.swapAttendanceDataList(upsideDown);
+                        srlAttendanceSwipe.setRefreshing(false);
+                        srlAttendanceSwipe.setVisibility(View.VISIBLE);
+                        clNoAttendance.setVisibility(View.GONE);
+                    }
                 } else {
                     handleAttendanceSheetResponseError(getActivity(), response);
                 }

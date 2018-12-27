@@ -164,7 +164,7 @@
                 android:gravity="center"
                 android:textAlignment="center"
                 android:textColor="@color/colorGray"
-                android:textSize="13sp"
+                android:textSize="18sp"
                 android:visibility="gone"
                 tools:text="Checked-in 11:43AM" />
 
@@ -177,7 +177,7 @@
                 android:gravity="center"
                 android:textAlignment="center"
                 android:textColor="@color/colorGray"
-                android:textSize="13sp"
+                android:textSize="18sp"
                 android:visibility="gone"
                 tools:text="Checked-out 11:43AM" />
 
@@ -190,7 +190,7 @@
                 android:gravity="center"
                 android:textAlignment="center"
                 android:textColor="@color/colorGray"
-                android:textSize="13sp"
+                android:textSize="18sp"
                 android:visibility="gone"
                 tools:text="(8h 36m)" />
 

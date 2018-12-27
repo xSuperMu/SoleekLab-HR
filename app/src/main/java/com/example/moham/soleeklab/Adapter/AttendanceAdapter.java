@@ -58,25 +58,40 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
         String dayDate = userAttendance.getDay();
         attendanceViewHolder.tvDate.setText(dayDate);
 
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        String getDayName = "Monday, ";
-        attendanceViewHolder.tvWeekDay.setText(getDayName);
+        Date date = null;
+        try {
+            date = originalFormat.parse(dayDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        String getDayName = sdf.format(date);
+        if (i == 0)
+            attendanceViewHolder.tvWeekDay.setText("Today, ");
+        else if (i == 1)
+            attendanceViewHolder.tvWeekDay.setText("Yesterday, ");
+        else
+            attendanceViewHolder.tvWeekDay.setText(getDayName + ", ");
 
         if (empState == 1) {
             attendanceViewHolder.tvStatus.setVisibility(View.GONE);
             attendanceViewHolder.llWorkTime.setVisibility(View.VISIBLE);
             attendanceViewHolder.tvTotalWorkItem.setVisibility(View.VISIBLE);
 
-            String checkinTime = userAttendance.getCheckIn();
-            String checkinTimeStr = null;
+            String checkInTime = userAttendance.getCheckIn();
+            String checkInTimeStr = null;
             try {
-                checkinTimeStr = formatTime(checkinTime);
+                checkInTimeStr = formatTime(checkInTime);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            if (!TextUtils.isEmpty(checkinTimeStr)) {
-                attendanceViewHolder.tvCheckInTime.setText(checkinTimeStr);
+            if (!TextUtils.isEmpty(checkInTimeStr)) {
+                attendanceViewHolder.tvCheckInTime.setText(checkInTimeStr);
             }
 
             String checkoutTime = null;
@@ -92,16 +107,15 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
                 e.printStackTrace();
             }
 
-
             if (checkoutTimeStr.equals("NA")) {
                 attendanceViewHolder.tvCheckOutTime.setText("NA");
                 attendanceViewHolder.tvTotalWorkItem.setText("NA");
             } else {
 
                 if (!TextUtils.isEmpty(checkoutTimeStr)) {
-                    attendanceViewHolder.tvCheckOutTime.setText(checkoutTime);
+                    attendanceViewHolder.tvCheckOutTime.setText(checkoutTimeStr);
                     try {
-                        attendanceViewHolder.tvTotalWorkItem.setText(subtractDates(checkoutTime, checkinTime));
+                        attendanceViewHolder.tvTotalWorkItem.setText(subtractDates(checkoutTime, checkInTime));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -125,12 +139,12 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 
         }
         // Loading fonts
-//        attendanceViewHolder.tvStatus.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
-//        attendanceViewHolder.tvTotalWorkItem.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
-//        attendanceViewHolder.tvCheckInTime.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
-//        attendanceViewHolder.tvCheckOutTime.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
-//        attendanceViewHolder.tvWeekDay.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
-//        attendanceViewHolder.tvDate.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
+        //        attendanceViewHolder.tvStatus.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
+        //        attendanceViewHolder.tvTotalWorkItem.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
+        //        attendanceViewHolder.tvCheckInTime.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
+        //        attendanceViewHolder.tvCheckOutTime.setTypeface(loadFont(mContext, FONT_DOSIS_REGULAR));
+        //        attendanceViewHolder.tvWeekDay.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
+        //        attendanceViewHolder.tvDate.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
     }
 
 
