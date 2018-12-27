@@ -130,7 +130,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
                 attendanceViewHolder.tvStatus.setText("Absence");
                 attendanceViewHolder.tvStatus.setBackground(mContext.getResources().getDrawable(R.drawable.round_view_red));
             } else if (empState == 3) {
-                attendanceViewHolder.tvStatus.setText("Vacation");
+                attendanceViewHolder.tvStatus.setText("VacationRequest");
                 attendanceViewHolder.tvStatus.setBackground(mContext.getResources().getDrawable(R.drawable.round_view_green));
             } else {
                 attendanceViewHolder.tvStatus.setText("Empty");

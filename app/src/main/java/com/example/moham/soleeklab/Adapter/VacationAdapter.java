@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.moham.soleeklab.Model.Vacation;
+import com.example.moham.soleeklab.Model.VacationRequest;
 import com.example.moham.soleeklab.R;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import static com.example.moham.soleeklab.Utils.Constants.TAG_VACATION_ADAPTER;
 public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.VacationViewHolder> {
 
     private Context mContext;
-    private List<Vacation> mVacationList;
+    private List<VacationRequest> mVacationRequestList;
 
     public VacationAdapter(Context context) {
         mContext = context;
