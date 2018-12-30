@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.example.moham.soleeklab.Activities.AuthActivity;
 import com.example.moham.soleeklab.Adapter.AttendanceAdapter;
 import com.example.moham.soleeklab.Interfaces.AttendanceFregInterface;
-import com.example.moham.soleeklab.Model.AttendanceSheetResponse;
+import com.example.moham.soleeklab.Model.Responses.AttendanceSheetResponse;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.HeaderInjector;
 import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;

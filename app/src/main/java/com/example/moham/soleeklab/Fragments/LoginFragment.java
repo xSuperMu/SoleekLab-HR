@@ -35,8 +35,8 @@ import android.widget.Toast;
 import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.AuthLoginInterface;
-import com.example.moham.soleeklab.Model.CheckInResponse;
-import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Model.Responses.CheckInResponse;
+import com.example.moham.soleeklab.Model.Responses.EmployeeResponse;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.HeaderInjector;
 import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;
@@ -91,8 +91,8 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
     @BindView(R.id.tv_more_info)
     TextView tvMoreInfo;
     private HeaderInjector headerInjector;
-    private Employee currentEmployee;
-    private Call<Employee> loginRequestCall;
+    private EmployeeResponse currentEmployeeResponse;
+    private Call<EmployeeResponse> loginRequestCall;
     private LoginReceiver mLoginReceiver;
 
     public LoginFragment() {
@@ -208,16 +208,16 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             final ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
             loginRequestCall = service.loginEmployee(email, password);
 
-            loginRequestCall.enqueue(new Callback<Employee>() {
+            loginRequestCall.enqueue(new Callback<EmployeeResponse>() {
                 @Override
-                public void onResponse(Call<Employee> call, Response<Employee> response) {
+                public void onResponse(Call<EmployeeResponse> call, Response<EmployeeResponse> response) {
 
                     if (response.isSuccessful()) {
                         Log.e(TAG_FRAG_LOGIN, "Response code -> " + response.code() + " " + response.message() + " ");
                         Log.e(TAG_FRAG_LOGIN, "User Logged in successfully");
-                        currentEmployee = response.body().getEmployee();
-                        Log.e(TAG_FRAG_LOGIN, "Saving Employee to shared preferences");
-                        EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployee);
+                        currentEmployeeResponse = response.body().getEmployeeResponse();
+                        Log.e(TAG_FRAG_LOGIN, "Saving EmployeeResponse to shared preferences");
+                        EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployeeResponse);
 
 
                         Log.e(TAG_FRAG_LOGIN, "Getting employee check in status");
@@ -254,7 +254,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                 }
 
                 @Override
-                public void onFailure(Call<Employee> call, Throwable t) {
+                public void onFailure(Call<EmployeeResponse> call, Throwable t) {
                     Log.e(TAG_FRAG_LOGIN, "onFailure(): " + t.toString());
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     if (call.isCanceled())
@@ -419,7 +419,7 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
             Log.d(TAG_FRAG_LOGIN, "Response code ------> " + response.code() + " " + response.message());
             try {
                 Gson gson = new Gson();
-                Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
+                EmployeeResponse errorModel = gson.fromJson(response.errorBody().string(), EmployeeResponse.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_LOGIN, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));

@@ -1,15 +1,15 @@
-package com.example.moham.soleeklab.Model;
+package com.example.moham.soleeklab.Model.Responses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class VacationRequest implements Serializable {
+public class ApplyForVacationResponse implements Serializable {
 
     @SerializedName("data")
     @Expose
-    private VacationRequest vacationRequest;
+    private ApplyForVacationResponse applyForVacationResponse;
     @SerializedName("message")
     @Expose
     private String message;
@@ -38,15 +38,15 @@ public class VacationRequest implements Serializable {
     @Expose
     private String id;
 
-    public VacationRequest() {
+    public ApplyForVacationResponse() {
     }
 
-    public VacationRequest getVacationRequest() {
-        return vacationRequest;
+    public ApplyForVacationResponse getApplyForVacationResponse() {
+        return applyForVacationResponse;
     }
 
-    public void setVacationRequest(VacationRequest vacationRequest) {
-        this.vacationRequest = vacationRequest;
+    public void setApplyForVacationResponse(ApplyForVacationResponse applyForVacationResponse) {
+        this.applyForVacationResponse = applyForVacationResponse;
     }
 
     public String getMessage() {

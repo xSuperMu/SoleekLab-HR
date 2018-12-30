@@ -1,13 +1,16 @@
 package com.example.moham.soleeklab.Network;
 
-import com.example.moham.soleeklab.Model.AttendanceSheetResponse;
-import com.example.moham.soleeklab.Model.CheckInResponse;
-import com.example.moham.soleeklab.Model.DeviceTokenResponse;
-import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Model.Requests.VacationRequests;
+import com.example.moham.soleeklab.Model.Responses.ApplyForVacationResponse;
+import com.example.moham.soleeklab.Model.Responses.AttendanceSheetResponse;
+import com.example.moham.soleeklab.Model.Responses.CheckInResponse;
+import com.example.moham.soleeklab.Model.Responses.EmployeeResponse;
+import com.example.moham.soleeklab.Model.Responses.VacationResponse;
 
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -19,19 +22,19 @@ public interface ClientService {
 
     @POST("api/users/login")
     @FormUrlEncoded
-    Call<Employee> loginEmployee(@Field("email") String email, @Field("password") String password);
+    Call<EmployeeResponse> loginEmployee(@Field("email") String email, @Field("password") String password);
 
     @POST("api/users/rest_email")
     @FormUrlEncoded
-    Call<Employee> sendEmailToResetPassword(@Field("email") String email);
+    Call<EmployeeResponse> sendEmailToResetPassword(@Field("email") String email);
 
     @POST("api/users/verify_code")
     @FormUrlEncoded
-    Call<Employee> verifyRestCode(@Field("email") String email, @Field("code") int code);
+    Call<EmployeeResponse> verifyRestCode(@Field("email") String email, @Field("code") int code);
 
     @POST("api/users/reset_password")
     @FormUrlEncoded
-    Call<Employee> resetUserPassword(@Field("email") String email, @Field("password") String password, @Field("code") String code);
+    Call<EmployeeResponse> resetUserPassword(@Field("email") String email, @Field("password") String password, @Field("code") String code);
 
     @GET("api/members/today_attendance")
     Call<CheckInResponse> getTodayAttendance(@HeaderMap Map<String, String> headers);
@@ -46,6 +49,13 @@ public interface ClientService {
     Call<AttendanceSheetResponse> getUserAttendanceSheet(@HeaderMap Map<String, String> headers, @Query("date") String date);
 
 
-    @POST("api/members/notifications/add_token")
-    Call<DeviceTokenResponse> sendDeviceToken(@HeaderMap Map<String, String> headers, @Field("token") String deviceToken);
+//    @POST("api/members/notifications/add_token")
+//    Call<DeviceTokenResponse> sendDeviceToken(@HeaderMap Map<String, String> headers, @Field("token") String deviceToken);
+
+
+    @POST("api/members/vacations/request")
+    Call<ApplyForVacationResponse> requestVacation(@HeaderMap Map<String, String> headers, @Body VacationRequests vacationRequests);
+
+    @GET("api/members/vacations/vacations")
+    Call<VacationResponse> getVacationHistory(@HeaderMap Map<String, String> headers, @Query("date") String vacationRequests);
 }

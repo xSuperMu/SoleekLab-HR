@@ -28,8 +28,8 @@ import com.bumptech.glide.request.target.Target;
 import com.example.moham.soleeklab.Activities.HomeActivity;
 import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.HomeFragInterface;
-import com.example.moham.soleeklab.Model.CheckInResponse;
-import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Model.Responses.CheckInResponse;
+import com.example.moham.soleeklab.Model.Responses.EmployeeResponse;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.HeaderInjector;
 import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;
@@ -153,7 +153,7 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         checkInResponse = EmployeeSharedPreferences.readCheckInResponseFromPreferences(getActivity());
 
         Log.d(TAG_FRAG_HOME, "Loading CheckInResponse from the preferences");
-        Employee curEmp = EmployeeSharedPreferences.readEmployeeFromPreferences(getActivity());
+        EmployeeResponse curEmp = EmployeeSharedPreferences.readEmployeeFromPreferences(getActivity());
 
         String empJobTitle = curEmp.getUser().getJobTitle();
         Log.d(TAG_FRAG_HOME, "empJobTitle ------>" + empJobTitle);

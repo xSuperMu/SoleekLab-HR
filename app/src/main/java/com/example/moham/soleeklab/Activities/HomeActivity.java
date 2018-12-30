@@ -30,7 +30,7 @@ import com.example.moham.soleeklab.Fragments.TaskToDoFragment;
 import com.example.moham.soleeklab.Fragments.TasksFragment;
 import com.example.moham.soleeklab.Fragments.VacationFragment;
 import com.example.moham.soleeklab.Interfaces.HomeActivityInterface;
-import com.example.moham.soleeklab.Model.CheckInResponse;
+import com.example.moham.soleeklab.Model.Responses.CheckInResponse;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.HeaderInjector;
 import com.example.moham.soleeklab.Network.HeaderInjectorImplementation;

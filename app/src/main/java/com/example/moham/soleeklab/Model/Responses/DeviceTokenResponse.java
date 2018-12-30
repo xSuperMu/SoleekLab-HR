@@ -1,4 +1,4 @@
-package com.example.moham.soleeklab.Model;
+package com.example.moham.soleeklab.Model.Responses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

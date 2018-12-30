@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.moham.soleeklab.Model.AttendanceSheetResponse;
+import com.example.moham.soleeklab.Model.Responses.AttendanceSheetResponse;
 import com.example.moham.soleeklab.R;
 
 import java.text.DateFormat;
@@ -130,7 +130,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
                 attendanceViewHolder.tvStatus.setText("Absence");
                 attendanceViewHolder.tvStatus.setBackground(mContext.getResources().getDrawable(R.drawable.round_view_red));
             } else if (empState == 3) {
-                attendanceViewHolder.tvStatus.setText("VacationRequest");
+                attendanceViewHolder.tvStatus.setText("Vacation");
                 attendanceViewHolder.tvStatus.setBackground(mContext.getResources().getDrawable(R.drawable.round_view_green));
             } else {
                 attendanceViewHolder.tvStatus.setText("Empty");

@@ -65,6 +65,7 @@ public class Constants {
     public static final String TAG_LOADING_RECEIVER_ACTION_CANCEL_VERIFY_IDENTITY = "com.example.moham.soleeklab.ACTION_CANCEL_VERIFY_IDENTITY";
     public static final String TAG_LOADING_RECEIVER_ACTION_CANCEL_RESET_PASS = "com.example.moham.soleeklab.ACTION_CANCEL_RESET_PASS";
     public static final String TAG_LOADING_RECEIVER_ACTION_CANCEL_ATTENDANCE = "com.example.moham.soleeklab.ACTION_CANCEL_ATTENDANCE";
+    public static final String TAG_LOADING_RECEIVER_ACTION_CANCEL_VACATION = "com.example.moham.soleeklab.ACTION_CANCEL_VACATION";
 
     public static final String STR_EXTRA_CODE = "extra-request-code";
 

@@ -30,7 +30,7 @@ import android.widget.Toast;
 import com.chaos.view.PinView;
 import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.VerifyIdentityInterface;
-import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Model.Responses.EmployeeResponse;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.NetworkUtils;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
@@ -93,9 +93,9 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     CountDownTimer timer = null;
     private String mailExtra = null;
     private String verificationCode = null;
-    private Employee currentEmployee;
+    private EmployeeResponse currentEmployeeResponse;
 
-    private Call<Employee> verifyIdentityRequestCall;
+    private Call<EmployeeResponse> verifyIdentityRequestCall;
     private VerifyIdentityReceiver mVerifyIdentityReceiver;
 
     @Override
@@ -276,13 +276,13 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
                 verifyIdentityRequestCall = service.verifyRestCode(mailExtra, Integer.parseInt(verificationCode));
 
-                verifyIdentityRequestCall.enqueue(new Callback<Employee>() {
+                verifyIdentityRequestCall.enqueue(new Callback<EmployeeResponse>() {
                     @Override
-                    public void onResponse(Call<Employee> call, Response<Employee> response) {
+                    public void onResponse(Call<EmployeeResponse> call, Response<EmployeeResponse> response) {
                         if (response.isSuccessful()) {
                             Log.e(TAG_FRAG_FORGET_PASS, "Response code -> " + response.code() + " " + response.message() + " ");
-                            currentEmployee = response.body();
-                            if (currentEmployee.getError() == null) {
+                            currentEmployeeResponse = response.body();
+                            if (currentEmployeeResponse.getError() == null) {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("extra_verification_code", verificationCode);
                                 bundle.putString("extra_verification_email", mailExtra);
@@ -299,7 +299,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                     }
 
                     @Override
-                    public void onFailure(Call<Employee> call, Throwable t) {
+                    public void onFailure(Call<EmployeeResponse> call, Throwable t) {
                         Log.e(TAG_FRAG_VERIFY_IDENTITY, "onFailure(): " + t.toString());
                         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                         if (call.isCanceled())
@@ -349,15 +349,15 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
 
             tvErrorMessage.setVisibility(View.GONE);
             ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
-            Call<Employee> mResendEmailRequestCall = service.sendEmailToResetPassword(mailExtra);
+            Call<EmployeeResponse> mResendEmailRequestCall = service.sendEmailToResetPassword(mailExtra);
 
-            mResendEmailRequestCall.enqueue(new Callback<Employee>() {
+            mResendEmailRequestCall.enqueue(new Callback<EmployeeResponse>() {
                 @Override
-                public void onResponse(Call<Employee> call, Response<Employee> response) {
+                public void onResponse(Call<EmployeeResponse> call, Response<EmployeeResponse> response) {
                     if (response.isSuccessful()) {
                         Log.e(TAG_FRAG_FORGET_PASS, "Response code -> " + response.code() + " " + response.message() + " ");
-                        currentEmployee = response.body();
-                        if (currentEmployee.getError() == null) {
+                        currentEmployeeResponse = response.body();
+                        if (currentEmployeeResponse.getError() == null) {
                             Toast.makeText(getContext(), "Check Your Mail", Toast.LENGTH_SHORT).show();
                         } else {
                             getResponseErrorMessage(getActivity(), response);
@@ -368,7 +368,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
                 }
 
                 @Override
-                public void onFailure(Call<Employee> call, Throwable t) {
+                public void onFailure(Call<EmployeeResponse> call, Throwable t) {
                     Log.e(TAG_FRAG_VERIFY_IDENTITY, "onFailure(): " + t.toString());
                     Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
                 }
@@ -403,7 +403,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             Log.d(TAG_FRAG_VERIFY_IDENTITY, "Response code ------> " + response.code() + " " + response.message());
             try {
                 Gson gson = new Gson();
-                Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
+                EmployeeResponse errorModel = gson.fromJson(response.errorBody().string(), EmployeeResponse.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_VERIFY_IDENTITY, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));

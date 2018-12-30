@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.ResettingPassInterface;
-import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Model.Responses.EmployeeResponse;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.NetworkUtils;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
@@ -83,8 +83,8 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
 
     private String extraVerificationCode;
     private String extraEmail;
-    private Employee currentEmployee;
-    private Call<Employee> ResetPassRequestCall;
+    private EmployeeResponse currentEmployeeResponse;
+    private Call<EmployeeResponse> ResetPassRequestCall;
     private ResetPassReceiver mResetPassReceiver;
 
     public ResettingPasswordFragment() {
@@ -203,13 +203,13 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
             ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
             ResetPassRequestCall = service.resetUserPassword(extraEmail, pass, extraVerificationCode);
 
-            ResetPassRequestCall.enqueue(new Callback<Employee>() {
+            ResetPassRequestCall.enqueue(new Callback<EmployeeResponse>() {
                 @Override
-                public void onResponse(Call<Employee> call, Response<Employee> response) {
+                public void onResponse(Call<EmployeeResponse> call, Response<EmployeeResponse> response) {
                     if (response.isSuccessful()) {
                         Log.e(TAG_FRAG_RESET_PASS, "Response code -> " + response.code() + " " + response.message() + " ");
-                        currentEmployee = response.body();
-                        if (currentEmployee.getError() == null) {
+                        currentEmployeeResponse = response.body();
+                        if (currentEmployeeResponse.getError() == null) {
                             replaceFragmentWithAnimation(LoginFragment.newInstance(), TAG_FRAG_LOGIN);
                             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                             Toast.makeText(getActivity(), "Password Changed Successfully", Toast.LENGTH_SHORT).show();
@@ -222,7 +222,7 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
                 }
 
                 @Override
-                public void onFailure(Call<Employee> call, Throwable t) {
+                public void onFailure(Call<EmployeeResponse> call, Throwable t) {
                     Log.e(TAG_FRAG_VERIFY_IDENTITY, "onFailure(): " + t.toString());
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     if (call.isCanceled())
@@ -368,7 +368,7 @@ public class ResettingPasswordFragment extends Fragment implements ResettingPass
             Log.d(TAG_FRAG_RESET_PASS, "Response code ------> " + response.code() + " " + response.message());
             try {
                 Gson gson = new Gson();
-                Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
+                EmployeeResponse errorModel = gson.fromJson(response.errorBody().string(), EmployeeResponse.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_RESET_PASS, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));

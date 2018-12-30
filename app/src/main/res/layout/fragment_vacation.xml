@@ -22,11 +22,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14dp"
+                android:fontFamily="@font/dosis_bold"
                 android:text="Vacations"
+                android:textColor="@color/colorInputText"
                 android:textSize="34sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_action_bar_vacation_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="2dp"
+                android:fontFamily="@font/dosis_bold"
+                android:text="3/21"
+                android:textColor="@color/colorInputText"
+                android:textSize="24sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/tv_action_bar_vacation"
+                app:layout_constraintLeft_toRightOf="@id/tv_action_bar_vacation" />
 
             <ImageView
                 android:id="@+id/iv_new_vacation"
@@ -54,8 +70,9 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_no_vacation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_vacation_icon"
@@ -74,6 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="21dp"
+            android:fontFamily="@font/dosis_medium"
             android:gravity="center"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -92,6 +110,7 @@
             android:layout_marginTop="30dp"
             android:background="@drawable/button_green"
             android:capitalize="words"
+            android:fontFamily="@font/dosis_semi_bold"
             android:text="@string/new_vacation"
             android:textAllCaps="false"
             android:textColor="@color/colorWhite"
@@ -105,14 +124,14 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_vacation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="visible">
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/srl_vacation_swipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="16dp"
             android:visibility="visible">
 
             <android.support.v7.widget.RecyclerView

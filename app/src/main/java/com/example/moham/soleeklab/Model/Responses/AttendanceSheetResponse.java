@@ -1,15 +1,16 @@
-package com.example.moham.soleeklab.Model;
+package com.example.moham.soleeklab.Model.Responses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
-public class CheckInResponse implements Serializable {
+public class AttendanceSheetResponse implements Serializable {
 
     @SerializedName("data")
     @Expose
-    private CheckInResponse checkInResponse;
+    private List<AttendanceSheetResponse> attendanceSheetResponse;
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -47,7 +48,16 @@ public class CheckInResponse implements Serializable {
     @Expose
     private String error;
 
-    public CheckInResponse() {
+
+    public AttendanceSheetResponse() {
+    }
+
+    public List<AttendanceSheetResponse> getAttendanceSheetResponse() {
+        return attendanceSheetResponse;
+    }
+
+    public void setAttendanceSheetResponse(List<AttendanceSheetResponse> attendanceSheetResponse) {
+        this.attendanceSheetResponse = attendanceSheetResponse;
     }
 
     public Integer getId() {
@@ -144,13 +154,5 @@ public class CheckInResponse implements Serializable {
 
     public void setError(String error) {
         this.error = error;
-    }
-
-    public CheckInResponse getCheckInResponse() {
-        return checkInResponse;
-    }
-
-    public void setCheckInResponse(CheckInResponse checkInResponse) {
-        this.checkInResponse = checkInResponse;
     }
 }

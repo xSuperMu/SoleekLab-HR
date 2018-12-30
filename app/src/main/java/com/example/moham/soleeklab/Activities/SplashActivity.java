@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Model.Responses.EmployeeResponse;
 import com.example.moham.soleeklab.Utils.EmployeeSharedPreferences;
 
 import static com.example.moham.soleeklab.Utils.Constants.SPLASH_SCREEN_MILLI_SEC;
@@ -33,12 +33,12 @@ public class SplashActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Employee employee = EmployeeSharedPreferences.readEmployeeFromPreferences(this);
+        EmployeeResponse employeeResponse = EmployeeSharedPreferences.readEmployeeFromPreferences(this);
 
-        if (employee != null) {
-            Log.d(TAG_SPLASH_ACTIVITY, " Employee" + employee.toString());
-            String token = employee.getToken();
-            Log.d(TAG_SPLASH_ACTIVITY, "checkUserSession: Employee Token = " + token);
+        if (employeeResponse != null) {
+            Log.d(TAG_SPLASH_ACTIVITY, " EmployeeResponse" + employeeResponse.toString());
+            String token = employeeResponse.getToken();
+            Log.d(TAG_SPLASH_ACTIVITY, "checkUserSession: EmployeeResponse Token = " + token);
 
             if (!TextUtils.isEmpty(token)) {
                 Intent intent = new Intent(getApplicationContext(), HomeActivity.class);

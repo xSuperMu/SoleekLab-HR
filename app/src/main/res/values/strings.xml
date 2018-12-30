@@ -51,7 +51,7 @@
     <string name="check_out">Check-out</string>
     <string name="task_deadline">Deadline: %1$s</string>
     <string name="check_out_messages">Checked-in %1$s (%2$s)</string>
-    <string name="task_progress">%1$s/%2$s</string>
+    <string name="task_progress">%1$d/%2$s</string>
     <string name="tasks_this_week">Tasks this week</string>
     <string name="view_all_tasks">View all tasks from task tab</string>
     <string name="hippotherapist">Hippotherapist</string>
@@ -90,4 +90,8 @@
     <string name="checkin_msg">Check-in %1$s</string>
     <string name="checkout_msg">Check-out %1$s</string>
     <string name="total_time_msg">(%1$s)</string>
+    <string name="pending">Pending</string>
+    <string name="rejected">Rejected</string>
+    <string name="accepted">Accepted</string>
+    <string name="request">Request</string>
 </resources>

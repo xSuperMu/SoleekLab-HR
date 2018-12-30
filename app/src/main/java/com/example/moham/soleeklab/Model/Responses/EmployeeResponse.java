@@ -1,15 +1,16 @@
-package com.example.moham.soleeklab.Model;
+package com.example.moham.soleeklab.Model.Responses;
 
+import com.example.moham.soleeklab.Model.User;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Employee implements Serializable {
+public class EmployeeResponse implements Serializable {
 
     @SerializedName("data")
     @Expose
-    private Employee employee;
+    private EmployeeResponse employeeResponse;
     @SerializedName("user")
     @Expose
     private User user;
@@ -23,7 +24,7 @@ public class Employee implements Serializable {
     @Expose
     private String error;
 
-    public Employee() {
+    public EmployeeResponse() {
     }
 
     public String getMessage() {
@@ -58,11 +59,11 @@ public class Employee implements Serializable {
         this.token = token;
     }
 
-    public Employee getEmployee() {
-        return employee;
+    public EmployeeResponse getEmployeeResponse() {
+        return employeeResponse;
     }
 
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public void setEmployeeResponse(EmployeeResponse employeeResponse) {
+        this.employeeResponse = employeeResponse;
     }
 }

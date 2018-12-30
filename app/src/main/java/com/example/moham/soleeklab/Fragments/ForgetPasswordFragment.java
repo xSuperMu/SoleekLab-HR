@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import com.example.moham.soleeklab.Activities.LoadingActivity;
 import com.example.moham.soleeklab.Interfaces.AuthForgetPasswordInterface;
-import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Model.Responses.EmployeeResponse;
 import com.example.moham.soleeklab.Network.ClientService;
 import com.example.moham.soleeklab.Network.NetworkUtils;
 import com.example.moham.soleeklab.Network.RetrofitClientInstance;
@@ -75,8 +75,8 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
     TextView tvForgetPasswordMessage;
     @BindView(R.id.error_message)
     TextView tvErrorMessage;
-    private Employee currentEmployee;
-    Call<Employee> sendEmailRequestCall;
+    Call<EmployeeResponse> sendEmailRequestCall;
+    private EmployeeResponse currentEmployeeResponse;
     private ForgetPassReceiver mForgetPassReceiver;
 
     public ForgetPasswordFragment() {
@@ -151,13 +151,13 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
             ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
             sendEmailRequestCall = service.sendEmailToResetPassword(email);
 
-            sendEmailRequestCall.enqueue(new Callback<Employee>() {
+            sendEmailRequestCall.enqueue(new Callback<EmployeeResponse>() {
                 @Override
-                public void onResponse(Call<Employee> call, Response<Employee> response) {
+                public void onResponse(Call<EmployeeResponse> call, Response<EmployeeResponse> response) {
                     if (response.isSuccessful()) {
                         Log.e(TAG_FRAG_FORGET_PASS, "Response code -> " + response.code() + " " + response.message() + " ");
-                        currentEmployee = response.body();
-                        if (currentEmployee.getError() == null) {
+                        currentEmployeeResponse = response.body();
+                        if (currentEmployeeResponse.getError() == null) {
                             Bundle extraEmail = new Bundle();
                             extraEmail.putString("extra_email", email);
                             VerifyIdentityFragment fragment = new VerifyIdentityFragment();
@@ -173,7 +173,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
                 }
 
                 @Override
-                public void onFailure(Call<Employee> call, Throwable t) {
+                public void onFailure(Call<EmployeeResponse> call, Throwable t) {
                     Log.e(TAG_FRAG_FORGET_PASS, "onFailure(): " + t.toString());
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     if (call.isCanceled())
@@ -275,7 +275,7 @@ public class ForgetPasswordFragment extends Fragment implements AuthForgetPasswo
             Log.d(TAG_FRAG_FORGET_PASS, "Response code ------> " + response.code() + " " + response.message());
             try {
                 Gson gson = new Gson();
-                Employee errorModel = gson.fromJson(response.errorBody().string(), Employee.class);
+                EmployeeResponse errorModel = gson.fromJson(response.errorBody().string(), EmployeeResponse.class);
                 if (errorModel.getMessage() != null) {
                     Log.i(TAG_FRAG_FORGET_PASS, "getLoginResponseErrorMessage() errorModel.Message = " + errorModel.getMessage());
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));

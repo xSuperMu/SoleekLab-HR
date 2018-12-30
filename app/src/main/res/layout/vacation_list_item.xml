@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:fontFamily="@font/dosis_medium"
         android:textColor="@color/colorTextDark"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -21,10 +22,12 @@
 
 
     <TextView
+        android:id="@+id/tv_state_view"
         android:layout_width="67dp"
         android:layout_height="21dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/button_green"
+        android:fontFamily="@font/dosis_medium"
         android:gravity="center_vertical|center"
         android:textColor="@color/colorWhite"
         android:textSize="12sp"
@@ -48,6 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:fontFamily="@font/dosis_regular"
             android:textColor="@color/colorGray"
             android:textSize="14sp"
             tools:text="08/23/2018" />
@@ -65,6 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:fontFamily="@font/dosis_regular"
             android:textColor="@color/colorGray"
             android:textSize="14sp"
             tools:text="08/23/2018" />
@@ -85,6 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:fontFamily="@font/dosis_regular"
             android:textColor="@color/colorInputText"
             android:textSize="14sp"
             tools:text="08/23/2018" />
@@ -102,6 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:fontFamily="@font/dosis_regular"
             android:textColor="@color/colorInputText"
             android:textSize="14sp"
             tools:text="08/23/2018" />
@@ -113,7 +120,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/dosis_regular"
         android:gravity="start"
+        android:maxLines="2"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textColor="@color/colorGray"
@@ -150,6 +160,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:fontFamily="@font/dosis_regular"
+            android:textColor="@color/colorInputText"
             android:textSize="14sp"
             android:visibility="visible"
             tools:text="Refusing reason to be written here that describes the reason why my vacation been refused" />

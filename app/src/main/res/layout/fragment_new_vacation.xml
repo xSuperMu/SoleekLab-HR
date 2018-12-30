@@ -22,11 +22,52 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14sp"
+                android:fontFamily="@font/dosis_bold"
                 android:text="@string/new_vacation"
-                android:textSize="34sp"
+                android:textColor="@color/colorInputText"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/tv_cancel_new_vacation"
+                app:layout_constraintRight_toLeftOf="@id/tv_new_vacation"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_new_vacation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:fontFamily="@font/librefranklin_medium"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp"
+                android:src="@drawable/ic_add"
+                android:text="@string/request"
+                android:textColor="@color/colorPurple"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_cancel_new_vacation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:fontFamily="@font/librefranklin_medium"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp"
+                android:src="@drawable/ic_add"
+                android:text="@string/cancel"
+                android:textColor="@color/colorPurple"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
         </android.support.constraint.ConstraintLayout>
 
     </android.support.design.widget.AppBarLayout>
@@ -44,6 +85,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/colorBlue"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_vertical">
@@ -54,9 +96,10 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            android:fontFamily="@font/dosis_regular"
             android:hint="@string/starting_date"
             android:textColor="@color/colorTextDark"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
     </android.support.design.widget.TextInputLayout>
 
     <TextView
@@ -67,10 +110,11 @@
         android:layout_marginStart="14dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
+        android:fontFamily="@font/dosis_regular"
         android:singleLine="true"
         android:text="For"
         android:textColor="?android:textColorHint"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
     <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/spinner_vacation"
@@ -79,7 +123,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:spinnerMode="dialog" />
+        android:fontFamily="@font/dosis_regular"
+        android:spinnerMode="dialog"
+        app:backgroundTint="@color/colorBlue" />
 
     <TextView
         android:id="@+id/tv_vacation_type"
@@ -89,10 +135,11 @@
         android:layout_marginStart="14dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
+        android:fontFamily="@font/dosis_regular"
         android:singleLine="true"
         android:text="Vacation Type"
         android:textColor="?android:textColorHint"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
     <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/spinner_vacation_type"
@@ -101,8 +148,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:spinnerMode="dialog" />
+        android:fontFamily="@font/dosis_regular"
+        android:spinnerMode="dialog"
 
+        app:backgroundTint="@color/colorBlue" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_vacation_reason"
@@ -111,6 +160,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/colorBlue"
+        app:errorTextAppearance="@style/itl_error_appearance"
+        app:hintTextAppearance="@style/itl_normal_appearance"
         android:gravity="center_vertical">
 
         <EditText
@@ -118,10 +170,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusableInTouchMode="true"
+            android:fontFamily="@font/dosis_regular"
             android:hint="Reason"
             android:singleLine="true"
             android:textColor="@color/colorTextDark"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
     </android.support.design.widget.TextInputLayout>
 
 </LinearLayout>

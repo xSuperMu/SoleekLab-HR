@@ -6,8 +6,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.moham.soleeklab.EmployeeApplication;
-import com.example.moham.soleeklab.Model.CheckInResponse;
-import com.example.moham.soleeklab.Model.Employee;
+import com.example.moham.soleeklab.Model.Responses.CheckInResponse;
+import com.example.moham.soleeklab.Model.Responses.EmployeeResponse;
 import com.example.moham.soleeklab.R;
 import com.google.gson.Gson;
 
@@ -17,11 +17,11 @@ import static com.example.moham.soleeklab.Utils.Constants.TAG_EMPLOYEE_SHARED_PR
 
 public class EmployeeSharedPreferences {
 
-    public static void SaveEmployeeToPreferences(Context context, Employee employee) {
+    public static void SaveEmployeeToPreferences(Context context, EmployeeResponse employeeResponse) {
         Log.d(TAG_EMPLOYEE_SHARED_PREF, "SaveEmployeeToPreferences() has been instantiated");
 
         Gson gson = new Gson();
-        String empStr = gson.toJson(employee);
+        String empStr = gson.toJson(employeeResponse);
 
         Log.d(TAG_EMPLOYEE_SHARED_PREF, "checkInResponseStr --> " + empStr);
 
@@ -29,34 +29,34 @@ public class EmployeeSharedPreferences {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(STR_PREF_EMPLOYEE, empStr);
         editor.apply();
-        Log.d(TAG_EMPLOYEE_SHARED_PREF, "Employee object has been saved successfully");
+        Log.d(TAG_EMPLOYEE_SHARED_PREF, "EmployeeResponse object has been saved successfully");
 
-        ((EmployeeApplication) context.getApplicationContext()).setCurrentEmployee(employee);
+        ((EmployeeApplication) context.getApplicationContext()).setCurrentEmployeeResponse(employeeResponse);
     }
 
-    public static Employee readEmployeeFromPreferences(Context context) {
+    public static EmployeeResponse readEmployeeFromPreferences(Context context) {
         Log.d(TAG_EMPLOYEE_SHARED_PREF, "readEmployeeFromPreferences() has been instantiated");
 
-        Employee employee;
+        EmployeeResponse employeeResponse;
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         try {
             Gson gson = new Gson();
             String empStr = sharedPref.getString(STR_PREF_EMPLOYEE, "");
             Log.d(TAG_EMPLOYEE_SHARED_PREF, "empStr --> " + empStr);
-            employee = gson.fromJson(empStr, Employee.class);
-            Log.d(TAG_EMPLOYEE_SHARED_PREF, "Employee toString(): " + employee.getUser().toString());
-            Log.d(TAG_EMPLOYEE_SHARED_PREF, "Employee.Token --> " + employee.getToken());
+            employeeResponse = gson.fromJson(empStr, EmployeeResponse.class);
+            Log.d(TAG_EMPLOYEE_SHARED_PREF, "EmployeeResponse toString(): " + employeeResponse.getUser().toString());
+            Log.d(TAG_EMPLOYEE_SHARED_PREF, "EmployeeResponse.Token --> " + employeeResponse.getToken());
         } catch (NullPointerException e) {
             return null;
         }
 
-        if (TextUtils.isEmpty(employee.getToken())) {
+        if (TextUtils.isEmpty(employeeResponse.getToken())) {
             Log.d(TAG_EMPLOYEE_SHARED_PREF, "Returning null");
             return null;
         }
 
-        return employee;
+        return employeeResponse;
     }
 
     public static void SaveCheckInResponseToPreferences(Context context, CheckInResponse checkInResponse) {
