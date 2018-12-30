@@ -8,13 +8,10 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.moham.soleeklab.R;
-
-import java.io.IOException;
-
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
 
 import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_ATTENDANCE;
 import static com.example.moham.soleeklab.Utils.Constants.INT_CANCEL_FORGET_PASS;
@@ -60,11 +57,14 @@ public class LoadingActivity extends AppCompatActivity {
         try {
             Log.d(TAG_LOADING_ACTIVITY, "Trying to Load the GIF");
 
-            GifImageView gifImageView = findViewById(R.id.gif_loading);
-            GifDrawable gifFromAssets = new GifDrawable(getAssets(), "logoloading.gif");
+            //  GifImageView gifImageView = findViewById(R.id.gif_loading);
+            //  GifDrawable gifFromAssets = new GifDrawable(getAssets(), "logoloading.gif");
 
-            gifImageView.setImageDrawable(gifFromAssets);
-        } catch (IOException e) {
+            ImageView imageView = findViewById(R.id.gif_loading);
+            Glide.with(this).asGif().load(R.raw.logoloading).into(imageView).clearOnDetach();
+
+            //  gifImageView.setImageDrawable(gifFromAssets);
+        } catch (NullPointerException e) {
             e.printStackTrace();
             Log.d(TAG_LOADING_ACTIVITY, "Failed to Load the GIF");
         }
