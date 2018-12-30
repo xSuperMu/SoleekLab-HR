@@ -323,7 +323,7 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
         Log.d(TAG_FRAG_VERIFY_IDENTITY, "replaceFragmentWithAnimation() has been instantiated");
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_holder, fragment);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     @OnClick({R.id.tv_resend, R.id.ib_reload})
