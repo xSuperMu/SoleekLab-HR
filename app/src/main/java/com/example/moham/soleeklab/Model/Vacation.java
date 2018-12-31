@@ -47,7 +47,7 @@ public class Vacation implements Serializable {
     private String rejectionReason;
     @SerializedName("state")
     @Expose
-    private String state;
+    private int state;
 
     public Vacation() {
     }
@@ -100,7 +100,7 @@ public class Vacation implements Serializable {
         return rejectionReason;
     }
 
-    public String getState() {
+    public int getState() {
         return state;
     }
 }

@@ -51,7 +51,7 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
 
         Vacation vacation = mVacationRequestList.get(i);
 
-        String state = null;
+        int state;
         String adminStartDate = null;
         String adminEndDate = null;
         String vacationType = vacation.getVacationType();
@@ -62,12 +62,12 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
             adminStartDate = vacation.getAdminStartDate();
             adminEndDate = vacation.getAdminEndDate();
         } catch (NullPointerException e) {
-            state = null;
+            state = -1;
             adminStartDate = null;
             adminEndDate = null;
         }
 
-        if (state != null && state.equals("accepted")) {
+        if (state != -1 && state == 1) {
             vacationViewHolder.tvState.setBackground(mContext.getResources().getDrawable(R.drawable.round_view_green));
             vacationViewHolder.tvState.setText(mContext.getString(R.string.accepted));
             vacationViewHolder.llRejectionReason.setVisibility(View.GONE);
@@ -115,7 +115,7 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
             }
 
 
-        } else if (state != null && state.equals("rejected")) {
+        } else if (state != -1 && state == 2) {
             vacationViewHolder.tvState.setText(mContext.getString(R.string.rejected));
             vacationViewHolder.tvState.setBackground(mContext.getResources().getDrawable(R.drawable.round_view_red));
 

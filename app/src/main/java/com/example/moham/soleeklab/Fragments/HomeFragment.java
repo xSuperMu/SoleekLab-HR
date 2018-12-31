@@ -167,7 +167,6 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
         Log.d(TAG_FRAG_HOME, "empProfilePicStr ------>" + empProfilePicStr);
         Glide.with(this).load(empProfilePicStr).apply(new RequestOptions().fitCenter().format(DecodeFormat.PREFER_ARGB_8888).override(Target.SIZE_ORIGINAL)).into(civUserProfilePic);
 
-
         Log.d(TAG_FRAG_HOME, "checkInResponse Object ---->" + checkInResponse.toString());
         Log.d(TAG_FRAG_HOME, "User status ---->" + checkInResponse.getState());
 

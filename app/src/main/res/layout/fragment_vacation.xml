@@ -44,15 +44,18 @@
                 app:layout_constraintBottom_toBottomOf="@id/tv_action_bar_vacation"
                 app:layout_constraintLeft_toRightOf="@id/tv_action_bar_vacation" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/iv_new_vacation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/librefranklin_medium"
                 android:paddingStart="16dp"
                 android:paddingTop="16dp"
                 android:paddingEnd="16dp"
                 android:paddingBottom="16dp"
-                android:src="@drawable/ic_add"
+                android:text="New Vacation"
+                android:textColor="@color/colorPurple"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

@@ -63,7 +63,7 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     Unbinder unbinder;
     HomeActivity mHomeActivity;
     @BindView(R.id.iv_new_vacation)
-    ImageView ivNewVacation;
+    TextView ivNewVacation;
     @BindView(R.id.rv_vacation)
     RecyclerView rvVacation;
     @BindView(R.id.srl_vacation_swipe)
@@ -78,15 +78,12 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     private Call<VacationResponse> getVacationRequestCall;
     private List<Vacation> mVacationList;
 
-
     public VacationFragment() {
     }
-
 
     public static VacationFragment newInstance() {
         return new VacationFragment();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -184,7 +181,8 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
         // make network call
         final ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
 
-        getVacationRequestCall = service.getVacationHistory(headerInjector.getHeaders(), date);
+//        getVacationRequestCall = service.getVacationHistory(headerInjector.getHeaders(), date);
+        getVacationRequestCall = service.getVacationHistory(headerInjector.getHeaders(), "2019-01");
         getVacationRequestCall.enqueue(new Callback<VacationResponse>() {
             @Override
             public void onResponse(Call<VacationResponse> call, Response<VacationResponse> response) {
@@ -197,7 +195,7 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
                     mVacationAdapter.swapVacationList(list);
                     int count = response.body().getmVacation().getCount();
                     Log.d(TAG_FRAG_VACATION, "Count: " + count);
-                    String countStr = getResources().getString(R.string.task_progress, count, "21");
+                    String countStr = getActivity().getResources().getString(R.string.task_progress, count, "21");
                     tvActionBarVacationCount.setText(countStr);
                     tvActionBarVacationCount.setVisibility(View.VISIBLE);
                     srlVacationSwipe.setRefreshing(false);

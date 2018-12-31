@@ -35,13 +35,11 @@
                 android:id="@+id/tv_new_vacation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:enabled="false"
                 android:fontFamily="@font/librefranklin_medium"
                 android:paddingStart="16dp"
                 android:paddingTop="16dp"
                 android:paddingEnd="16dp"
                 android:paddingBottom="16dp"
-                android:src="@drawable/ic_add"
                 android:text="@string/request"
                 android:textColor="@color/colorPurple"
                 android:textSize="17sp"
@@ -54,7 +52,6 @@
                 android:id="@+id/tv_cancel_new_vacation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:enabled="false"
                 android:fontFamily="@font/librefranklin_medium"
                 android:paddingStart="16dp"
                 android:paddingTop="16dp"
@@ -88,7 +85,9 @@
         android:backgroundTint="@color/colorBlue"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        app:errorTextAppearance="@style/itl_error_appearance"
+        app:hintTextAppearance="@style/itl_normal_appearance">
 
         <EditText
             android:id="@+id/et_starting_date"
@@ -161,9 +160,9 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/colorBlue"
+        android:gravity="center_vertical"
         app:errorTextAppearance="@style/itl_error_appearance"
-        app:hintTextAppearance="@style/itl_normal_appearance"
-        android:gravity="center_vertical">
+        app:hintTextAppearance="@style/itl_normal_appearance">
 
         <EditText
             android:id="@+id/et_vacation_reason"

@@ -11,7 +11,7 @@ public class VacationRequests {
 
     @SerializedName("for")
     @Expose
-    private String period;
+    private int period;
 
     @SerializedName("reason")
     @Expose
@@ -30,7 +30,7 @@ public class VacationRequests {
         this.date = date;
     }
 
-    public VacationRequests(String startDate, String period, String reason, String type) {
+    public VacationRequests(String startDate, int period, String reason, String type) {
         this.startDate = startDate;
         this.period = period;
         this.reason = reason;
