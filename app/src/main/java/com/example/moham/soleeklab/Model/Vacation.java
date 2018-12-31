@@ -45,6 +45,13 @@ public class Vacation implements Serializable {
     @SerializedName("rejection_reason")
     @Expose
     private String rejectionReason;
+
+    @SerializedName("current_page")
+    @Expose
+    private int currentPage;
+    @SerializedName("last_page")
+    @Expose
+    private int lastPage;
     @SerializedName("state")
     @Expose
     private int state;
@@ -102,5 +109,13 @@ public class Vacation implements Serializable {
 
     public int getState() {
         return state;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public int getLastPage() {
+        return lastPage;
     }
 }

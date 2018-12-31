@@ -52,10 +52,12 @@ public interface ClientService {
 //    @POST("api/members/notifications/add_token")
 //    Call<DeviceTokenResponse> sendDeviceToken(@HeaderMap Map<String, String> headers, @Field("token") String deviceToken);
 
-
     @POST("api/members/vacations/request")
     Call<ApplyForVacationResponse> requestVacation(@HeaderMap Map<String, String> headers, @Body VacationRequests vacationRequests);
 
     @GET("api/members/vacations/vacations")
-    Call<VacationResponse> getVacationHistory(@HeaderMap Map<String, String> headers, @Query("page") String vacationRequests);
+    Call<VacationResponse> getVacationHistoryNormal(@HeaderMap Map<String, String> headers, @Query("page") int page);
+
+    @GET("api/members/vacations/vacations")
+    Call<VacationResponse> getVacationHistoryWithDate(@HeaderMap Map<String, String> headers, @Query("date") String vacationRequests);
 }

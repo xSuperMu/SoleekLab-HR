@@ -55,7 +55,8 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
         String adminStartDate = null;
         String adminEndDate = null;
         String vacationType = vacation.getVacationType();
-        vacationViewHolder.tvVacationName.setText(vacationType);
+        // todo remove  (+ " - " + vacation.getId()) from the next line
+        vacationViewHolder.tvVacationName.setText(vacationType + " - " + vacation.getId());
 
         try {
             state = vacation.getState();
@@ -212,6 +213,13 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
         mVacationRequestList = newVacationList;
         notifyDataSetChanged();
     }
+
+    public void addMoreVacationDate(List<Vacation> newVacationList) {
+        Log.d(TAG_VACATION_ADAPTER, "swapVacationList() has been instantiated");
+        mVacationRequestList.addAll(newVacationList);
+        notifyDataSetChanged();
+    }
+
 
     public void extendVacationList(List<Vacation> extendedVacationList) {
     }

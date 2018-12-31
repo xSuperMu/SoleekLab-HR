@@ -3,6 +3,7 @@ package com.example.moham.soleeklab.Fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,10 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moham.soleeklab.Activities.HomeActivity;
+import com.example.moham.soleeklab.Adapter.EndlessRecyclerOnScrollListener;
 import com.example.moham.soleeklab.Adapter.VacationAdapter;
 import com.example.moham.soleeklab.Interfaces.VacationFragmentInterface;
 import com.example.moham.soleeklab.Model.Responses.VacationResponse;
@@ -76,17 +79,29 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     ImageView ivFilterVacation;
     @BindView(R.id.tv_no_internet_vacation)
     TextView tvNoInternetVacation;
+    @BindView(R.id.progress_bar_vacation)
+    ProgressBar progressBarVacation;
 
     private VacationAdapter mVacationAdapter;
     private HeaderInjector headerInjector;
     private Call<VacationResponse> getVacationRequestCall;
     private List<Vacation> mVacationList;
+    private int pageCounter;
+    private int totalPagesCount;
 
     public VacationFragment() {
     }
 
     public static VacationFragment newInstance() {
         return new VacationFragment();
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG_FRAG_VACATION, "onCreate() has been instantiated");
+
     }
 
     @Override
@@ -130,6 +145,9 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     public void instantiateViews() {
         Log.d(TAG_FRAG_VACATION, "instantiateViews() has been instantiated");
 
+        pageCounter = 1;
+        Log.d(TAG_FRAG_VACATION, "pageCounter ---> " + pageCounter);
+
         headerInjector = new HeaderInjectorImplementation(getActivity());
         // RecyclerView object dependencies
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -145,10 +163,54 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark);
 
+
+        rvVacation.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+            @Override
+            public void onLoadMore() {
+                Log.d(TAG_FRAG_VACATION, "onLoadMore: before pageCounter ---> " + pageCounter);
+                pageCounter++;
+                Log.d(TAG_FRAG_VACATION, "onLoadMore: after pageCounter ---> " + pageCounter);
+                getMoreVacationDate(pageCounter);
+            }
+        });
+
         srlVacationSwipe.setRefreshing(true);
-
-
         loadVacationDate();
+    }
+
+    public void getMoreVacationDate(int whichPage) {
+        Log.d(TAG_FRAG_VACATION, "getMoreVacationDate() has been instantiated");
+
+        // TODO Which API, Normal or Data?? if date::return else run the following code...
+        Log.d(TAG_FRAG_VACATION, "getMoreVacationDate: pageCounter ----> " + whichPage);
+        progressBarVacation.setVisibility(View.VISIBLE);
+
+
+        if (whichPage > totalPagesCount) {
+            progressBarVacation.setVisibility(View.GONE);
+            return;
+        }
+
+
+        final ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
+        Call<VacationResponse> getMoreVacationResults = service.getVacationHistoryNormal(headerInjector.getHeaders(), whichPage);
+        getMoreVacationResults.enqueue(new Callback<VacationResponse>() {
+            @Override
+            public void onResponse(Call<VacationResponse> call, Response<VacationResponse> response) {
+                if (response.isSuccessful()) {
+                    List<Vacation> list = response.body().getmVacation().getVacation();
+                    mVacationAdapter.addMoreVacationDate(list);
+                    progressBarVacation.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VacationResponse> call, Throwable t) {
+                Log.e(TAG_FRAG_VACATION, "onFailure(): " + t.toString());
+                progressBarVacation.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), "Something went wrong, check the Internet!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -171,7 +233,6 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     public void loadVacationDate() {
         Log.d(TAG_FRAG_VACATION, "loadVacationDate() has been instantiated");
 
-
         if (!NetworkUtils.isNetworkAvailable(getActivity())) {
             Log.d(TAG_FRAG_VACATION, "No Network Connection");
             NetworkUtils.showNoNetworkDialog(getActivity());
@@ -190,8 +251,8 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
         // make network call
         final ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
 
-//        getVacationRequestCall = service.getVacationHistory(headerInjector.getHeaders(), date);
-        getVacationRequestCall = service.getVacationHistory(headerInjector.getHeaders(), "1");
+//        getVacationRequestCall = service.getVacationHistoryNormal(headerInjector.getHeaders(), date);
+        getVacationRequestCall = service.getVacationHistoryNormal(headerInjector.getHeaders(), pageCounter);
         getVacationRequestCall.enqueue(new Callback<VacationResponse>() {
             @Override
             public void onResponse(Call<VacationResponse> call, Response<VacationResponse> response) {
@@ -200,8 +261,12 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
 
                     List<Vacation> list = response.body().getmVacation().getVacation();
                     Log.d(TAG_FRAG_VACATION, "VacationResponse List: " + response.body().getmVacation().getVacation().toString());
+                    totalPagesCount = response.body().getmVacation().getLastPage();
+                    Log.d(TAG_FRAG_VACATION, "totalPagesCount: " + totalPagesCount);
 
+                    // check if there're data already on the adapter list
                     mVacationAdapter.swapVacationList(list);
+
                     int count = response.body().getmVacation().getCount();
                     Log.d(TAG_FRAG_VACATION, "Count: " + count);
                     String countStr = getActivity().getResources().getString(R.string.task_progress, count, "21");
@@ -237,6 +302,9 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
         // refresh the data
         srlVacationSwipe.setRefreshing(true);
         mVacationAdapter.swapVacationList(null);
+        // TODO Which API CAL, Normal or Date?
+        pageCounter = 1;
+        EndlessRecyclerOnScrollListener.mPreviousTotal = 0;
         loadVacationDate();
     }
 
@@ -244,5 +312,20 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     @Override
     public void handleFilterVacation() {
         Log.d(TAG_FRAG_VACATION, "handleFilterVacation() has been instantiated");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG_FRAG_VACATION, "onPause() has been instantiated");
+
+        EndlessRecyclerOnScrollListener.mPreviousTotal = 0;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG_FRAG_VACATION, "onStop() has been instantiated");
+        EndlessRecyclerOnScrollListener.mPreviousTotal = 0;
     }
 }
