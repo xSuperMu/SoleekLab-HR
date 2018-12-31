@@ -5,4 +5,6 @@ public interface NotificationFragInterface {
     void instantiateViews();
 
     void loadNotificationData();
+
+    void handleFilterNotification();
 }

@@ -63,7 +63,7 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     Unbinder unbinder;
     HomeActivity mHomeActivity;
     @BindView(R.id.iv_new_vacation)
-    TextView ivNewVacation;
+    ImageView ivNewVacation;
     @BindView(R.id.rv_vacation)
     RecyclerView rvVacation;
     @BindView(R.id.srl_vacation_swipe)
@@ -72,6 +72,10 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
     ConstraintLayout clVacation;
     @BindView(R.id.tv_action_bar_vacation_count)
     TextView tvActionBarVacationCount;
+    @BindView(R.id.iv_filter_vacation)
+    ImageView ivFilterVacation;
+    @BindView(R.id.tv_no_internet_vacation)
+    TextView tvNoInternetVacation;
 
     private VacationAdapter mVacationAdapter;
     private HeaderInjector headerInjector;
@@ -172,6 +176,11 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
             Log.d(TAG_FRAG_VACATION, "No Network Connection");
             NetworkUtils.showNoNetworkDialog(getActivity());
             srlVacationSwipe.setRefreshing(false);
+            if (clNoVacation != null)
+                clNoVacation.setVisibility(View.GONE);
+            if (clVacation != null)
+                clVacation.setVisibility(View.GONE);
+            tvNoInternetVacation.setVisibility(View.VISIBLE);
             return;
         }
 
@@ -182,7 +191,7 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
         final ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
 
 //        getVacationRequestCall = service.getVacationHistory(headerInjector.getHeaders(), date);
-        getVacationRequestCall = service.getVacationHistory(headerInjector.getHeaders(), "2019-01");
+        getVacationRequestCall = service.getVacationHistory(headerInjector.getHeaders(), "1");
         getVacationRequestCall.enqueue(new Callback<VacationResponse>() {
             @Override
             public void onResponse(Call<VacationResponse> call, Response<VacationResponse> response) {
@@ -229,5 +238,11 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
         srlVacationSwipe.setRefreshing(true);
         mVacationAdapter.swapVacationList(null);
         loadVacationDate();
+    }
+
+    @OnClick(R.id.iv_filter_vacation)
+    @Override
+    public void handleFilterVacation() {
+        Log.d(TAG_FRAG_VACATION, "handleFilterVacation() has been instantiated");
     }
 }

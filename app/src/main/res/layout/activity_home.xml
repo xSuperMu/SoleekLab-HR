@@ -12,13 +12,26 @@
         android:id="@+id/relativeMiddleBody"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:visibility="visible">
 
         <FrameLayout
             android:id="@+id/frame_fragment_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_no_internet_activity_home"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:fontFamily="@font/dosis_medium"
+        android:gravity="center"
+        android:text="@string/no_internet_connection"
+        android:textSize="17sp"
+        android:visibility="gone" />
 
     <View
         android:id="@+id/view"

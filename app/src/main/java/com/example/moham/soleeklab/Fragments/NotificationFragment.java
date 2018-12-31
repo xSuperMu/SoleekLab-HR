@@ -25,11 +25,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.example.moham.soleeklab.Utils.Constants.INT_FRAGMENT_NOTIFICATIONS_POS;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_NOTIFICATION;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_TASKS;
 
 public class NotificationFragment extends Fragment implements NotificationFragInterface, SwipeRefreshLayout.OnRefreshListener {
 
@@ -48,6 +48,8 @@ public class NotificationFragment extends Fragment implements NotificationFragIn
     SwipeRefreshLayout srlNotificationSwipe;
     NotificationAdapter mNotificationAdapter;
     HomeActivity mHomeActivity;
+    @BindView(R.id.iv_filter_notification)
+    ImageView ivFilterNotification;
     private List<Notification> mUserNotifications;
 
     public NotificationFragment() {
@@ -118,9 +120,16 @@ public class NotificationFragment extends Fragment implements NotificationFragIn
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(TAG_FRAG_TASKS, "onAttach() has been instantiated");
+        Log.d(TAG_FRAG_NOTIFICATION, "onAttach() has been instantiated");
 
         if (context instanceof Activity)
             mHomeActivity = (HomeActivity) context;
+    }
+
+    @OnClick(R.id.iv_filter_notification)
+    @Override
+    public void handleFilterNotification() {
+        Log.d(TAG_FRAG_NOTIFICATION, "handleFilterNotification() has been instantiated");
+
     }
 }

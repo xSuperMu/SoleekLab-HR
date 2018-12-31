@@ -57,6 +57,8 @@ public class TasksFragment extends Fragment implements TasksFragInterface {
     @BindView(R.id.cl_tasks)
     LinearLayout clTasks;
     Unbinder unbinder;
+    @BindView(R.id.iv_filter_tasks)
+    ImageView ivFilterVacation;
 
     public TasksFragment() {
     }
@@ -66,8 +68,7 @@ public class TasksFragment extends Fragment implements TasksFragInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG_FRAG_TASKS, "onCreateView() has been instantiated");
 
         mHomeActivity.bnvNavigation.getMenu().getItem(INT_FRAGMENT_TASKS_POS - 1).setChecked(true);
@@ -94,8 +95,8 @@ public class TasksFragment extends Fragment implements TasksFragInterface {
         unbinder.unbind();
     }
 
-    @Override
     @OnClick(R.id.tv_task_todo)
+    @Override
     public void handleToDoClicked() {
         Log.d(TAG_FRAG_TASKS, "handleToDoClicked() has been instantiated");
         switchFragment(TaskToDoFragment.newInstance(), TAG_FRAG_TODO);
@@ -105,8 +106,8 @@ public class TasksFragment extends Fragment implements TasksFragInterface {
         tvTaskDone.setTextColor(getResources().getColor(R.color.colorBlue));
     }
 
-    @Override
     @OnClick(R.id.tv_task_done)
+    @Override
     public void handleDoneClicked() {
         Log.d(TAG_FRAG_TASKS, "handleDoneClicked() has been instantiated");
         switchFragment(TaskDoneFragment.newInstance(), TAG_FRAG_DONE);
@@ -155,5 +156,11 @@ public class TasksFragment extends Fragment implements TasksFragInterface {
         tvTaskTodo.setTypeface(loadFont(getActivity(), FONT_DOSIS_BOLD));
         tvTaskDone.setTypeface(loadFont(getActivity(), FONT_DOSIS_BOLD));
         tvNoTasksText.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
+    }
+
+    @OnClick(R.id.iv_filter_tasks)
+    @Override
+    public void handleFilterTasks() {
+        Log.d(TAG_FRAG_TASKS, "handleFilterTasks() has been instantiated");
     }
 }

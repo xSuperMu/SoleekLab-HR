@@ -106,7 +106,12 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
     TextView tvCheckOutTime;
     @BindView(R.id.tv_total_work_time)
     TextView tvTotalWorkTime;
+
     HomeActivity mHomeActivity;
+    @BindView(R.id.tv_home_no_internet_attendance)
+    TextView tvHomeNoInternetAttendance;
+    @BindView(R.id.ll_home_internet_connection)
+    LinearLayout llHomeInternetConnection;
     private CheckInResponse checkInResponse;
     private HeaderInjector headerInjector;
 
@@ -368,7 +373,6 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-
     }
 
     @Override

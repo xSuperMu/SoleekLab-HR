@@ -17,4 +17,6 @@ public interface TasksFragInterface {
     Typeface loadFont(Context context, String fontPath);
 
     void setFontsToViews();
+
+    void handleFilterTasks();
 }

@@ -27,6 +27,23 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_filter_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/librefranklin_medium"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp"
+                android:src="@drawable/ic_filter_list_black_24dp"
+                android:textColor="@color/colorPurple"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
         </android.support.constraint.ConstraintLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -64,10 +81,23 @@
             android:textAlignment="center"
             android:textColor="@color/colorInputText"
             android:textSize="13sp"
+            android:visibility="visible"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_no_notification_icon" />
     </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tv_no_internet_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:fontFamily="@font/dosis_medium"
+        android:gravity="center"
+        android:paddingBottom="84dp"
+        android:text="@string/no_internet_connection"
+        android:textSize="17sp"
+        android:visibility="gone" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srlNotificationSwipe"

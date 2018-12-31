@@ -57,5 +57,5 @@ public interface ClientService {
     Call<ApplyForVacationResponse> requestVacation(@HeaderMap Map<String, String> headers, @Body VacationRequests vacationRequests);
 
     @GET("api/members/vacations/vacations")
-    Call<VacationResponse> getVacationHistory(@HeaderMap Map<String, String> headers, @Query("date") String vacationRequests);
+    Call<VacationResponse> getVacationHistory(@HeaderMap Map<String, String> headers, @Query("page") String vacationRequests);
 }

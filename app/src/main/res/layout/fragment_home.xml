@@ -11,258 +11,279 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="24dp"
-            android:clickable="false">
-
-            <ImageView
-                android:layout_width="120dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:background="@android:color/transparent"
-                android:clickable="false"
-                android:contentDescription="@string/user_profile_picture"
-                android:src="@mipmap/effect" />
-
-            <com.github.abdularis.civ.CircleImageView
-                android:id="@+id/civ_user_profile_pic"
-                android:layout_width="73dp"
-                android:layout_height="73dp"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_marginTop="4dp"
-                android:clickable="false"
-                android:longClickable="false"
-                android:src="@drawable/muhammad" />
-        </FrameLayout>
 
         <TextView
-            android:id="@+id/tv_user_name"
+            android:id="@+id/tv_home_no_internet_attendance"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="200dp"
+            android:fontFamily="@font/dosis_medium"
             android:gravity="center"
-            android:text="Muhammd A. Hafez"
-            android:textAlignment="center"
-            android:textColor="@color/colorTextDark"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/tv_user_job_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:text="Android Developer"
-            android:textAlignment="center"
-            android:textColor="@color/colorInputText"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="156dp"
-            android:layout_height="1dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="12dp"
-            android:alpha="0.15"
-            android:background="#9b9b9b" />
+            android:text="@string/no_internet_connection"
+            android:textSize="17sp"
+            android:visibility="gone" />
 
         <LinearLayout
-            android:id="@+id/ll_user_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="48dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/iv_user_status_image"
-                android:layout_width="149dp"
-                android:layout_height="116dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="64dp"
-                android:contentDescription="@string/user_status_picture" />
-
-            <TextView
-                android:id="@+id/tv_user_status_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                tools:text="Looks like you’re so far away from soleek planet!" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_check_out"
+            android:id="@+id/ll_home_internet_connection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="visible">
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/cl_user_status_checkout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="24dp">
-
-                <View
-                    android:id="@+id/view_checkout_circle"
-                    android:layout_width="108dp"
-                    android:layout_height="108dp"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/pink_solid_circle"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="33dp"
-                    android:layout_height="48dp"
-                    android:src="@mipmap/logout_icon"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="ContentDescription" />
-            </android.support.constraint.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/tv_check_out_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:text="@string/check_out"
-                android:textColor="@color/colorSalmonPink"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tv_check_out_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="4dp"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="@color/colorGray"
-                android:textSize="13sp"
-                tools:text="Checked-in 11:43AM (8h 36m)" />
-
-            <TextView
-                android:id="@+id/tv_check_in_time"
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="24dp"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="@color/colorGray"
-                android:textSize="18sp"
-                android:visibility="gone"
-                tools:text="Checked-in 11:43AM" />
+                android:clickable="false">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:background="@android:color/transparent"
+                    android:clickable="false"
+                    android:contentDescription="@string/user_profile_picture"
+                    android:src="@mipmap/effect" />
+
+                <com.github.abdularis.civ.CircleImageView
+                    android:id="@+id/civ_user_profile_pic"
+                    android:layout_width="73dp"
+                    android:layout_height="73dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:clickable="false"
+                    android:longClickable="false"
+                    android:src="@drawable/muhammad" />
+            </FrameLayout>
 
             <TextView
-                android:id="@+id/tv_check_out_time"
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="Muhammd A. Hafez"
+                android:textAlignment="center"
+                android:textColor="@color/colorTextDark"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/tv_user_job_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
                 android:gravity="center"
+                android:text="Android Developer"
                 android:textAlignment="center"
-                android:textColor="@color/colorGray"
-                android:textSize="18sp"
-                android:visibility="gone"
-                tools:text="Checked-out 11:43AM" />
-
-            <TextView
-                android:id="@+id/tv_total_work_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="4dp"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="@color/colorGray"
-                android:textSize="18sp"
-                android:visibility="gone"
-                tools:text="(8h 36m)" />
+                android:textColor="@color/colorInputText"
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="156dp"
                 android:layout_height="1dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="12dp"
                 android:alpha="0.15"
                 android:background="#9b9b9b" />
-        </LinearLayout>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/cl_task_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/tv_task_this_week"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tasks_this_week"
-                android:textColor="@color/colorInputText"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_task_progress_this_week"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorInputText"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="12/43" />
-
-            <FrameLayout
-                android:id="@+id/fl_holder"
+            <LinearLayout
+                android:id="@+id/ll_user_status"
                 android:layout_width="match_parent"
-                android:layout_height="18dp"
-                android:layout_marginTop="7dp"
-                android:background="@drawable/progress_bar_background"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_task_progress_this_week">
-
-                <ProgressBar
-                    android:id="@+id/progress_bar"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="16dp"
-                    android:indeterminate="false"
-                    android:progressDrawable="@drawable/curved_progress_bar" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/tv_view_all_tasks"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:text="@string/view_all_tasks"
-                android:textColor="#5957606f"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fl_holder" />
-        </android.support.constraint.ConstraintLayout>
+                android:layout_marginBottom="48dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/iv_user_status_image"
+                    android:layout_width="149dp"
+                    android:layout_height="116dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="64dp"
+                    android:contentDescription="@string/user_status_picture" />
+
+                <TextView
+                    android:id="@+id/tv_user_status_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    tools:text="Looks like you’re so far away from soleek planet!" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_check_out"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_user_status_checkout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="24dp">
+
+                    <View
+                        android:id="@+id/view_checkout_circle"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/pink_solid_circle"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="33dp"
+                        android:layout_height="48dp"
+                        android:src="@mipmap/logout_icon"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
+                </android.support.constraint.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/tv_check_out_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/check_out"
+                    android:textColor="@color/colorSalmonPink"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv_check_out_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorGray"
+                    android:textSize="13sp"
+                    tools:text="Checked-in 11:43AM (8h 36m)" />
+
+                <TextView
+                    android:id="@+id/tv_check_in_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorGray"
+                    android:textSize="18sp"
+                    android:visibility="gone"
+                    tools:text="Checked-in 11:43AM" />
+
+                <TextView
+                    android:id="@+id/tv_check_out_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorGray"
+                    android:textSize="18sp"
+                    android:visibility="gone"
+                    tools:text="Checked-out 11:43AM" />
+
+                <TextView
+                    android:id="@+id/tv_total_work_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorGray"
+                    android:textSize="18sp"
+                    android:visibility="gone"
+                    tools:text="(8h 36m)" />
+
+                <View
+                    android:layout_width="156dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="24dp"
+                    android:alpha="0.15"
+                    android:background="#9b9b9b" />
+            </LinearLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_task_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_task_this_week"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tasks_this_week"
+                    android:textColor="@color/colorInputText"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_task_progress_this_week"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorInputText"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="12/43" />
+
+                <FrameLayout
+                    android:id="@+id/fl_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="7dp"
+                    android:background="@drawable/progress_bar_background"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_task_progress_this_week">
+
+                    <ProgressBar
+                        android:id="@+id/progress_bar"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:indeterminate="false"
+                        android:progressDrawable="@drawable/curved_progress_bar" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tv_view_all_tasks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/view_all_tasks"
+                    android:textColor="#5957606f"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/fl_holder" />
+            </android.support.constraint.ConstraintLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

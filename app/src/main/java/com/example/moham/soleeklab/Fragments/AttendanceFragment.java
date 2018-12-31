@@ -40,6 +40,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,7 +50,6 @@ import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_BOLD;
 import static com.example.moham.soleeklab.Utils.Constants.FONT_DOSIS_MEDIUM;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_ATTENDANCE_REC;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_ATTENDANCE;
-import static com.example.moham.soleeklab.Utils.Constants.TAG_FRAG_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_ATTENDANCE;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CANCEL_LOGIN;
 import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN;
@@ -70,6 +70,10 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     @BindView(R.id.srlAttendanceSwipe)
     SwipeRefreshLayout srlAttendanceSwipe;
     AttendanceAdapter mAttendanceAdapter;
+    @BindView(R.id.iv_filter_attendance)
+    ImageView ivFilterAttendance;
+    @BindView(R.id.tv_no_internet_attendance)
+    TextView tvNoInternetAttendance;
     private List<AttendanceSheetResponse> mUserAttendances;
     private AttendanceReceiver mAttendanceReceiver;
     private HeaderInjector headerInjector;
@@ -106,7 +110,6 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
     public void onStart() {
         super.onStart();
         Log.d(TAG_FRAG_ATTENDANCE, "onStart() has been instantiated");
-
         // show loading screen
     }
 
@@ -134,8 +137,6 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
         srlAttendanceSwipe.setRefreshing(true);
 
         loadAttendanceData();
-
-        Log.d(TAG_FRAG_ATTENDANCE, "instantiateViews() return");
     }
 
     @Override
@@ -165,9 +166,13 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
             Log.d(TAG_FRAG_ATTENDANCE, "No Network Connection");
             NetworkUtils.showNoNetworkDialog(getActivity());
             srlAttendanceSwipe.setRefreshing(false);
+            if (clNoAttendance != null)
+                clNoAttendance.setVisibility(View.GONE);
+            if (srlAttendanceSwipe != null)
+                srlAttendanceSwipe.setVisibility(View.GONE);
+            tvNoInternetAttendance.setVisibility(View.VISIBLE);
             return;
         }
-
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         String date = sdf.format(new Date());
@@ -192,7 +197,7 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
                         mAttendanceAdapter.swapAttendanceDataList(upsideDown);
                         srlAttendanceSwipe.setRefreshing(false);
                         srlAttendanceSwipe.setVisibility(View.VISIBLE);
-                        clNoAttendance.setVisibility(View.GONE);
+//                        clNoAttendance.setVisibility(View.GONE);
                     }
                 } else {
                     handleAttendanceSheetResponseError(getActivity(), response);
@@ -205,8 +210,13 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                 if (call.isCanceled())
                     Toast.makeText(getActivity(), "Canceled!", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(), "something went wrong", Toast.LENGTH_SHORT).show();
+                else {
+                    if (clNoAttendance != null)
+                        clNoAttendance.setVisibility(View.GONE);
+                    if (srlAttendanceSwipe != null)
+                        srlAttendanceSwipe.setVisibility(View.GONE);
+                    tvNoInternetAttendance.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -226,16 +236,23 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
         tvNoAttendanceText.setTypeface(loadFont(getActivity(), FONT_DOSIS_MEDIUM));
     }
 
+    @Override
     public void handleAttendanceSheetResponseError(Context context, Response response) {
         Log.d(TAG_FRAG_ATTENDANCE, "handleAttendanceSheetResponseError() has been instantiated");
         if (response.code() == 404) {
-            Log.d(TAG_FRAG_LOGIN, "Response code ------> " + response.code() + " " + response.message());
-            Log.d(TAG_FRAG_LOGIN, "Moving to LoginFragment ");
+            Log.d(TAG_FRAG_ATTENDANCE, "Response code ------> " + response.code() + " " + response.message());
+            Log.d(TAG_FRAG_ATTENDANCE, "Moving to LoginFragment ");
             EmployeeSharedPreferences.clearPreferences(getActivity());
             Intent authIntent = new Intent(getActivity(), AuthActivity.class);
             getActivity().startActivity(authIntent);
             getActivity().finish();
         }
+    }
+
+    @OnClick(R.id.iv_filter_attendance)
+    @Override
+    public void handleFilterAttendance() {
+        Log.d(TAG_FRAG_ATTENDANCE, "handleFilterAttendance() has been instantiated");
     }
 
     class AttendanceReceiver extends BroadcastReceiver {

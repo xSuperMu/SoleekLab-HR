@@ -14,4 +14,6 @@ public interface VacationFragmentInterface {
     void showVacationDateView();
 
     void loadVacationDate();
+
+    void handleFilterVacation();
 }

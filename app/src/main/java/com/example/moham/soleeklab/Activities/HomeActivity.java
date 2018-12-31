@@ -16,6 +16,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moham.soleeklab.Fragments.AttendanceFragment;
@@ -70,6 +74,17 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
     @BindView(R.id.bottom_navigation_view)
     public BottomNavigationView bnvNavigation;
+    @BindView(R.id.frame_fragment_holder)
+    FrameLayout frameFragmentHolder;
+    @BindView(R.id.relativeMiddleBody)
+    RelativeLayout relativeMiddleBody;
+    @BindView(R.id.tv_no_internet_activity_home)
+    TextView tvNoInternet;
+    @BindView(R.id.view)
+    View view;
+    @BindView(R.id.relativeBottomNav)
+    RelativeLayout relativeBottomNav;
+
     private List<Fragment> mFragmentsList = new ArrayList<>(INT_BTN_NAV_FRAGMENTS_COUNT);
     private boolean doubleClickToExitPressedOnce = false;
     private int responseCode;
@@ -78,6 +93,12 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+                    if (relativeMiddleBody != null)
+                        relativeMiddleBody.setVisibility(View.VISIBLE);
+                    if (tvNoInternet != null)
+                        tvNoInternet.setVisibility(View.GONE);
+
                     switch (menuItem.getItemId()) {
                         case R.id.navigation_home:
                             CheckInResponse response = null;
@@ -234,6 +255,12 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                     if (response.isSuccessful()) {
                         Log.e(TAG_FRAG_LOGIN, "Response code -> " + response.code() + " " + response.message() + " ");
                         // Save object to preferences
+
+                        if (relativeMiddleBody != null)
+                            relativeMiddleBody.setVisibility(View.VISIBLE);
+                        if (tvNoInternet != null)
+                            tvNoInternet.setVisibility(View.GONE);
+
                         EmployeeSharedPreferences.SaveCheckInResponseToPreferences(HomeActivity.this, response.body());
 
                         Log.d(TAG_HOME_ACTIVITY, "Loading CheckInResponse from preferences");
@@ -268,12 +295,28 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                     Log.e(TAG_HOME_ACTIVITY, "onFailure(): " + t.toString());
 //                    sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                     LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
+
+                    if (relativeMiddleBody != null)
+                        relativeMiddleBody.setVisibility(View.GONE);
+
+                    tvNoInternet.setVisibility(View.VISIBLE);
                     Toast.makeText(HomeActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
+                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
                 }
             });
         }
 
+
+        LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
         Log.d(TAG_HOME_ACTIVITY, "instantiateViews() has been returned");
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.wtf(TAG_HOME_ACTIVITY, "onResume() has been instantiated");
+        LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
     }
 
     @SuppressLint("RestrictedApi")
@@ -322,7 +365,10 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                 CheckInResponse checkInErrorModel = gson.fromJson(response.errorBody().string(), CheckInResponse.class);
                 if (checkInErrorModel.getMessage() != null) {
                     Log.i(TAG_HOME_ACTIVITY, "handleCheckInResponseError() errorModel.Message = " + checkInErrorModel.getMessage());
-
+                    if (relativeMiddleBody != null)
+                        relativeMiddleBody.setVisibility(View.VISIBLE);
+                    if (tvNoInternet != null)
+                        tvNoInternet.setVisibility(View.GONE);
                     // Save object to preferences
                     EmployeeSharedPreferences.SaveCheckInResponseToPreferences(HomeActivity.this, checkInErrorModel);
 

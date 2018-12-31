@@ -6,10 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.TaskDoneFragment">
 
+    <TextView
+        android:id="@+id/tv_no_internet_task_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/dosis_medium"
+        android:gravity="center"
+        android:text="@string/no_internet_connection"
+        android:textSize="17sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".45" />
+
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srlTaskDoneSwipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
