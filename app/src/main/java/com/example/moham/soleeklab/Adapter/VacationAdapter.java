@@ -32,7 +32,6 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
 
     private Context mContext;
     private List<Vacation> mVacationRequestList;
-
     public VacationAdapter(Context context) {
         mContext = context;
     }

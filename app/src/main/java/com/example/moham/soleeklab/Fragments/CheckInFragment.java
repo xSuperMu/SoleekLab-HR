@@ -196,5 +196,4 @@ public class CheckInFragment extends Fragment implements CheckInFragmentInterfac
         Log.d(TAG_FRAG_CHECK_IN, "empProfilePicStr ------>" + empProfilePicStr);
         Glide.with(this).load(empProfilePicStr).apply(new RequestOptions().fitCenter().format(DecodeFormat.PREFER_ARGB_8888).override(Target.SIZE_ORIGINAL)).into(ivUserProfilePic);
     }
-
 }

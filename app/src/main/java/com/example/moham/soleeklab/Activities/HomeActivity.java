@@ -306,11 +306,9 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
             });
         }
 
-
         LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(new Intent(TAG_LOADING_RECEIVER_ACTION_CLOSE_LOADING_SCREEN));
         Log.d(TAG_HOME_ACTIVITY, "instantiateViews() has been returned");
     }
-
 
     @Override
     protected void onResume() {
@@ -371,7 +369,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
                         tvNoInternet.setVisibility(View.GONE);
                     // Save object to preferences
                     EmployeeSharedPreferences.SaveCheckInResponseToPreferences(HomeActivity.this, checkInErrorModel);
-
 
                     Log.d(TAG_HOME_ACTIVITY, "Loading CheckInResponse from preferences");
                     CheckInResponse checkInResponse = EmployeeSharedPreferences.readCheckInResponseFromPreferences(HomeActivity.this);

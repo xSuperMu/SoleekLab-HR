@@ -96,12 +96,10 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
         return new VacationFragment();
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG_FRAG_VACATION, "onCreate() has been instantiated");
-
     }
 
     @Override
@@ -190,7 +188,6 @@ public class VacationFragment extends Fragment implements VacationFragmentInterf
             progressBarVacation.setVisibility(View.GONE);
             return;
         }
-
 
         final ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
         Call<VacationResponse> getMoreVacationResults = service.getVacationHistoryNormal(headerInjector.getHeaders(), whichPage);

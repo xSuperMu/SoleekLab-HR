@@ -94,7 +94,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
     private String mailExtra = null;
     private String verificationCode = null;
     private EmployeeResponse currentEmployeeResponse;
-
     private Call<EmployeeResponse> verifyIdentityRequestCall;
     private VerifyIdentityReceiver mVerifyIdentityReceiver;
 
@@ -377,7 +376,6 @@ public class VerifyIdentityFragment extends Fragment implements VerifyIdentityIn
             timer.cancel();
             enableViews();
         }
-
     }
 
     @Override

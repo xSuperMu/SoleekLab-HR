@@ -173,7 +173,6 @@ public class NewVacationFragment extends Fragment {
 
         headerInjector = new HeaderInjectorImplementation(getActivity());
 
-
         edtStartingDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -228,7 +227,6 @@ public class NewVacationFragment extends Fragment {
         spinnerVacationType.setAdapter(spinnerVacationTypeAdapter);
 
         spinnerVacationType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-
         {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position,
@@ -245,7 +243,6 @@ public class NewVacationFragment extends Fragment {
         });
 
         spinnerVacation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-
         {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position,
@@ -302,8 +299,6 @@ public class NewVacationFragment extends Fragment {
 
     void requestNewVacation() {
         Log.d(TAG_FRAG_NEW_VACATION, "requestNewVacation() has been instantiated");
-
-
 //        show loading screen
 
         vacationReason = etVacationReason.getText().toString();

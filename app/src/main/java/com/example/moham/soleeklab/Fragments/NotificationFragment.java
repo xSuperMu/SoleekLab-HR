@@ -81,7 +81,6 @@ public class NotificationFragment extends Fragment implements NotificationFragIn
     public void instantiateViews() {
         Log.d(TAG_FRAG_NOTIFICATION, "instantiateViews() has been instantiated");
 
-
         // RecyclerView object dependencies
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvNotification.setLayoutManager(mLinearLayoutManager);
@@ -130,6 +129,5 @@ public class NotificationFragment extends Fragment implements NotificationFragIn
     @Override
     public void handleFilterNotification() {
         Log.d(TAG_FRAG_NOTIFICATION, "handleFilterNotification() has been instantiated");
-
     }
 }

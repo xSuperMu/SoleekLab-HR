@@ -32,7 +32,6 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 
     private Context mContext;
     private List<AttendanceSheetResponse> mAttendanceList = null;
-
     public AttendanceAdapter(Context context) {
         mContext = context;
     }
@@ -67,7 +66,6 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
 
         String getDayName = sdf.format(date);
         if (i == 0)
@@ -146,7 +144,6 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
         //        attendanceViewHolder.tvWeekDay.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
         //        attendanceViewHolder.tvDate.setTypeface(loadFont(mContext, FONT_DOSIS_MEDIUM));
     }
-
 
     @Override
     public int getItemCount() {

@@ -219,8 +219,6 @@ public class AttendanceFragment extends Fragment implements AttendanceFregInterf
                 }
             }
         });
-
-
     }
 
     @Override

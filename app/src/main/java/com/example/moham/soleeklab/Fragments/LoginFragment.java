@@ -219,7 +219,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                         Log.e(TAG_FRAG_LOGIN, "Saving EmployeeResponse to shared preferences");
                         EmployeeSharedPreferences.SaveEmployeeToPreferences(getActivity(), currentEmployeeResponse);
 
-
                         Log.e(TAG_FRAG_LOGIN, "Getting employee check in status");
                         ClientService service = RetrofitClientInstance.getRetrofitInstance().create(ClientService.class);
 
@@ -338,7 +337,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                         edtLoginEmail.setBackgroundTintList(colorStateList);
                         ViewCompat.setBackgroundTintList(edtLoginEmail, colorStateList);
                         edtLoginEmail.getBackground().setColorFilter(getResources().getColor(R.color.colorGray), PorterDuff.Mode.SRC_ATOP);
-
                     }
                 }
             }
@@ -375,7 +373,6 @@ public class LoginFragment extends Fragment implements AuthLoginInterface {
                         ViewCompat.setBackgroundTintList(edtLoginPassword, colorStateList);
                     }
                     edtLoginPassword.getBackground().setColorFilter(getResources().getColor(R.color.colorGray), PorterDuff.Mode.SRC_ATOP);
-
                 }
             }
         };

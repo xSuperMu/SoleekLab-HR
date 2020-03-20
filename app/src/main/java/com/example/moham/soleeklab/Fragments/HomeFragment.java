@@ -422,5 +422,4 @@ public class HomeFragment extends Fragment implements HomeFragInterface {
 
         return totalTime;
     }
-
 }

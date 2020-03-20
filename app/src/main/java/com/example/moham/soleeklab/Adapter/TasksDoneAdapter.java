@@ -19,7 +19,6 @@ public class TasksDoneAdapter extends RecyclerView.Adapter<TasksDoneAdapter.Task
 
     private Context mContext;
     private List<Task> mTaskDoneList;
-
     public TasksDoneAdapter(Context mContext) {
         this.mContext = mContext;
     }
@@ -43,7 +42,6 @@ public class TasksDoneAdapter extends RecyclerView.Adapter<TasksDoneAdapter.Task
     public int getItemCount() {
         return mTaskDoneList.size();
     }
-
 
     class TasksDoneViewHolder extends RecyclerView.ViewHolder {
         public TasksDoneViewHolder(@NonNull View itemView) {

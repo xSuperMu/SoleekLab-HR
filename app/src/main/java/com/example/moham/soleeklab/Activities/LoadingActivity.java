@@ -30,7 +30,6 @@ import static com.example.moham.soleeklab.Utils.Constants.TAG_LOADING_RECEIVER_A
 
 public class LoadingActivity extends AppCompatActivity {
 
-
     private int extraInt;
     private LoadingReceiver loadingReceiver;
 
@@ -52,7 +51,6 @@ public class LoadingActivity extends AppCompatActivity {
                 extraInt = extras.getInt(STR_EXTRA_CODE);
             }
         }
-
 
         try {
             Log.d(TAG_LOADING_ACTIVITY, "Trying to Load the GIF");
@@ -109,7 +107,6 @@ public class LoadingActivity extends AppCompatActivity {
     }
 
     class LoadingReceiver extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG_LOADING_REC, "onReceive() has been instantiated");

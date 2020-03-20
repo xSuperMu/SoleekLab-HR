@@ -23,7 +23,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private Context mContext;
     private List<Notification> mNotificationList;
-
     public NotificationAdapter(Context mContext) {
         this.mContext = mContext;
     }
@@ -67,6 +66,5 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
     }
 }

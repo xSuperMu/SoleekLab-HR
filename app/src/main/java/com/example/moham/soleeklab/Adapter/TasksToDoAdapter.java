@@ -18,7 +18,6 @@ import static com.example.moham.soleeklab.Utils.Constants.TAG_TASKS_TODO_ADAPTER
 public class TasksToDoAdapter extends RecyclerView.Adapter<TasksToDoAdapter.TaskToDoViewHolder> {
     private Context mContext;
     private List<Task> mTaskToDoList;
-
     public TasksToDoAdapter(Context mContext) {
         this.mContext = mContext;
     }

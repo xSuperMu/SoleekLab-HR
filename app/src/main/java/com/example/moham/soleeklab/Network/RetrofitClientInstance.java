@@ -16,7 +16,6 @@ public class RetrofitClientInstance {
     private static final String TAG = RetrofitClientInstance.class.getSimpleName();
     private static Retrofit retrofit;
 
-
     public static Retrofit getRetrofitInstance() {
         Log.d(TAG, "getRetrofitInstance() has been instantiated");
 

@@ -25,7 +25,6 @@ public class VacationRequests {
     @Expose
     private String date;
 
-
     public VacationRequests(String date) {
         this.date = date;
     }

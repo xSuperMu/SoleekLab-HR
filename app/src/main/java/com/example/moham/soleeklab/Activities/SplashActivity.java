@@ -13,7 +13,6 @@ import static com.example.moham.soleeklab.Utils.Constants.SPLASH_SCREEN_MILLI_SE
 import static com.example.moham.soleeklab.Utils.Constants.TAG_SPLASH_ACTIVITY;
 
 public class SplashActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +21,6 @@ public class SplashActivity extends AppCompatActivity {
 //        getSupportActionBar().hide();
         checkUserSession();
     }
-
 
     private void checkUserSession() {
         Log.d(TAG_SPLASH_ACTIVITY, "checkUserSession() has been instantiated");

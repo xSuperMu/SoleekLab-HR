@@ -74,6 +74,4 @@ public class Constants {
     public static final int INT_CANCEL_RESET_PASS = 10006;
     public static final int INT_CANCEL_VERIFY_IDENTITY = 10007;
     public static final int INT_CANCEL_ATTENDANCE = 10008;
-
-
 }
